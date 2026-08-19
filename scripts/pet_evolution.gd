@@ -11,7 +11,7 @@ signal evolution_changed(stage: int, stage_name: StringName, visual_scale: float
 @export_category("Estágio atual")
 @export_range(0, 6, 1) var stage := 0
 @export var stage_name: StringName = &"bebe"
-@export_range(0.1, 3.0, 0.01) var visual_scale := 1.0
+@export_range(0.1, 10.0, 0.01) var visual_scale := 4.0
 
 @export_category("Crescimento")
 @export var apply_visual_growth := true
@@ -23,13 +23,13 @@ signal evolution_changed(stage: int, stage_name: StringName, visual_scale: float
 @export var randomizer_path: NodePath = NodePath("..")
 
 const STAGE_DATA: Dictionary = {
-	0: {"name": &"bebe", "label": "Bebê", "level": 1, "scale": 1.00},
-	1: {"name": &"crianca", "label": "Criança", "level": 10, "scale": 1.15},
-	2: {"name": &"juvenil", "label": "Juvenil", "level": 20, "scale": 1.30},
-	3: {"name": &"jovem", "label": "Jovem", "level": 30, "scale": 1.50},
-	4: {"name": &"adulto", "label": "Adulto", "level": 50, "scale": 1.75},
-	5: {"name": &"forma_maxima", "label": "Forma Máxima", "level": 75, "scale": 2.00},
-	6: {"name": &"entidade_cosmica", "label": "Entidade Cósmica", "level": 100, "scale": 2.30},
+	0: {"name": &"bebe", "label": "Bebê", "level": 1, "scale": 4.00},
+	1: {"name": &"crianca", "label": "Criança", "level": 10, "scale": 4.60},
+	2: {"name": &"juvenil", "label": "Juvenil", "level": 20, "scale": 5.20},
+	3: {"name": &"jovem", "label": "Jovem", "level": 30, "scale": 6.00},
+	4: {"name": &"adulto", "label": "Adulto", "level": 50, "scale": 7.00},
+	5: {"name": &"forma_maxima", "label": "Forma Máxima", "level": 75, "scale": 8.00},
+	6: {"name": &"entidade_cosmica", "label": "Entidade Cósmica", "level": 100, "scale": 9.20},
 }
 
 func _ready() -> void:
