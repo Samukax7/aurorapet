@@ -2,48 +2,59 @@
 
 [ext_resource type="Texture2D" uid="uid://cser6rya6vynd" path="res://assets/fundo/aurorapet-deepworld-landscape.png" id="1_12rvj"]
 [ext_resource type="PackedScene" uid="uid://bs3bro30dl1ls" path="res://scenes/pet.tscn" id="2_tou2y"]
-[ext_resource type="Script" path="res://scripts/deepworld_controller.gd" id="3_controller"]
-[ext_resource type="Texture2D" path="res://assets/fundo/faccoes/deepworld_luz.png" id="4_luz"]
-[ext_resource type="Texture2D" path="res://assets/fundo/faccoes/deepworld_trevas.png" id="5_trevas"]
-[ext_resource type="Texture2D" path="res://assets/fundo/faccoes/deepworld_neutro.png" id="6_neutro"]
-[ext_resource type="Texture2D" path="res://assets/fundo/deepworld_plataforma.png" id="7_plataforma"]
+[ext_resource type="Script" uid="uid://nqbj1jyglym1" path="res://scripts/deepworld_controller.gd" id="3_controller"]
+[ext_resource type="Texture2D" uid="uid://cw4jjlh0xd7aq" path="res://assets/fundo/faccoes/deepworld_luz.png" id="4_luz"]
+[ext_resource type="Texture2D" uid="uid://270f2dct6ovq" path="res://assets/fundo/faccoes/deepworld_trevas.png" id="5_trevas"]
+[ext_resource type="Texture2D" uid="uid://bnm4hglqsqfqk" path="res://assets/fundo/faccoes/deepworld_neutro.png" id="6_neutro"]
+[ext_resource type="Texture2D" uid="uid://cynjcps2q8ggw" path="res://assets/fundo/deepworld_plataforma.png" id="7_plataforma"]
 
 [node name="Deepworld" type="Node2D" unique_id=152526842]
 script = ExtResource("3_controller")
 
-[node name="Cenario" type="Node2D" parent="."]
+[node name="Cenario" type="Node2D" parent="." unique_id=1336151893]
 
-[node name="Fundo" type="Sprite2D" parent="Cenario"]
+[node name="Fundo" type="Sprite2D" parent="Cenario" unique_id=1522956278]
 z_index = -5
 texture = ExtResource("1_12rvj")
 
-[node name="Fallback" type="Sprite2D" parent="Cenario"]
+[node name="Fallback" type="Sprite2D" parent="Cenario" unique_id=6755724]
 visible = false
 z_index = -5
 texture = ExtResource("1_12rvj")
 
-[node name="FundoLuz" type="Sprite2D" parent="Cenario"]
+[node name="FundoLuz" type="Sprite2D" parent="Cenario" unique_id=539371081]
 visible = false
 z_index = -5
+scale = Vector2(3.025014, 2.9584742)
 texture = ExtResource("4_luz")
 
-[node name="FundoTrevas" type="Sprite2D" parent="Cenario"]
+[node name="FundoTrevas" type="Sprite2D" parent="Cenario" unique_id=823267882]
 visible = false
 z_index = -5
+scale = Vector2(3.0113282, 2.9775877)
 texture = ExtResource("5_trevas")
 
-[node name="FundoNeutro" type="Sprite2D" parent="Cenario"]
+[node name="FundoNeutro" type="Sprite2D" parent="Cenario" unique_id=2074315485]
 visible = false
 z_index = -5
+scale = Vector2(3.0340772, 2.9694102)
 texture = ExtResource("6_neutro")
 
-[node name="Plataforma" type="Sprite2D" parent="."]
+[node name="Plataforma" type="Sprite2D" parent="." unique_id=925444749]
 z_index = 2
+scale = Vector2(3.0363233, 2.980633)
 texture = ExtResource("7_plataforma")
 
 [node name="Paisagem" type="Node2D" parent="." unique_id=2012485492]
 
 [node name="Pet" parent="Paisagem" unique_id=241982129 instance=ExtResource("2_tou2y")]
-editable_children = true
 position = Vector2(0, 488)
 scale = Vector2(4, 4)
+randomize_palette_on_ready = true
+randomize_palette_in_editor = false
+palette_seed_value = 0
+apply_tail_variant_scales = true
+palette_pair_index = -1
+palette_name = &""
+base_color = Color(1, 1, 1, 1)
+complementary_color = Color(1, 1, 1, 1)
