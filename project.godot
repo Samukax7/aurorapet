@@ -1,0 +1,24 @@
+[application]
+config/name="AuroraPet"
+run/main_scene="res://scenes/manual_console.tscn"
+config/features=PackedStringArray("4.3")
+
+[display]
+window/size/viewport_width=960
+window/size/viewport_height=540
+window/size/window_width_override=960
+window/size/window_height_override=540
+window/stretch/mode="canvas_items"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+textures/canvas_textures/default_texture_filter=0
+
+[input]
+ui_accept={"deadzone": 0.5, "events": [Object(InputEventKey,"physical_keycode":32)]}
+menu_action={"deadzone": 0.5, "events": [Object(InputEventKey,"physical_keycode":90)]}
+
+[gui]
+theme/default_font_multichannel_signed_distance_field=true

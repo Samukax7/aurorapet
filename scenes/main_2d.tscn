@@ -1,0 +1,108 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/main_2d.gd" id="1_root"]
+[ext_resource type="Script" path="res://scripts/console_stage.gd" id="2_console"]
+
+[node name="AuroraPet" type="Node2D"]
+script = ExtResource("1_root")
+
+[node name="Background" type="Node2D" parent="."]
+z_index = -10
+
+[node name="BackGlow" type="Node2D" parent="Background"]
+z_index = -1
+
+[node name="Vignette" type="Node2D" parent="Background"]
+z_index = 0
+
+[node name="ConsoleStage" type="Node2D" parent="."]
+z_index = 0
+script = ExtResource("2_console")
+
+[node name="ConsoleShadow" type="Node2D" parent="ConsoleStage"]
+z_index = 0
+
+[node name="ConsoleBody" type="Node2D" parent="ConsoleStage"]
+z_index = 1
+
+[node name="ConsoleHighlight" type="Node2D" parent="ConsoleStage"]
+z_index = 2
+
+[node name="ConsoleInset" type="Node2D" parent="ConsoleStage"]
+z_index = 3
+
+[node name="ScreenAssembly" type="Node2D" parent="ConsoleStage"]
+z_index = 4
+
+[node name="ScreenShadow" type="Node2D" parent="ConsoleStage/ScreenAssembly"]
+z_index = 0
+
+[node name="ScreenBezel" type="Node2D" parent="ConsoleStage/ScreenAssembly"]
+z_index = 1
+
+[node name="ScreenGlass" type="Node2D" parent="ConsoleStage/ScreenAssembly"]
+z_index = 2
+
+[node name="ScreenGame" type="Node2D" parent="ConsoleStage/ScreenAssembly"]
+z_index = 3
+
+[node name="PetShadow" type="Node2D" parent="ConsoleStage/ScreenAssembly/ScreenGame"]
+z_index = 0
+
+[node name="PetBody" type="Node2D" parent="ConsoleStage/ScreenAssembly/ScreenGame"]
+z_index = 1
+
+[node name="PetHighlights" type="Node2D" parent="ConsoleStage/ScreenAssembly/ScreenGame"]
+z_index = 2
+
+[node name="PetEffects" type="Node2D" parent="ConsoleStage/ScreenAssembly/ScreenGame"]
+z_index = 3
+
+[node name="ScreenHud" type="CanvasLayer" parent="ConsoleStage/ScreenAssembly"]
+layer = 10
+
+[node name="PetName" type="Label" parent="ConsoleStage/ScreenAssembly/ScreenHud"]
+offset_left = 400.0
+offset_top = 165.0
+offset_right = 560.0
+offset_bottom = 185.0
+text = "AURORAPET"
+
+[node name="StatusBars" type="Control" parent="ConsoleStage/ScreenAssembly/ScreenHud"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Message" type="Label" parent="ConsoleStage/ScreenAssembly/ScreenHud"]
+offset_left = 370.0
+offset_top = 285.0
+offset_right = 590.0
+offset_bottom = 305.0
+text = "PRONTO PARA JOGAR"
+horizontal_alignment = 1
+
+[node name="PhysicalControls" type="Node2D" parent="ConsoleStage"]
+z_index = 5
+
+[node name="DPadShadow" type="Node2D" parent="ConsoleStage/PhysicalControls"]
+z_index = 0
+
+[node name="DPad" type="Node2D" parent="ConsoleStage/PhysicalControls"]
+z_index = 1
+
+[node name="ButtonYellow" type="Node2D" parent="ConsoleStage/PhysicalControls"]
+z_index = 2
+
+[node name="ButtonGreen" type="Node2D" parent="ConsoleStage/PhysicalControls"]
+z_index = 2
+
+[node name="ButtonPink" type="Node2D" parent="ConsoleStage/PhysicalControls"]
+z_index = 2
+
+[node name="InputLayer" type="Node" parent="."]
+
+[node name="KeyboardController" type="Node" parent="InputLayer"]
+
+[node name="TouchController" type="Node" parent="InputLayer"]
+
+[node name="DebugOverlay" type="CanvasLayer" parent="."]
+layer = 100

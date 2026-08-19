@@ -1,0 +1,109 @@
+[gd_scene format=3]
+
+[node name="AuroraPetManual2D" type="Node2D"]
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 960.0
+offset_bottom = 540.0
+color = Color(0.08, 0.07, 0.15, 1)
+mouse_filter = 2
+
+[node name="ConsoleShadow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(72, 183, 90, 155, 138, 132, 822, 132, 870, 155, 888, 183, 888, 357, 870, 385, 822, 408, 138, 408, 90, 385, 72, 357)
+color = Color(0.01, 0.01, 0.02, 0.45)
+position = Vector2(0, 12)
+
+[node name="ConsoleBody" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(72, 183, 90, 155, 138, 132, 822, 132, 870, 155, 888, 183, 888, 357, 870, 385, 822, 408, 138, 408, 90, 385, 72, 357)
+color = Color(0.91, 0.91, 0.94, 1)
+
+[node name="ConsoleInset" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(88, 184, 105, 164, 146, 146, 814, 146, 855, 164, 872, 184, 872, 354, 855, 376, 814, 394, 146, 394, 105, 376, 88, 354)
+color = Color(0.84, 0.84, 0.88, 1)
+
+[node name="ScreenBezel" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(286, 164, 674, 164, 690, 178, 690, 336, 674, 350, 286, 350, 270, 336, 270, 178)
+color = Color(0.06, 0.06, 0.09, 1)
+
+[node name="Screen" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(292, 174, 668, 174, 678, 184, 678, 330, 668, 340, 292, 340, 282, 330, 282, 184)
+color = Color(0.25, 0.86, 0.85, 1)
+
+[node name="ScreenGlow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(292, 174, 668, 174, 668, 206, 292, 206)
+color = Color(0.55, 1, 0.98, 0.24)
+
+[node name="ScreenTitle" type="Label" parent="."]
+offset_left = 310.0
+offset_top = 184.0
+offset_right = 650.0
+offset_bottom = 204.0
+theme_override_colors/font_color = Color(0.05, 0.18, 0.25, 1)
+theme_override_font_sizes/font_size = 13
+text = "AURORAPET                         LV 1"
+
+[node name="ScreenMessage" type="Label" parent="."]
+offset_left = 315.0
+offset_top = 316.0
+offset_right = 645.0
+offset_bottom = 333.0
+theme_override_colors/font_color = Color(0.05, 0.18, 0.25, 1)
+theme_override_font_sizes/font_size = 10
+text = "PRONTO PARA JOGAR"
+horizontal_alignment = 1
+
+[node name="PetShadow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(425, 292, 445, 284, 515, 284, 535, 292, 515, 300, 445, 300)
+color = Color(0.03, 0.28, 0.35, 0.28)
+
+[node name="PetBody" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(444, 254, 438, 228, 447, 211, 463, 204, 477, 209, 495, 199, 513, 209, 529, 204, 545, 211, 554, 228, 548, 254, 536, 273, 518, 282, 474, 282, 456, 273)
+color = Color(0.98, 0.82, 0.51, 1)
+
+[node name="PetEarLeft" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(451, 218, 447, 184, 470, 207)
+color = Color(0.98, 0.82, 0.51, 1)
+
+[node name="PetEarRight" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(522, 207, 545, 184, 541, 218)
+color = Color(0.98, 0.82, 0.51, 1)
+
+[node name="PetFace" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(466, 238, 474, 230, 482, 238, 490, 230, 498, 238, 506, 230, 514, 238, 506, 250, 474, 250)
+color = Color(0.17, 0.13, 0.24, 1)
+
+[node name="DPad" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(157, 205, 181, 205, 181, 181, 205, 181, 205, 205, 229, 205, 229, 229, 205, 229, 205, 253, 181, 253, 181, 229, 157, 229)
+color = Color(0.25, 0.17, 0.36, 1)
+
+[node name="ButtonYellow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(757, 197, 764, 187, 775, 183, 786, 187, 793, 197, 793, 209, 786, 219, 775, 223, 764, 219, 757, 209)
+color = Color(0.82, 0.82, 0.21, 1)
+
+[node name="ButtonGreen" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(817, 197, 824, 187, 835, 183, 846, 187, 853, 197, 853, 209, 846, 219, 835, 223, 824, 219, 817, 209)
+color = Color(0.28, 0.70, 0.42, 1)
+
+[node name="ButtonPink" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(768, 269, 778, 254, 794, 248, 810, 254, 820, 269, 820, 287, 810, 302, 794, 308, 778, 302, 768, 287)
+color = Color(0.78, 0.25, 0.51, 1)
+
+[node name="Brand" type="Label" parent="."]
+offset_left = 430.0
+offset_top = 365.0
+offset_right = 530.0
+offset_bottom = 388.0
+theme_override_colors/font_color = Color(0.12, 0.50, 0.70, 1)
+theme_override_font_sizes/font_size = 16
+text = "AuroraPet"
+horizontal_alignment = 1
+
+[node name="ControlsHint" type="Label" parent="."]
+offset_left = 260.0
+offset_top = 475.0
+offset_right = 700.0
+offset_bottom = 500.0
+theme_override_colors/font_color = Color(0.78, 0.76, 0.86, 1)
+theme_override_font_sizes/font_size = 13
+text = "1 COMER   2 BRINCAR   3 DORMIR   4 ELOGIAR   5 TREINAR"
+horizontal_alignment = 1
