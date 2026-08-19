@@ -1,16 +1,19 @@
 extends Node
 class_name PetSkills
 
-## Árvore de habilidades inicial do AuroraPet.
-## A estrutura é local e independente do visual do pet, pronta para futura UI e combate.
+## Árvore de habilidades e progressão do AuroraPet.
+## O XP atual é o progresso dentro do nível; total_xp registra o histórico acumulado.
 
 signal skills_changed(unlocked_skills: Array[StringName])
+signal skill_tree_changed(all_skills: Array[StringName], unlocked_skills: Array[StringName])
 signal skill_unlocked(skill_id: StringName)
 signal progression_changed(level: int, xp: int)
+signal level_up(new_level: int)
 
 @export_category("Progressão")
 @export_range(1, 100, 1) var level := 1
 @export_range(0, 999999, 1) var xp := 0
+@export_range(0, 999999, 1) var total_xp := 0
 
 @export_category("Atributos de treino")
 @export_range(0, 100, 1) var strength := 10
@@ -31,6 +34,7 @@ const SKILLS: Dictionary = {
 		"xp": 0,
 		"attribute": &"forca",
 		"attribute_value": 0,
+		"requires": &"",
 	},
 	&"golpe_forte": {
 		"name": "Golpe Forte",
@@ -41,6 +45,7 @@ const SKILLS: Dictionary = {
 		"xp": 100,
 		"attribute": &"forca",
 		"attribute_value": 12,
+		"requires": &"",
 	},
 	&"golpe_status": {
 		"name": "Golpe de Status",
@@ -51,6 +56,7 @@ const SKILLS: Dictionary = {
 		"xp": 100,
 		"attribute": &"inteligencia",
 		"attribute_value": 12,
+		"requires": &"",
 	},
 	&"defesa": {
 		"name": "Defesa",
@@ -61,13 +67,63 @@ const SKILLS: Dictionary = {
 		"xp": 100,
 		"attribute": &"defesa",
 		"attribute_value": 12,
+		"requires": &"",
+	},
+	&"golpe_fraco_avancado": {
+		"name": "Golpe Fraco Avançado",
+		"description": "Versão aprimorada do ataque básico.",
+		"slot": "ataque",
+		"cost": 8,
+		"level": 3,
+		"xp": 300,
+		"attribute": &"agilidade",
+		"attribute_value": 15,
+		"requires": &"golpe_fraco",
+	},
+	&"golpe_forte_avancado": {
+		"name": "Golpe Forte Avançado",
+		"description": "Ataque de alto impacto desbloqueado pela evolução.",
+		"slot": "ataque",
+		"cost": 30,
+		"level": 4,
+		"xp": 600,
+		"attribute": &"forca",
+		"attribute_value": 20,
+		"requires": &"golpe_forte",
+	},
+	&"status_avancado": {
+		"name": "Status Avançado",
+		"description": "Efeito tático com maior duração e precisão.",
+		"slot": "status",
+		"cost": 18,
+		"level": 4,
+		"xp": 600,
+		"attribute": &"inteligencia",
+		"attribute_value": 20,
+		"requires": &"golpe_status",
+	},
+	&"defesa_avancada": {
+		"name": "Defesa Avançada",
+		"description": "Postura defensiva com recuperação ampliada.",
+		"slot": "defesa",
+		"cost": 22,
+		"level": 4,
+		"xp": 600,
+		"attribute": &"defesa",
+		"attribute_value": 20,
+		"requires": &"defesa",
 	},
 }
 
+@onready var evolution: PetEvolution = get_parent().get_node_or_null(^"PetEvolution") as PetEvolution
+
 func _ready() -> void:
 	_normalize_unlocked_skills()
-	skills_changed.emit(unlocked_skills.duplicate())
+	_try_unlock_available_skills()
+	_emit_skill_state()
 	progression_changed.emit(level, xp)
+	if evolution != null:
+		evolution.sync_with_level(level)
 
 func get_skill(skill_id: StringName) -> Dictionary:
 	return SKILLS.get(skill_id, {}).duplicate(true)
@@ -85,7 +141,10 @@ func can_unlock(skill_id: StringName) -> bool:
 	if is_unlocked(skill_id) or not SKILLS.has(skill_id):
 		return false
 	var skill: Dictionary = SKILLS[skill_id]
-	if level < int(skill["level"]) or xp < int(skill["xp"]):
+	var required_skill: StringName = skill["requires"]
+	if not required_skill.is_empty() and not is_unlocked(required_skill):
+		return false
+	if level < int(skill["level"]) or total_xp < int(skill["xp"]):
 		return false
 	return get_attribute(StringName(skill["attribute"])) >= int(skill["attribute_value"])
 
@@ -93,22 +152,34 @@ func unlock_skill(skill_id: StringName) -> bool:
 	if not can_unlock(skill_id):
 		return false
 	unlocked_skills.append(skill_id)
-	skills_changed.emit(unlocked_skills.duplicate())
+	_emit_skill_state()
 	skill_unlocked.emit(skill_id)
 	return true
 
 func add_xp(amount: int) -> void:
 	if amount <= 0:
 		return
+	total_xp += amount
 	xp += amount
+	var leveled_up := false
 	while level < 100 and xp >= xp_required_for_next_level():
 		xp -= xp_required_for_next_level()
 		level += 1
+		leveled_up = true
+		level_up.emit(level)
+		if evolution != null:
+			evolution.sync_with_level(level)
 		_try_unlock_available_skills()
+	_try_unlock_available_skills()
 	progression_changed.emit(level, xp)
+	if leveled_up:
+		_emit_skill_state()
 
 func xp_required_for_next_level() -> int:
 	return level * 100
+
+func get_progress_ratio() -> float:
+	return clampf(float(xp) / float(xp_required_for_next_level()), 0.0, 1.0)
 
 func train_attribute(attribute: StringName, amount: int = 1) -> void:
 	match attribute:
@@ -119,6 +190,15 @@ func train_attribute(attribute: StringName, amount: int = 1) -> void:
 		_:
 			push_warning("Atributo de treino desconhecido: %s" % attribute)
 			return
+	_try_unlock_available_skills()
+
+func apply_identity_bias(bias: Dictionary) -> void:
+	if bias.is_empty():
+		return
+	strength = clampi(strength + int(bias.get("forca", 0)), 0, 100)
+	defense = clampi(defense + int(bias.get("defesa", 0)), 0, 100)
+	agility = clampi(agility + int(bias.get("agilidade", 0)), 0, 100)
+	intelligence = clampi(intelligence + int(bias.get("inteligencia", 0)), 0, 100)
 	_try_unlock_available_skills()
 
 func get_attribute(attribute: StringName) -> int:
@@ -132,6 +212,10 @@ func get_attribute(attribute: StringName) -> int:
 func _try_unlock_available_skills() -> void:
 	for skill_id in SKILLS.keys():
 		unlock_skill(skill_id)
+
+func _emit_skill_state() -> void:
+	skills_changed.emit(unlocked_skills.duplicate())
+	skill_tree_changed.emit(get_all_skills(), unlocked_skills.duplicate())
 
 func _normalize_unlocked_skills() -> void:
 	var valid_skills: Array[StringName] = []

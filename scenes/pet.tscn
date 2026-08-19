@@ -2,11 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://bx1b7qsf6wpaw" path="res://assets/pet_modular/base/aurorapet-neutral-pet-base.png" id="1_mdqe4"]
 [ext_resource type="Script" uid="uid://gxa74cqwghhi" path="res://scripts/pet_randomizer.gd" id="2_randomizer"]
-[ext_resource type="Script" path="res://scripts/pet_stats.gd" id="7_stats"]
-[ext_resource type="Script" path="res://scripts/pet_skills.gd" id="8_skills"]
 [ext_resource type="Texture2D" uid="uid://blqukn8icucj7" path="res://assets/pet_modular/modulos/asas/wing_01.png" id="4_wings"]
 [ext_resource type="Texture2D" uid="uid://bxurs5nc8opsd" path="res://assets/pet_modular/modulos/orelhas/ear_01.png" id="5_ears"]
 [ext_resource type="Texture2D" uid="uid://dw4n73jmnk8db" path="res://assets/pet_modular/modulos/olhos/eye_01.png" id="6_eyes"]
+[ext_resource type="Script" uid="uid://qtkrr3gxxe5r" path="res://scripts/pet_stats.gd" id="7_stats"]
+[ext_resource type="Script" uid="uid://cvgb8mn8arkrh" path="res://scripts/pet_skills.gd" id="8_skills"]
+[ext_resource type="Script" uid="uid://dt6qlkfececri" path="res://scripts/pet_evolution.gd" id="9_evolution"]
+[ext_resource type="Script" path="res://scripts/pet_identity.gd" id="10_identity"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6nmc3"]
 load_path = "res://.godot/imported/tail_01.png-576d5151404532ed12999d5e969e5de8.ctex"
@@ -202,6 +204,18 @@ _data = {
 [node name="Pet" type="Node2D" unique_id=241982129]
 z_index = 1
 script = ExtResource("2_randomizer")
+randomize_on_ready = false
+randomize_palette_on_ready = null
+randomize_palette_in_editor = null
+palette_seed_value = null
+apply_tail_variant_scales = null
+palette_pair_index = null
+palette_name = null
+base_color = null
+complementary_color = null
+
+[node name="PetIdentity" type="Node" parent="."]
+script = ExtResource("10_identity")
 
 [node name="CorpoBase" type="Sprite2D" parent="." unique_id=1061939328]
 z_index = 3
@@ -210,7 +224,6 @@ scale = Vector2(0.12, 0.12)
 texture = ExtResource("1_mdqe4")
 
 [node name="Cauda" type="Sprite2D" parent="." unique_id=1829523514]
-z_index = 0
 position = Vector2(5, 49.000004)
 rotation = -1.2740904
 scale = Vector2(-0.68833846, 0.7042247)
@@ -234,14 +247,17 @@ metadata/pet_modular_layer = true
 [node name="Olhos" type="Sprite2D" parent="." unique_id=1078626972]
 z_index = 4
 position = Vector2(-2, -34)
-scale = Vector2(0.23922384, -0.22207609)
+scale = Vector2(0.35049525, -0.29012373)
 texture = ExtResource("6_eyes")
 metadata/pet_modular_layer = true
 
-[node name="PetStats" type="Node" parent="."]
+[node name="PetEvolution" type="Node" parent="." unique_id=622724358]
+script = ExtResource("9_evolution")
+
+[node name="PetStats" type="Node" parent="." unique_id=1602767893]
 script = ExtResource("7_stats")
 
-[node name="PetSkills" type="Node" parent="."]
+[node name="PetSkills" type="Node" parent="." unique_id=451928036]
 script = ExtResource("8_skills")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1889298100]

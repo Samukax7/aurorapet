@@ -38,6 +38,8 @@ const COSMIC_PALETTE: Array[Dictionary] = [
 
 @export_category("Sorteio")
 @export var randomize_on_ready := true
+@export var use_identity_weights := true
+@export var identity_path: NodePath = NodePath("PetIdentity")
 @export var randomize_in_editor := false
 @export var randomize_each_run := true
 @export var random_seed_value: int = 0
@@ -84,20 +86,30 @@ func _ready() -> void:
 ## Sorteia somente as peças habilitadas e mantém os nós da cena intactos.
 func randomize_pet() -> void:
 	_prepare_randomizer()
+	var identity := _get_identity()
 	if randomize_eyes:
-		eyes_variant = _random_variant()
+		eyes_variant = identity.choose_part_variant(&"eyes", _randomizer) if identity != null and use_identity_weights else _random_variant()
 	if randomize_ears:
-		ears_variant = _random_variant()
+		ears_variant = identity.choose_part_variant(&"ears", _randomizer) if identity != null and use_identity_weights else _random_variant()
 	if randomize_wings:
-		wings_variant = _random_variant()
+		wings_variant = identity.choose_part_variant(&"wings", _randomizer) if identity != null and use_identity_weights else _random_variant()
 	if randomize_tail:
-		tail_variant = _random_variant()
+		tail_variant = identity.choose_part_variant(&"tail", _randomizer) if identity != null and use_identity_weights else _random_variant()
 	_apply_variants()
 
 ## Sorteia uma nova paleta e aplica a mesma cor ao conjunto base/orelhas/cauda.
 ## Olhos e asas recebem automaticamente a cor complementar.
 func reroll_palette() -> void:
 	_prepare_palette_randomizer()
+	var identity := _get_identity()
+	if identity != null and use_identity_weights:
+		var preferred := identity.get_preferred_palette_names()
+		if not preferred.is_empty():
+			var selected_name: StringName = preferred[_palette_randomizer.randi_range(0, preferred.size() - 1)]
+			for index in range(COSMIC_PALETTE.size()):
+				if COSMIC_PALETTE[index]["name"] == selected_name:
+					apply_palette_index(index)
+					return
 	apply_palette_index(_palette_randomizer.randi_range(0, COSMIC_PALETTE.size() - 1))
 
 func apply_palette_index(index: int) -> void:
@@ -175,6 +187,14 @@ func _prepare_palette_randomizer() -> void:
 
 func _random_variant() -> int:
 	return _randomizer.randi_range(1, 5)
+
+func _get_identity() -> PetIdentity:
+	if not use_identity_weights:
+		return null
+	var identity := get_node_or_null(identity_path) as PetIdentity
+	if identity != null:
+		identity.ensure_generated()
+	return identity
 
 func _apply_variants() -> void:
 	_set_texture(&"Olhos", EYES_PATH % clampi(eyes_variant, 1, 5))

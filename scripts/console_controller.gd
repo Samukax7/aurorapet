@@ -8,6 +8,7 @@ extends Sprite2D
 @onready var pet_skills: PetSkills = $ScreenContent/Deepworld/Paisagem/Pet/PetSkills
 @onready var pet_evolution: PetEvolution = $ScreenContent/Deepworld/Paisagem/Pet/PetEvolution
 @onready var pet_randomizer: PetRandomizer = $ScreenContent/Deepworld/Paisagem/Pet
+@onready var pet_identity: PetIdentity = $ScreenContent/Deepworld/Paisagem/Pet/PetIdentity
 @onready var skill_tree: ArvoreDeHabilidades = $ScreenContent/ArvoreDeHabilidades
 
 func _ready() -> void:
@@ -29,6 +30,8 @@ func _ready() -> void:
 		skill_tree.training_requested.connect(_on_training_requested)
 	if pet_evolution != null:
 		pet_evolution.evolution_completed.connect(_on_evolution_completed)
+	if pet_identity != null:
+		call_deferred("_show_identity_intro")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_R:
@@ -131,6 +134,14 @@ func _on_training_requested() -> void:
 	if pet_ui != null:
 		pet_ui.show_progression_message("TREINO CONCLUÍDO: +25 XP")
 	print("Treino confirmado")
+
+func _show_identity_intro() -> void:
+	if pet_ui == null or pet_identity == null:
+		return
+	pet_identity.ensure_generated()
+	if pet_identity.pet_name.is_empty():
+		return
+	pet_ui.show_progression_message("NASCEU: %s • %s" % [pet_identity.pet_name.to_upper(), pet_identity.lineage_label.to_upper()])
 
 func _on_action_requested(action: StringName) -> void:
 	if action == &"treinar":
