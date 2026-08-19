@@ -1,57 +1,35 @@
-# AuroraPet — Hierarquia 2D em Cascata
+# AuroraPet — Hierarquia de cenas em cascata
 
-A cena principal será construída como uma composição 2D ordenada. Cada nível representa uma camada visual ou funcional, evitando que o código misture apresentação, jogo e controles.
+A composição do protótipo segue uma cadeia de instâncias. A cena mais externa apresenta o projeto, enquanto cada cena interna controla apenas sua própria responsabilidade.
 
 ```text
-AuroraPet (Node2D)
-├── Background (Node2D)
-│   ├── BackGlow (Polygon2D/ColorRect)
-│   └── Vignette (CanvasModulate)
-├── ConsoleStage (Node2D)
-│   ├── ConsoleShadow (Polygon2D)
-│   ├── ConsoleBody (Polygon2D)
-│   ├── ConsoleHighlight (Line2D/Polygon2D)
-│   ├── ConsoleInset (Polygon2D)
-│   ├── ScreenAssembly (Node2D)
-│   │   ├── ScreenShadow (Polygon2D)
-│   │   ├── ScreenBezel (Polygon2D)
-│   │   ├── ScreenGlass (Polygon2D)
-│   │   ├── ScreenGame (Node2D)
-│   │   │   ├── PetShadow (Polygon2D)
-│   │   │   ├── PetBody (Node2D)
-│   │   │   ├── PetHighlights (Node2D)
-│   │   │   └── PetEffects (Node2D)
-│   │   └── ScreenHud (CanvasLayer/Control)
-│   │       ├── PetName
-│   │       ├── StatusBars
-│   │       └── Message
-│   └── PhysicalControls (Node2D)
-│       ├── DPadShadow
-│       ├── DPad
-│       ├── ButtonYellow
-│       ├── ButtonGreen
-│       └── ButtonPink
-├── InputLayer (Node)
-│   ├── KeyboardController
-│   └── TouchController
-└── DebugOverlay (CanvasLayer)
+main.tscn
+└── Console Base              [instancia console_frame.tscn]
+    └── ScreenContent
+        ├── Deepworld          [instancia deepworld.tscn]
+        │   └── Paisagem
+        │       └── Pet        [instancia pet.tscn]
+        │           ├── CorpoBase
+        │           ├── Cauda
+        │           ├── Asas
+        │           ├── Orelhas
+        │           ├── Olhos
+        │           ├── PetStats
+        │           ├── PetSkills
+        │           └── AnimationPlayer
+        └── PetUI               [instancia pet_ui.tscn]
 ```
 
-## Ordem de construção
+## Responsabilidades
 
-1. **Background**: define a cor e o espaço da aplicação.
-2. **ConsoleShadow**: cria a sombra externa e a sensação de profundidade.
-3. **ConsoleBody**: desenha o corpo principal branco.
-4. **ConsoleHighlight e ConsoleInset**: adicionam bordas, rebaixos e reflexos.
-5. **ScreenAssembly**: cria a moldura física da tela.
-6. **ScreenGame**: recebe o pet e o cenário do jogo.
-7. **ScreenHud**: fica acima do jogo, mas dentro da tela do console.
-8. **PhysicalControls**: fica acima do corpo e recebe interação.
-9. **InputLayer**: controla teclado, toque e futuramente controles físicos.
-10. **DebugOverlay**: permanece separado para não contaminar a apresentação final.
+`pet.tscn` controla o corpo, os módulos visuais, as animações, os status e a progressão do pet. `deepworld.tscn` controla a paisagem e o posicionamento do pet dentro do mundo. `console_frame.tscn` controla a moldura, a tela, a UI e os controles físicos. `main.tscn` é a frente da cascata e apresenta o console completo.
 
-A regra é: **pais controlam composição; filhos controlam apenas seu próprio conteúdo**. O console não deve conhecer a lógica de fome, e o pet não deve conhecer a posição dos botões físicos.
+## Ordem visual
 
-## Proporção
+A `Paisagem` fica atrás do pet. O nó `Pet` e seus módulos usam uma ordem relativa positiva para garantir que cauda, asas, orelhas, corpo e olhos apareçam acima do fundo. A `PetUI` fica acima do mundo e do pet, mas abaixo da moldura visual da tela. Os controles físicos ficam fora da área de jogo e possuem hitboxes separados.
 
-A viewport lógica será 960×540, proporção 16:9. A composição interna manterá uma área segura central de aproximadamente 860×470. Em telas menores, toda a árvore será escalada uniformemente por `canvas_items`, sem deformar círculos, botões ou a tela.
+## Regra de edição
+
+> Alterações feitas na cena de origem devem ser refletidas nas instâncias superiores. Não duplique módulos do pet em `deepworld.tscn` ou em `main.tscn`.
+
+Para editar o pet, abra `scenes/pet.tscn`. Para editar o mundo, abra `scenes/deepworld.tscn`. Para editar console, tela e controles, abra `scenes/console_frame.tscn`. Use `main.tscn` para executar e conferir o resultado final.

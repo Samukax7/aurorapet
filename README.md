@@ -1,37 +1,49 @@
 # AuroraPet — Protótipo Godot
 
-Este projeto é o primeiro protótipo jogável do AuroraPet, baseado nos documentos de design e no diário de desenvolvimento enviados pelo criador.
+AuroraPet é um V-Pet cósmico em pixel art, com foco em cuidado, interação, progressão e montagem modular de criaturas. Este repositório contém o protótipo atual em **Godot 4.7**, organizado para preservar uma cascata de cenas editável e fácil de prototipar.
 
-## Direção do MVP
+## Estado atual
 
-O MVP concentra-se em uma experiência de V-Pet retrô com um único pet procedural. O jogador pode alimentar, brincar, colocar o pet para descansar, elogiar e treinar. Os atributos sofrem degradação gradual, emoções mudam conforme o estado do pet e a progressão acontece por XP, nível e primeira evolução.
+O protótipo já possui um console virtual com tela, mundo cósmico, pet modular, UI de ações, barras de status, decaimento básico, efeitos simples das ações e uma base local de progressão por XP e habilidades.
 
-A batalha, o Deepworld explorável, o multiplayer, o trading, a sincronização online e o hardware físico ficam planejados para etapas posteriores. A prioridade inicial é validar o vínculo com o pet e o ciclo **cuidar → interagir → treinar → evoluir**.
-
-## Estrutura
+O ciclo funcional atual é:
 
 ```text
-scripts/
-├── main.gd        # Montagem da interface e orquestração da cena
-├── pet_state.gd   # Dados, geração procedural, decay, ações e evolução
-└── pet_visual.gd  # Desenho procedural do pet e emoções
-scenes/
-└── main.tscn      # Cena inicial
-project.godot     # Configuração Godot 4
+Cuidar → Brincar → Treinar → Ganhar XP → Desbloquear habilidades
 ```
 
-## Decisões atuais
+## Cascata de cenas
 
-A implementação usa **Godot 4**, uma resolução lógica de 480×320 e uma apresentação ampliada para preservar a sensação de dispositivo retrô. O pet é desenhado por código nesta primeira versão para validar rapidamente a silhueta, as facções, as expressões e a animação de flutuação. As camadas SVG e os sprites pixel art poderão substituir o desenho procedural quando a direção visual estiver aprovada.
+A composição principal segue uma cadeia de instâncias. Cada alteração deve ser feita na cena de origem correspondente para ser refletida nas cenas superiores.
 
-A geração utiliza uma seed fixa no protótipo para facilitar testes reproduzíveis. O valor pode ser trocado para criar novas criaturas. As facções são Luz, Trevas e Neutro; as raças são subtipos dentro dessas facções.
+```text
+main.tscn
+└── Console Base        [console_frame.tscn]
+    └── ScreenContent
+        ├── Deepworld    [deepworld.tscn]
+        │   └── Paisagem
+        │       └── Pet  [pet.tscn]
+        │           ├── CorpoBase
+        │           ├── Cauda
+        │           ├── Asas
+        │           ├── Orelhas
+        │           ├── Olhos
+        │           ├── PetStats
+        │           ├── PetSkills
+        │           └── AnimationPlayer
+        └── PetUI        [pet_ui.tscn]
+```
+
+## Sistemas implementados
+
+`pet_randomizer.gd` troca as texturas dos módulos existentes sem criar nós dinamicamente. `pet_stats.gd` mantém fome, energia, humor e saúde entre 0 e 100, aplica decaimento ao longo do tempo e processa as ações comer, brincar, limpar, treinar e dormir. `pet_skills.gd` fornece a base da árvore de habilidades com nível, XP, requisitos e os quatro movimentos iniciais: Golpe Fraco, Golpe Forte, Golpe de Status e Defesa.
+
+A `PetUI` mostra quatro barras coloridas no topo da tela e cinco ícones de ação na parte inferior. O D-pad navega entre ações, o botão verde confirma, o amarelo alterna as barras de status e o rosa alterna o menu inferior.
 
 ## Próximas etapas
 
-1. Abrir o projeto na Godot 4 e corrigir eventuais diferenças de sintaxe conforme a versão instalada.
-2. Adicionar persistência local em JSON.
-3. Separar o HUD em cenas reutilizáveis.
-4. Criar o primeiro minigame, preferencialmente Jokenpô.
-5. Adicionar sprites modulares e efeitos sonoros.
-6. Implementar uma batalha PvE simples contra um Eco.
-7. Só depois avaliar Firebase, Android dedicado e hardware físico.
+A próxima etapa visual é criar a UI da árvore de habilidades no console. Depois disso, o sistema poderá ser conectado a um combate PvE contra um inimigo Eco. Persistência local, emoções visuais, geração procedural completa, minigames e Firebase permanecem no roadmap posterior.
+
+## Execução
+
+Abra `project.godot` no Godot 4.7 ou superior e execute a cena principal configurada em `scenes/main.tscn`. Durante a prototipagem, prefira editar `pet.tscn`, `deepworld.tscn`, `console_frame.tscn` e `pet_ui.tscn` diretamente, respeitando a cascata de origem.

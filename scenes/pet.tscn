@@ -1,0 +1,249 @@
+[gd_scene format=3 uid="uid://bs3bro30dl1ls"]
+
+[ext_resource type="Texture2D" uid="uid://bx1b7qsf6wpaw" path="res://assets/pet_modular/base/aurorapet-neutral-pet-base.png" id="1_mdqe4"]
+[ext_resource type="Script" uid="uid://gxa74cqwghhi" path="res://scripts/pet_randomizer.gd" id="2_randomizer"]
+[ext_resource type="Script" path="res://scripts/pet_stats.gd" id="7_stats"]
+[ext_resource type="Script" path="res://scripts/pet_skills.gd" id="8_skills"]
+[ext_resource type="Texture2D" uid="uid://blqukn8icucj7" path="res://assets/pet_modular/modulos/asas/wing_01.png" id="4_wings"]
+[ext_resource type="Texture2D" uid="uid://bxurs5nc8opsd" path="res://assets/pet_modular/modulos/orelhas/ear_01.png" id="5_ears"]
+[ext_resource type="Texture2D" uid="uid://dw4n73jmnk8db" path="res://assets/pet_modular/modulos/olhos/eye_01.png" id="6_eyes"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6nmc3"]
+load_path = "res://.godot/imported/tail_01.png-576d5151404532ed12999d5e969e5de8.ctex"
+
+[sub_resource type="Animation" id="Animation_8wqpi"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CorpoBase:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.12, 0.12)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Cauda:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-1.2740904]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Orelhas:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.45806456, 0.41090906)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Olhos:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2, -34)]
+}
+
+[sub_resource type="Animation" id="Animation_axfbl"]
+resource_name = "cauda"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Cauda:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-1.2740904, 0.0, 0.9110619, -0.18151407, -1.2740904]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CorpoBase:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.12, 0.12), Vector2(0.12, 0.115), Vector2(0.12, 0.12)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Orelhas:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.19),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.45806456, 0.41090906), Vector2(0.45806456, 0.2909089), Vector2(0.45806456, 0.41090876), Vector2(0.41806424, 0.41090876), Vector2(0.45806456, 0.41090876)]
+}
+
+[sub_resource type="Animation" id="Animation_mdqe4"]
+resource_name = "idle"
+length = 1.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CorpoBase:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.12, 0.12), Vector2(0.12, 0.115), Vector2(0.12, 0.12)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Cauda:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-1.2740904, 0.0, 0.9110619, -0.18151407, -1.2740904]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Orelhas:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.19),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.45806456, 0.41090906), Vector2(0.45806456, 0.2909089), Vector2(0.45806456, 0.41090876), Vector2(0.41806424, 0.41090876), Vector2(0.45806456, 0.41090876)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Olhos:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.18),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-2, -34), Vector2(-5, -34), Vector2(-1, -34), Vector2(4, -34), Vector2(-1, -34)]
+}
+
+[sub_resource type="Animation" id="Animation_5c8qe"]
+resource_name = "olhos idle"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Olhos:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.18),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-2, -34), Vector2(-5, -34), Vector2(-1, -34), Vector2(4, -34), Vector2(-1, -34)]
+}
+
+[sub_resource type="Animation" id="Animation_hio3l"]
+resource_name = "orelhas idle"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Orelhas:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.19),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.45806456, 0.41090906), Vector2(0.45806456, 0.2909089), Vector2(0.45806456, 0.41090876), Vector2(0.41806424, 0.41090876), Vector2(0.45806456, 0.41090876)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8wqpi"]
+_data = {
+&"RESET": SubResource("Animation_8wqpi"),
+&"cauda": SubResource("Animation_axfbl"),
+&"idle": SubResource("Animation_mdqe4"),
+&"olhos idle": SubResource("Animation_5c8qe"),
+&"orelhas idle": SubResource("Animation_hio3l")
+}
+
+[node name="Pet" type="Node2D" unique_id=241982129]
+z_index = 1
+script = ExtResource("2_randomizer")
+
+[node name="CorpoBase" type="Sprite2D" parent="." unique_id=1061939328]
+z_index = 3
+position = Vector2(0, -0.04484)
+scale = Vector2(0.12, 0.12)
+texture = ExtResource("1_mdqe4")
+
+[node name="Cauda" type="Sprite2D" parent="." unique_id=1829523514]
+z_index = 0
+position = Vector2(5, 49.000004)
+rotation = -1.2740904
+scale = Vector2(-0.68833846, 0.7042247)
+texture = SubResource("CompressedTexture2D_6nmc3")
+metadata/pet_modular_layer = true
+
+[node name="Asas" type="Sprite2D" parent="." unique_id=1852237058]
+z_index = 1
+position = Vector2(0, -12)
+scale = Vector2(0.56, 0.57)
+texture = ExtResource("4_wings")
+metadata/pet_modular_layer = true
+
+[node name="Orelhas" type="Sprite2D" parent="." unique_id=2130643465]
+z_index = 2
+position = Vector2(0, -82)
+scale = Vector2(0.45806456, 0.41090906)
+texture = ExtResource("5_ears")
+metadata/pet_modular_layer = true
+
+[node name="Olhos" type="Sprite2D" parent="." unique_id=1078626972]
+z_index = 4
+position = Vector2(-2, -34)
+scale = Vector2(0.23922384, -0.22207609)
+texture = ExtResource("6_eyes")
+metadata/pet_modular_layer = true
+
+[node name="PetStats" type="Node" parent="."]
+script = ExtResource("7_stats")
+
+[node name="PetSkills" type="Node" parent="."]
+script = ExtResource("8_skills")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1889298100]
+libraries/ = SubResource("AnimationLibrary_8wqpi")
+autoplay = &"idle"

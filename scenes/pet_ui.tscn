@@ -1,0 +1,246 @@
+[gd_scene format=3 uid="uid://dtm0vmthishq1"]
+
+[ext_resource type="Script" path="res://scripts/pet_ui.gd" id="1_ui"]
+[ext_resource type="Texture2D" path="res://assets/UI/comer.png" id="2_comer"]
+[ext_resource type="Texture2D" path="res://assets/UI/brincar.png" id="3_brincar"]
+[ext_resource type="Texture2D" path="res://assets/UI/limpar.png" id="4_limpar"]
+[ext_resource type="Texture2D" path="res://assets/UI/treinar.png" id="5_treinar"]
+[ext_resource type="Texture2D" path="res://assets/UI/dormir.png" id="6_dormir"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_StatusTrack"]
+bg_color = Color(0.035, 0.067, 0.15, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.17, 0.3, 0.47, 0.95)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 4.0
+content_margin_top = 3.0
+content_margin_right = 4.0
+content_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Hunger"]
+bg_color = Color(0.98, 0.61, 0.16, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Energy"]
+bg_color = Color(0.19, 0.82, 0.98, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Mood"]
+bg_color = Color(0.98, 0.37, 0.72, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Health"]
+bg_color = Color(0.38, 0.88, 0.42, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="PetUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+z_index = 1
+script = ExtResource("1_ui")
+
+[node name="StatusBar" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 871.0
+offset_bottom = 108.0
+mouse_filter = 2
+
+[node name="StatusItems" type="HBoxContainer" parent="StatusBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 1
+mouse_filter = 2
+
+[node name="Fome" type="VBoxContainer" parent="StatusBar/StatusItems"]
+custom_minimum_size = Vector2(202, 82)
+layout_mode = 2
+theme_override_constants/separation = 3
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="StatusBar/StatusItems/Fome"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.38, 1)
+theme_override_font_sizes/font_size = 11
+text = "FOME"
+horizontal_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="StatusBar/StatusItems/Fome"]
+custom_minimum_size = Vector2(202, 24)
+layout_mode = 2
+mouse_filter = 2
+value = 82.0
+show_percentage = false
+theme_override_styles/background = SubResource("StyleBox_StatusTrack")
+theme_override_styles/fill = SubResource("StyleBox_Hunger")
+
+[node name="Energia" type="VBoxContainer" parent="StatusBar/StatusItems"]
+custom_minimum_size = Vector2(202, 82)
+layout_mode = 2
+theme_override_constants/separation = 3
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="StatusBar/StatusItems/Energia"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.43, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "ENERGIA"
+horizontal_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="StatusBar/StatusItems/Energia"]
+custom_minimum_size = Vector2(202, 24)
+layout_mode = 2
+mouse_filter = 2
+value = 76.0
+show_percentage = false
+theme_override_styles/background = SubResource("StyleBox_StatusTrack")
+theme_override_styles/fill = SubResource("StyleBox_Energy")
+
+[node name="Humor" type="VBoxContainer" parent="StatusBar/StatusItems"]
+custom_minimum_size = Vector2(202, 82)
+layout_mode = 2
+theme_override_constants/separation = 3
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="StatusBar/StatusItems/Humor"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.55, 0.82, 1)
+theme_override_font_sizes/font_size = 11
+text = "HUMOR"
+horizontal_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="StatusBar/StatusItems/Humor"]
+custom_minimum_size = Vector2(202, 24)
+layout_mode = 2
+mouse_filter = 2
+value = 68.0
+show_percentage = false
+theme_override_styles/background = SubResource("StyleBox_StatusTrack")
+theme_override_styles/fill = SubResource("StyleBox_Mood")
+
+[node name="Saude" type="VBoxContainer" parent="StatusBar/StatusItems"]
+custom_minimum_size = Vector2(202, 82)
+layout_mode = 2
+theme_override_constants/separation = 3
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="StatusBar/StatusItems/Saude"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.97, 0.58, 1)
+theme_override_font_sizes/font_size = 11
+text = "SAÚDE"
+horizontal_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="StatusBar/StatusItems/Saude"]
+custom_minimum_size = Vector2(202, 24)
+layout_mode = 2
+mouse_filter = 2
+value = 91.0
+show_percentage = false
+theme_override_styles/background = SubResource("StyleBox_StatusTrack")
+theme_override_styles/fill = SubResource("StyleBox_Health")
+
+[node name="ActionBar" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 24.0
+offset_top = 590.0
+offset_right = 871.0
+offset_bottom = 805.0
+mouse_filter = 2
+
+[node name="ActionMenu" type="HBoxContainer" parent="ActionBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 4
+alignment = 1
+mouse_filter = 2
+
+[node name="Comer" type="TextureButton" parent="ActionBar/ActionMenu"]
+custom_minimum_size = Vector2(164, 202)
+layout_mode = 2
+mouse_filter = 2
+focus_mode = 0
+ignore_texture_size = true
+stretch_mode = 5
+texture_filter = 1
+texture_normal = ExtResource("2_comer")
+tooltip_text = "Comer"
+
+[node name="Brincar" type="TextureButton" parent="ActionBar/ActionMenu"]
+custom_minimum_size = Vector2(164, 202)
+layout_mode = 2
+mouse_filter = 2
+focus_mode = 0
+ignore_texture_size = true
+stretch_mode = 5
+texture_filter = 1
+texture_normal = ExtResource("3_brincar")
+tooltip_text = "Brincar"
+
+[node name="Limpar" type="TextureButton" parent="ActionBar/ActionMenu"]
+custom_minimum_size = Vector2(164, 202)
+layout_mode = 2
+mouse_filter = 2
+focus_mode = 0
+ignore_texture_size = true
+stretch_mode = 5
+texture_filter = 1
+texture_normal = ExtResource("4_limpar")
+tooltip_text = "Limpar"
+
+[node name="Treinar" type="TextureButton" parent="ActionBar/ActionMenu"]
+custom_minimum_size = Vector2(164, 202)
+layout_mode = 2
+mouse_filter = 2
+focus_mode = 0
+ignore_texture_size = true
+stretch_mode = 5
+texture_filter = 1
+texture_normal = ExtResource("5_treinar")
+tooltip_text = "Treinar"
+
+[node name="Dormir" type="TextureButton" parent="ActionBar/ActionMenu"]
+custom_minimum_size = Vector2(164, 202)
+layout_mode = 2
+mouse_filter = 2
+focus_mode = 0
+ignore_texture_size = true
+stretch_mode = 5
+texture_filter = 1
+texture_normal = ExtResource("6_dormir")
+tooltip_text = "Dormir"

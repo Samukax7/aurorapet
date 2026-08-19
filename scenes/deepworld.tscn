@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://di6o1ryyui4dn"]
+
+[ext_resource type="Texture2D" uid="uid://cser6rya6vynd" path="res://assets/fundo/aurorapet-deepworld-landscape.png" id="1_12rvj"]
+[ext_resource type="PackedScene" uid="uid://bs3bro30dl1ls" path="res://scenes/pet.tscn" id="2_tou2y"]
+
+[node name="Deepworld" type="Node2D" unique_id=152526842]
+
+[node name="Paisagem" type="Sprite2D" parent="." unique_id=2012485492]
+texture = ExtResource("1_12rvj")
+
+[node name="Pet" parent="Paisagem" unique_id=241982129 instance=ExtResource("2_tou2y")]
+editable_children = true
+position = Vector2(0, 488)
+scale = Vector2(4, 4)
