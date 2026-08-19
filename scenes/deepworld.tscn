@@ -2,11 +2,46 @@
 
 [ext_resource type="Texture2D" uid="uid://cser6rya6vynd" path="res://assets/fundo/aurorapet-deepworld-landscape.png" id="1_12rvj"]
 [ext_resource type="PackedScene" uid="uid://bs3bro30dl1ls" path="res://scenes/pet.tscn" id="2_tou2y"]
+[ext_resource type="Script" path="res://scripts/deepworld_controller.gd" id="3_controller"]
+[ext_resource type="Texture2D" path="res://assets/fundo/faccoes/deepworld_luz.png" id="4_luz"]
+[ext_resource type="Texture2D" path="res://assets/fundo/faccoes/deepworld_trevas.png" id="5_trevas"]
+[ext_resource type="Texture2D" path="res://assets/fundo/faccoes/deepworld_neutro.png" id="6_neutro"]
+[ext_resource type="Texture2D" path="res://assets/fundo/deepworld_plataforma.png" id="7_plataforma"]
 
 [node name="Deepworld" type="Node2D" unique_id=152526842]
+script = ExtResource("3_controller")
 
-[node name="Paisagem" type="Sprite2D" parent="." unique_id=2012485492]
+[node name="Cenario" type="Node2D" parent="."]
+
+[node name="Fundo" type="Sprite2D" parent="Cenario"]
+z_index = -5
 texture = ExtResource("1_12rvj")
+
+[node name="Fallback" type="Sprite2D" parent="Cenario"]
+visible = false
+z_index = -5
+texture = ExtResource("1_12rvj")
+
+[node name="FundoLuz" type="Sprite2D" parent="Cenario"]
+visible = false
+z_index = -5
+texture = ExtResource("4_luz")
+
+[node name="FundoTrevas" type="Sprite2D" parent="Cenario"]
+visible = false
+z_index = -5
+texture = ExtResource("5_trevas")
+
+[node name="FundoNeutro" type="Sprite2D" parent="Cenario"]
+visible = false
+z_index = -5
+texture = ExtResource("6_neutro")
+
+[node name="Plataforma" type="Sprite2D" parent="."]
+z_index = 2
+texture = ExtResource("7_plataforma")
+
+[node name="Paisagem" type="Node2D" parent="." unique_id=2012485492]
 
 [node name="Pet" parent="Paisagem" unique_id=241982129 instance=ExtResource("2_tou2y")]
 editable_children = true
