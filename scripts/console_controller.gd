@@ -137,38 +137,19 @@ func _on_action_requested(action: StringName) -> void:
 		_open_skill_tree()
 		return
 	if action == &"batalhar":
-		if pet_ui != null:
-			pet_ui.show_progression_message("EM BREVE: BATALHAS")
+		if pet_ui != null and pet_stats != null:
+			pet_ui.show_progression_message(pet_stats.get_action_feedback(action))
 		return
 	if pet_stats != null:
 		pet_stats.perform_action(action)
-	if pet_skills != null:
-		match action:
-			&"fruta_estelar", &"nectar_cosmico", &"banquete_nebulosa", &"dar_remedio", &"limpar_sujeira", &"dormir":
-				pet_skills.add_xp(5)
-			&"jokenpo":
-				pet_skills.add_xp(15)
-			&"jogo_da_velha":
-				pet_skills.add_xp(18)
-			&"2048":
-				pet_skills.add_xp(20)
+	if pet_skills != null and pet_stats != null:
+		var action_xp := pet_stats.get_action_xp(action)
+		if action_xp > 0:
+			pet_skills.add_xp(action_xp)
 
-	if pet_ui != null:
-		pet_ui.show_progression_message(_action_feedback(action))
+	if pet_ui != null and pet_stats != null:
+		pet_ui.show_progression_message(pet_stats.get_action_feedback(action))
 	print("Ação selecionada: ", action)
-
-func _action_feedback(action: StringName) -> String:
-	match action:
-		&"fruta_estelar": return "FRUTA ESTELAR: +FOME"
-		&"nectar_cosmico": return "NECTAR CÓSMICO: +FOME"
-		&"banquete_nebulosa": return "BANQUETE NEBULOSA: +FOME"
-		&"dar_remedio": return "REMÉDIO APLICADO: +SAÚDE"
-		&"limpar_sujeira": return "SUJEIRA LIMPA: +SAÚDE"
-		&"dormir": return "SONO RECUPERADO: +ENERGIA"
-		&"jokenpo": return "JOKENPÔ: +15 XP"
-		&"jogo_da_velha": return "JOGO DA VELHA: +18 XP"
-		&"2048": return "2048: +20 XP"
-	return "AÇÃO: " + String(action).to_upper()
 
 func _on_skill_unlocked(skill_id: StringName) -> void:
 	print("Habilidade desbloqueada: ", skill_id)

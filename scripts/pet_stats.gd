@@ -1,6 +1,20 @@
 extends Node
 class_name PetStats
 
+const ACTION_XP: Dictionary = {
+	&"fruta_estelar": 5,
+	&"nectar_cosmico": 5,
+	&"banquete_nebulosa": 5,
+	&"dar_remedio": 5,
+	&"limpar_sujeira": 5,
+	&"dormir": 5,
+	&"jokenpo": 15,
+	&"jogo_da_velha": 18,
+	&"2048": 20,
+	&"treinar": 25,
+	&"batalhar": 0,
+}
+
 ## Sistema de necessidades do AuroraPet inspirado em V-Pets clássicos.
 ## O ritmo é relaxado: o pet sinaliza necessidades críticas e registra histórico,
 ## mas não possui morte permanente nesta etapa.
@@ -173,6 +187,24 @@ func _register_care_mistake() -> void:
 	discipline_mistakes += 1
 	discipline -= discipline_loss_per_care_mistake
 	_clamp_values()
+
+func get_action_xp(action: StringName) -> int:
+	return int(ACTION_XP.get(action, 0))
+
+func get_action_feedback(action: StringName) -> String:
+	match action:
+		&"fruta_estelar": return "FRUTA ESTELAR: +18 FOME / +2 HUMOR"
+		&"nectar_cosmico": return "NÉCTAR CÓSMICO: +28 FOME / +4 ENERGIA"
+		&"banquete_nebulosa": return "BANQUETE NEBULOSA: +42 FOME / +6 HUMOR"
+		&"dar_remedio": return "REMÉDIO APLICADO: +SAÚDE"
+		&"limpar_sujeira": return "SUJEIRA LIMPA: +35 HIGIENE"
+		&"dormir": return "SONO INICIADO: ENERGIA RECUPERANDO"
+		&"jokenpo": return "JOKENPÔ: +18 HUMOR / +15 XP"
+		&"jogo_da_velha": return "JOGO DA VELHA: +20 HUMOR / +18 XP"
+		&"2048": return "2048: +22 HUMOR / +20 XP"
+		&"treinar": return "TREINO: +4 DISCIPLINA / +25 XP"
+		&"batalhar": return "EM BREVE: BATALHAS"
+	return "AÇÃO: " + String(action).to_upper()
 
 func perform_action(action: StringName) -> void:
 	match action:
