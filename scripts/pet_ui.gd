@@ -29,6 +29,8 @@ signal submenu_visibility_changed(visible: bool, category: StringName)
 const ACTIONS: Array[StringName] = [&"comer", &"cuidar", &"jogar", &"treinar", &"batalhar"]
 const SLOT_NAMES: Array[StringName] = [&"Comer", &"Cuidar", &"Jogar", &"Treinar", &"Batalhar"]
 const STATUS_NAMES: Array[StringName] = [&"Fome", &"Energia", &"Humor", &"Saude"]
+const MENU_GLOW_SHADER: Shader = preload("res://shaders/menu_selection_glow.gdshader")
+const MENU_GLOW_DURATION := 0.5
 
 const SUBMENU_DEFINITIONS: Dictionary = {
 	&"comer": [
@@ -59,10 +61,13 @@ var _selection_label: Label
 var _hint_label: Label
 var _needs_summary_label: Label
 var _progression_label: Label
+var _glow_materials: Array[ShaderMaterial] = []
+var _glow_tween: Tween
 
 func _ready() -> void:
 	_cache_menu_nodes()
 	_connect_menu_buttons()
+	_setup_menu_glows()
 	_refresh_selection()
 	_refresh_status_bars()
 	_set_menu_visibility(menu_visible)
@@ -100,6 +105,15 @@ func _cache_menu_nodes() -> void:
 	_progression_label = get_node_or_null(^"ProgressionFeedback") as Label
 	_submenu_title = get_node_or_null(^"SubmenuOverlay/Panel/Margin/Content/Title") as Label
 	_submenu_hint = get_node_or_null(^"SubmenuOverlay/Panel/Margin/Content/Hint") as Label
+
+func _setup_menu_glows() -> void:
+	_glow_materials.clear()
+	for slot in _slots:
+		var material := ShaderMaterial.new()
+		material.shader = MENU_GLOW_SHADER
+		material.set_shader_parameter("glow_strength", 0.0)
+		slot.material = material
+		_glow_materials.append(material)
 
 func _connect_menu_buttons() -> void:
 	for index in _slots.size():
@@ -256,7 +270,25 @@ func _refresh_selection() -> void:
 		slot.scale = Vector2(1.04, 1.04) if is_selected else Vector2.ONE
 	if _selection_label != null:
 		_selection_label.text = String(ACTIONS[selected_index]).to_upper()
+	_pulse_selected_glow()
 	selection_changed.emit(ACTIONS[selected_index])
+
+func _pulse_selected_glow() -> void:
+	if _glow_tween != null:
+		_glow_tween.kill()
+	for material in _glow_materials:
+		material.set_shader_parameter("glow_strength", 0.0)
+	if selected_index < 0 or selected_index >= _glow_materials.size():
+		return
+	var selected_material := _glow_materials[selected_index]
+	_glow_tween = create_tween()
+	_glow_tween.set_trans(Tween.TRANS_SINE)
+	_glow_tween.set_ease(Tween.EASE_OUT)
+	_glow_tween.tween_method(_set_glow_strength.bind(selected_material), 0.0, 1.0, 0.12)
+	_glow_tween.tween_method(_set_glow_strength.bind(selected_material), 1.0, 0.0, MENU_GLOW_DURATION - 0.12)
+
+func _set_glow_strength(strength: float, material: ShaderMaterial) -> void:
+	material.set_shader_parameter("glow_strength", strength)
 
 func _refresh_submenu() -> void:
 	var entries: Array = SUBMENU_DEFINITIONS.get(active_category, [])

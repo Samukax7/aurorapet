@@ -14,7 +14,7 @@ script = ExtResource("3_controller")
 [node name="Cenario" type="Node2D" parent="." unique_id=1336151893]
 
 [node name="Fundo" type="Sprite2D" parent="Cenario" unique_id=1522956278]
-visible = false
+visible = true
 z_index = -5
 texture = ExtResource("1_12rvj")
 
@@ -36,7 +36,7 @@ scale = Vector2(3.0113282, 2.9775877)
 texture = ExtResource("5_trevas")
 
 [node name="FundoNeutro" type="Sprite2D" parent="Cenario" unique_id=2074315485]
-visible = true
+visible = false
 z_index = -5
 scale = Vector2(3.0340772, 2.9694102)
 texture = ExtResource("6_neutro")
