@@ -243,9 +243,9 @@ z_index = 6
 layout_mode = 1
 anchors_preset = 0
 offset_left = 24.0
-offset_top = 410.0
+offset_top = 590.0
 offset_right = 871.0
-offset_bottom = 625.0
+offset_bottom = 805.0
 mouse_filter = 2
 
 [node name="ActionMenu" type="HBoxContainer" parent="ActionBar" unique_id=801070713]
@@ -401,9 +401,9 @@ vertical_alignment = 1
 [node name="SelectedAction" type="Label" parent="." unique_id=1147113359]
 layout_mode = 0
 offset_left = 280.0
-offset_top = 374.0
+offset_top = 548.0
 offset_right = 610.0
-offset_bottom = 404.0
+offset_bottom = 578.0
 theme_override_colors/font_color = Color(1, 0.83, 0.35, 1)
 theme_override_font_sizes/font_size = 18
 text = "COMER"
