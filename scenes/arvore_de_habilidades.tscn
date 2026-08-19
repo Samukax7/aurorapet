@@ -1,0 +1,245 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/arvore_de_habilidades.gd" id="1_tree"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Panel"]
+bg_color = Color(0.027, 0.075, 0.145, 0.97)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.235, 0.82, 0.82, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Header"]
+bg_color = Color(0.09, 0.21, 0.32, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.94, 0.83, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Training"]
+bg_color = Color(0.33, 0.204, 0.373, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.82, 0.4, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Detail"]
+bg_color = Color(0.055, 0.12, 0.21, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_color = Color(0.25, 0.38, 0.53, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 10.0
+content_margin_top = 7.0
+content_margin_right = 10.0
+content_margin_bottom = 7.0
+
+[node name="ArvoreDeHabilidades" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+z_index = 8
+visible = false
+script = ExtResource("1_tree")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0.008, 0.016, 0.055, 0.78)
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 48.0
+offset_right = 853.0
+offset_bottom = 767.0
+theme_override_styles/panel = SubResource("StyleBox_Panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = -18.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="PanelContainer" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_Header")
+
+[node name="Title" type="Label" parent="Panel/Margin/Content/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 1, 0.95, 1)
+theme_override_font_sizes/font_size = 24
+text = "ÁRVORE DE HABILIDADES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Level" type="Label" parent="Panel/Margin/Content/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "NÍVEL --  |  XP --"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TrainingOption" type="Button" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 68)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 0.957, 0.761, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBox_Training")
+theme_override_styles/hover = SubResource("StyleBox_Training")
+theme_override_styles/pressed = SubResource("StyleBox_Training")
+text = "TREINO\n+25 XP  •  +1 FORÇA"
+
+[node name="Progress" type="Label" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.88, 0.9, 1)
+theme_override_font_sizes/font_size = 13
+text = "TREINO: +25 XP  |  +1 FORÇA  |  confirme com o botão verde"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillTitle" type="Label" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.4, 1)
+theme_override_font_sizes/font_size = 15
+text = "HABILIDADES — ATIVAS EM CIANO  •  FUTURAS EM CINZA"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillColumns" type="HBoxContainer" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 282)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ColumnLeft" type="VBoxContainer" parent="Panel/Margin/Content/SkillColumns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+
+[node name="GolpeFraco" type="Button" parent="Panel/Margin/Content/SkillColumns/ColumnLeft"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Golpe Fraco\nDESBLOQUEADA  •  ATIVA"
+
+[node name="GolpeForte" type="Button" parent="Panel/Margin/Content/SkillColumns/ColumnLeft"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Golpe Forte\nBLOQUEADA  •  NÍVEL 2  |  XP 100"
+
+[node name="GolpeStatus" type="Button" parent="Panel/Margin/Content/SkillColumns/ColumnLeft"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Golpe de Status\nBLOQUEADA  •  NÍVEL 2  |  XP 100"
+
+[node name="Defesa" type="Button" parent="Panel/Margin/Content/SkillColumns/ColumnLeft"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Defesa\nBLOQUEADA  •  NÍVEL 2  |  XP 100"
+
+[node name="ColumnRight" type="VBoxContainer" parent="Panel/Margin/Content/SkillColumns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+
+[node name="GolpeFracoAvancado" type="Button" parent="Panel/Margin/Content/SkillColumns/ColumnRight"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Golpe Fraco Avançado\nBLOQUEADA  •  NÍVEL 3  |  XP 300"
+
+[node name="GolpeForteAvancado" type="Button" parent="Panel/Margin/Content/SkillColumns/ColumnRight"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Golpe Forte Avançado\nBLOQUEADA  •  NÍVEL 4  |  XP 600"
+
+[node name="StatusAvancado" type="Button" parent="Panel/Margin/Content/SkillColumns/ColumnRight"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Status Avançado\nBLOQUEADA  •  NÍVEL 4  |  XP 600"
+
+[node name="DefesaAvancada" type="Button" parent="Panel/Margin/Content/SkillColumns/ColumnRight"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Defesa Avançada\nBLOQUEADA  •  NÍVEL 4  |  XP 600"
+
+[node name="Detail" type="Label" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.83, 0.9, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBox_Detail")
+text = "TREINO selecionado: pratique para ganhar XP e fortalecer o pet."
+autowrap_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Footer" type="Label" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.54, 0.64, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "D-PAD: navegar   •   VERDE: confirmar treino   •   ROSA: voltar"
+horizontal_alignment = 1
+vertical_alignment = 1
