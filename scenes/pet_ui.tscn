@@ -1,11 +1,20 @@
-[gd_scene format=3 uid="uid://dtm0vmthishq1"]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://scripts/pet_ui.gd" id="1_ui"]
 [ext_resource type="Texture2D" path="res://assets/UI/comer.png" id="2_comer"]
-[ext_resource type="Texture2D" path="res://assets/UI/brincar.png" id="3_brincar"]
-[ext_resource type="Texture2D" path="res://assets/UI/limpar.png" id="4_limpar"]
+[ext_resource type="Texture2D" path="res://assets/UI/cuidar.png" id="3_cuidar"]
+[ext_resource type="Texture2D" path="res://assets/UI/jogar.png" id="4_jogar"]
 [ext_resource type="Texture2D" path="res://assets/UI/treinar.png" id="5_treinar"]
-[ext_resource type="Texture2D" path="res://assets/UI/dormir.png" id="6_dormir"]
+[ext_resource type="Texture2D" path="res://assets/UI/batalhar.png" id="6_batalhar"]
+[ext_resource type="Texture2D" path="res://assets/UI/submenus/fruta_estelar.png" id="7_fruta"]
+[ext_resource type="Texture2D" path="res://assets/UI/submenus/nectar_cosmico.png" id="8_nectar"]
+[ext_resource type="Texture2D" path="res://assets/UI/submenus/banquete_nebulosa.png" id="9_banquete"]
+[ext_resource type="Texture2D" path="res://assets/UI/submenus/dar_remedio.png" id="10_remedio"]
+[ext_resource type="Texture2D" path="res://assets/UI/submenus/limpar_sujeira.png" id="11_sujeira"]
+[ext_resource type="Texture2D" path="res://assets/UI/dormir.png" id="12_dormir"]
+[ext_resource type="Texture2D" path="res://assets/UI/submenus/jokenpo.png" id="13_jokenpo"]
+[ext_resource type="Texture2D" path="res://assets/UI/submenus/jogo_da_velha.png" id="14_velha"]
+[ext_resource type="Texture2D" path="res://assets/UI/submenus/2048.png" id="15_2048"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_StatusTrack"]
 bg_color = Color(0.035, 0.067, 0.15, 0.92)
@@ -50,6 +59,44 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_SubmenuPanel"]
+bg_color = Color(0.027, 0.075, 0.145, 0.98)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.36, 0.83, 0.92, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.52)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_SubmenuHeader"]
+bg_color = Color(0.1, 0.2, 0.35, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.79, 0.31, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_SubmenuHint"]
+bg_color = Color(0.05, 0.11, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.23, 0.42, 0.56, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="PetUI" type="Control"]
 layout_mode = 3
@@ -170,6 +217,28 @@ show_percentage = false
 theme_override_styles/background = SubResource("StyleBox_StatusTrack")
 theme_override_styles/fill = SubResource("StyleBox_Health")
 
+[node name="Hint" type="Label" parent="StatusBar"]
+layout_mode = 0
+offset_left = 220.0
+offset_top = 68.0
+offset_right = 620.0
+offset_bottom = 89.0
+theme_override_colors/font_color = Color(0.55, 0.82, 0.9, 1)
+theme_override_font_sizes/font_size = 12
+text = "D-PAD: navegar  •  VERDE: confirmar"
+horizontal_alignment = 1
+
+[node name="NeedsSummary" type="Label" parent="StatusBar"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 94.0
+offset_right = 847.0
+offset_bottom = 116.0
+theme_override_colors/font_color = Color(0.55, 0.82, 0.9, 1)
+theme_override_font_sizes/font_size = 10
+text = "HIGIENE 86%  •  DISCIPLINA 62%"
+horizontal_alignment = 1
+
 [node name="ActionBar" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 0
@@ -193,54 +262,218 @@ mouse_filter = 2
 [node name="Comer" type="TextureButton" parent="ActionBar/ActionMenu"]
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
-mouse_filter = 2
-focus_mode = 0
+mouse_filter = 0
+focus_mode = 2
 ignore_texture_size = true
 stretch_mode = 5
 texture_filter = 1
 texture_normal = ExtResource("2_comer")
 tooltip_text = "Comer"
 
-[node name="Brincar" type="TextureButton" parent="ActionBar/ActionMenu"]
+[node name="Cuidar" type="TextureButton" parent="ActionBar/ActionMenu"]
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
-mouse_filter = 2
-focus_mode = 0
+mouse_filter = 0
+focus_mode = 2
 ignore_texture_size = true
 stretch_mode = 5
 texture_filter = 1
-texture_normal = ExtResource("3_brincar")
-tooltip_text = "Brincar"
+texture_normal = ExtResource("3_cuidar")
+tooltip_text = "Cuidar"
 
-[node name="Limpar" type="TextureButton" parent="ActionBar/ActionMenu"]
+[node name="Jogar" type="TextureButton" parent="ActionBar/ActionMenu"]
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
-mouse_filter = 2
-focus_mode = 0
+mouse_filter = 0
+focus_mode = 2
 ignore_texture_size = true
 stretch_mode = 5
 texture_filter = 1
-texture_normal = ExtResource("4_limpar")
-tooltip_text = "Limpar"
+texture_normal = ExtResource("4_jogar")
+tooltip_text = "Jogar"
 
 [node name="Treinar" type="TextureButton" parent="ActionBar/ActionMenu"]
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
-mouse_filter = 2
-focus_mode = 0
+mouse_filter = 0
+focus_mode = 2
 ignore_texture_size = true
 stretch_mode = 5
 texture_filter = 1
 texture_normal = ExtResource("5_treinar")
 tooltip_text = "Treinar"
 
-[node name="Dormir" type="TextureButton" parent="ActionBar/ActionMenu"]
+[node name="Batalhar" type="TextureButton" parent="ActionBar/ActionMenu"]
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
-mouse_filter = 2
-focus_mode = 0
+mouse_filter = 0
+focus_mode = 2
 ignore_texture_size = true
 stretch_mode = 5
 texture_filter = 1
-texture_normal = ExtResource("6_dormir")
-tooltip_text = "Dormir"
+texture_normal = ExtResource("6_batalhar")
+tooltip_text = "Batalhar"
+
+[node name="SelectedAction" type="Label" parent="."]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 548.0
+offset_right = 610.0
+offset_bottom = 578.0
+theme_override_colors/font_color = Color(1, 0.83, 0.35, 1)
+theme_override_font_sizes/font_size = 16
+text = "COMER"
+horizontal_alignment = 1
+
+[node name="SubmenuOverlay" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+z_index = 10
+
+[node name="Dimmer" type="ColorRect" parent="SubmenuOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0.008, 0.016, 0.055, 0.8)
+
+[node name="Panel" type="Panel" parent="SubmenuOverlay"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 160.0
+offset_right = 855.0
+offset_bottom = 575.0
+theme_override_styles/panel = SubResource("StyleBox_SubmenuPanel")
+
+[node name="Margin" type="MarginContainer" parent="SubmenuOverlay/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = -18.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="SubmenuOverlay/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="SubmenuOverlay/Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 1, 0.96, 1)
+theme_override_font_sizes/font_size = 24
+text = "COMER"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBox_SubmenuHeader")
+
+[node name="Options" type="HBoxContainer" parent="SubmenuOverlay/Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 245)
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Option1" type="VBoxContainer" parent="SubmenuOverlay/Panel/Margin/Content/Options"]
+custom_minimum_size = Vector2(0, 230)
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Icon" type="TextureButton" parent="SubmenuOverlay/Panel/Margin/Content/Options/Option1"]
+custom_minimum_size = Vector2(220, 190)
+layout_mode = 2
+mouse_filter = 0
+focus_mode = 2
+ignore_texture_size = true
+stretch_mode = 5
+texture_filter = 1
+texture_normal = ExtResource("7_fruta")
+
+[node name="Label" type="Label" parent="SubmenuOverlay/Panel/Margin/Content/Options/Option1"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "Fruta Estelar"
+horizontal_alignment = 1
+
+[node name="Option2" type="VBoxContainer" parent="SubmenuOverlay/Panel/Margin/Content/Options"]
+custom_minimum_size = Vector2(0, 230)
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Icon" type="TextureButton" parent="SubmenuOverlay/Panel/Margin/Content/Options/Option2"]
+custom_minimum_size = Vector2(220, 190)
+layout_mode = 2
+mouse_filter = 0
+focus_mode = 2
+ignore_texture_size = true
+stretch_mode = 5
+texture_filter = 1
+texture_normal = ExtResource("8_nectar")
+
+[node name="Label" type="Label" parent="SubmenuOverlay/Panel/Margin/Content/Options/Option2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "Néctar Cósmico"
+horizontal_alignment = 1
+
+[node name="Option3" type="VBoxContainer" parent="SubmenuOverlay/Panel/Margin/Content/Options"]
+custom_minimum_size = Vector2(0, 230)
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Icon" type="TextureButton" parent="SubmenuOverlay/Panel/Margin/Content/Options/Option3"]
+custom_minimum_size = Vector2(220, 190)
+layout_mode = 2
+mouse_filter = 0
+focus_mode = 2
+ignore_texture_size = true
+stretch_mode = 5
+texture_filter = 1
+texture_normal = ExtResource("9_banquete")
+
+[node name="Label" type="Label" parent="SubmenuOverlay/Panel/Margin/Content/Options/Option3"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "Banquete Nebulosa"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="SubmenuOverlay/Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.85, 0.92, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBox_SubmenuHint")
+text = "D-PAD: escolher   •   VERDE: confirmar   •   ROSA: voltar"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressionFeedback" type="Label" parent="."]
+layout_mode = 0
+offset_left = 220.0
+offset_top = 126.0
+offset_right = 672.0
+offset_bottom = 174.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.04, 0.1, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "NÍVEL 1"
+horizontal_alignment = 1
+visible = false

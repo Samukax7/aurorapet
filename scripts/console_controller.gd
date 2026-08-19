@@ -16,7 +16,11 @@ func _ready() -> void:
 		pet_ui.action_requested.connect(_on_action_requested)
 	if pet_stats != null:
 		pet_stats.stats_changed.connect(_on_stats_changed)
+		pet_stats.needs_changed.connect(_on_needs_changed)
+		pet_stats.attention_changed.connect(_on_attention_changed)
+		pet_stats.illness_changed.connect(_on_illness_changed)
 		_on_stats_changed(pet_stats.hunger, pet_stats.energy, pet_stats.mood, pet_stats.health)
+		_on_needs_changed(pet_stats.get_needs_snapshot())
 	if pet_skills != null:
 		pet_skills.skill_unlocked.connect(_on_skill_unlocked)
 		pet_skills.level_up.connect(_on_level_up)
@@ -93,6 +97,8 @@ func _on_yellow_pressed() -> void:
 func _on_pink_pressed() -> void:
 	if skill_tree != null and skill_tree.visible:
 		skill_tree.close_tree()
+	elif pet_ui != null and pet_ui.submenu_visible:
+		pet_ui.close_submenu()
 	else:
 		pet_ui.toggle_menu()
 
@@ -130,16 +136,39 @@ func _on_action_requested(action: StringName) -> void:
 	if action == &"treinar":
 		_open_skill_tree()
 		return
+	if action == &"batalhar":
+		if pet_ui != null:
+			pet_ui.show_progression_message("EM BREVE: BATALHAS")
+		return
 	if pet_stats != null:
 		pet_stats.perform_action(action)
 	if pet_skills != null:
 		match action:
-			&"comer", &"limpar", &"dormir":
+			&"fruta_estelar", &"nectar_cosmico", &"banquete_nebulosa", &"dar_remedio", &"limpar_sujeira", &"dormir":
 				pet_skills.add_xp(5)
-			&"brincar":
+			&"jokenpo":
 				pet_skills.add_xp(15)
+			&"jogo_da_velha":
+				pet_skills.add_xp(18)
+			&"2048":
+				pet_skills.add_xp(20)
 
+	if pet_ui != null:
+		pet_ui.show_progression_message(_action_feedback(action))
 	print("Ação selecionada: ", action)
+
+func _action_feedback(action: StringName) -> String:
+	match action:
+		&"fruta_estelar": return "FRUTA ESTELAR: +FOME"
+		&"nectar_cosmico": return "NECTAR CÓSMICO: +FOME"
+		&"banquete_nebulosa": return "BANQUETE NEBULOSA: +FOME"
+		&"dar_remedio": return "REMÉDIO APLICADO: +SAÚDE"
+		&"limpar_sujeira": return "SUJEIRA LIMPA: +SAÚDE"
+		&"dormir": return "SONO RECUPERADO: +ENERGIA"
+		&"jokenpo": return "JOKENPÔ: +15 XP"
+		&"jogo_da_velha": return "JOGO DA VELHA: +18 XP"
+		&"2048": return "2048: +20 XP"
+	return "AÇÃO: " + String(action).to_upper()
 
 func _on_skill_unlocked(skill_id: StringName) -> void:
 	print("Habilidade desbloqueada: ", skill_id)
@@ -160,3 +189,20 @@ func _on_evolution_completed(new_stage: int, stage_name: StringName, visual_scal
 func _on_stats_changed(hunger: float, energy: float, mood: float, health: float) -> void:
 	if pet_ui != null:
 		pet_ui.set_status_values(hunger, energy, mood, health)
+
+func _on_needs_changed(snapshot: Dictionary) -> void:
+	if pet_ui != null:
+		pet_ui.set_needs_summary(snapshot)
+
+func _on_attention_changed(active: bool, reason: StringName) -> void:
+	if pet_ui == null:
+		return
+	if active and pet_stats != null:
+		pet_ui.show_progression_message(pet_stats.get_attention_message())
+	elif not active:
+		pet_ui.show_progression_message("NECESSIDADES ESTÁVEIS")
+
+func _on_illness_changed(is_sick: bool) -> void:
+	if pet_ui == null:
+		return
+	pet_ui.show_progression_message("O PET ADOECEU" if is_sick else "DOENÇA TRATADA")
