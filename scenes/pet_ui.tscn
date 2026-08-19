@@ -106,25 +106,28 @@ script = ExtResource("1_ui")
 [node name="StatusBar" type="Control" parent="." unique_id=1289660194]
 layout_mode = 1
 anchors_preset = 0
-offset_left = 24.0
-offset_top = 18.0
-offset_right = 871.0
-offset_bottom = 108.0
+offset_left = 52.0
+offset_top = 22.0
+offset_right = 860.0
+offset_bottom = 282.0
 mouse_filter = 2
 
-[node name="StatusItems" type="HBoxContainer" parent="StatusBar" unique_id=299215686]
+[node name="StatusItems" type="GridContainer" parent="StatusBar" unique_id=299215686]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 19.0
+offset_right = -19.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 8
-alignment = 1
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 6
+columns = 2
 
 [node name="Fome" type="VBoxContainer" parent="StatusBar/StatusItems" unique_id=588604442]
-custom_minimum_size = Vector2(202, 82)
+custom_minimum_size = Vector2(380, 80)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 3
@@ -132,12 +135,12 @@ theme_override_constants/separation = 3
 [node name="Label" type="Label" parent="StatusBar/StatusItems/Fome" unique_id=1512470892]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8, 0.38, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 22
 text = "FOME 82%"
 horizontal_alignment = 1
 
 [node name="Bar" type="ProgressBar" parent="StatusBar/StatusItems/Fome" unique_id=1411847075]
-custom_minimum_size = Vector2(202, 24)
+custom_minimum_size = Vector2(380, 30)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBox_StatusTrack")
@@ -146,7 +149,7 @@ value = 82.0
 show_percentage = false
 
 [node name="Energia" type="VBoxContainer" parent="StatusBar/StatusItems" unique_id=1393879321]
-custom_minimum_size = Vector2(202, 82)
+custom_minimum_size = Vector2(380, 80)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 3
@@ -154,12 +157,12 @@ theme_override_constants/separation = 3
 [node name="Label" type="Label" parent="StatusBar/StatusItems/Energia" unique_id=754112670]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.43, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 22
 text = "ENERGIA 76%"
 horizontal_alignment = 1
 
 [node name="Bar" type="ProgressBar" parent="StatusBar/StatusItems/Energia" unique_id=1875162794]
-custom_minimum_size = Vector2(202, 24)
+custom_minimum_size = Vector2(380, 30)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBox_StatusTrack")
@@ -168,7 +171,7 @@ value = 76.0
 show_percentage = false
 
 [node name="Humor" type="VBoxContainer" parent="StatusBar/StatusItems" unique_id=1403963326]
-custom_minimum_size = Vector2(202, 82)
+custom_minimum_size = Vector2(380, 80)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 3
@@ -176,12 +179,12 @@ theme_override_constants/separation = 3
 [node name="Label" type="Label" parent="StatusBar/StatusItems/Humor" unique_id=522893789]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.55, 0.82, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 22
 text = "HUMOR 68%"
 horizontal_alignment = 1
 
 [node name="Bar" type="ProgressBar" parent="StatusBar/StatusItems/Humor" unique_id=412077255]
-custom_minimum_size = Vector2(202, 24)
+custom_minimum_size = Vector2(380, 30)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBox_StatusTrack")
@@ -190,7 +193,7 @@ value = 68.0
 show_percentage = false
 
 [node name="Saude" type="VBoxContainer" parent="StatusBar/StatusItems" unique_id=421318516]
-custom_minimum_size = Vector2(202, 82)
+custom_minimum_size = Vector2(380, 80)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 3
@@ -198,12 +201,12 @@ theme_override_constants/separation = 3
 [node name="Label" type="Label" parent="StatusBar/StatusItems/Saude" unique_id=272545739]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.97, 0.58, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 22
 text = "SAUDE 91%"
 horizontal_alignment = 1
 
 [node name="Bar" type="ProgressBar" parent="StatusBar/StatusItems/Saude" unique_id=2007146862]
-custom_minimum_size = Vector2(202, 24)
+custom_minimum_size = Vector2(380, 30)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBox_StatusTrack")
@@ -213,10 +216,10 @@ show_percentage = false
 
 [node name="Hint" type="Label" parent="StatusBar" unique_id=2077971116]
 layout_mode = 0
-offset_left = 220.0
-offset_top = 68.0
-offset_right = 620.0
-offset_bottom = 89.0
+offset_left = 160.0
+offset_top = 218.0
+offset_right = 648.0
+offset_bottom = 248.0
 theme_override_colors/font_color = Color(0.55, 0.82, 0.9, 1)
 theme_override_font_sizes/font_size = 16
 text = "D-PAD: NAVEGAR  •  VERDE: CONFIRMAR"
@@ -224,12 +227,12 @@ horizontal_alignment = 1
 
 [node name="NeedsSummary" type="Label" parent="StatusBar" unique_id=1951745154]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 94.0
-offset_right = 847.0
-offset_bottom = 116.0
+offset_left = 90.0
+offset_top = 250.0
+offset_right = 718.0
+offset_bottom = 278.0
 theme_override_colors/font_color = Color(0.55, 0.82, 0.9, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 text = "HIGIENE 86%  •  DISCIPLINA 62%"
 horizontal_alignment = 1
 
@@ -262,17 +265,16 @@ texture_normal = ExtResource("2_comer")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="ActionBar/ActionMenu/Comer"]
+[node name="Label" type="Label" parent="ActionBar/ActionMenu/Comer" unique_id=166973551]
 layout_mode = 1
 anchors_preset = 12
-anchor_right = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -38.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.04, 0.12, 0.98)
 theme_override_constants/outline_size = 5
@@ -291,17 +293,16 @@ texture_normal = ExtResource("3_cuidar")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="ActionBar/ActionMenu/Cuidar"]
+[node name="Label" type="Label" parent="ActionBar/ActionMenu/Cuidar" unique_id=193641991]
 layout_mode = 1
 anchors_preset = 12
-anchor_right = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -38.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.04, 0.12, 0.98)
 theme_override_constants/outline_size = 5
@@ -320,17 +321,16 @@ texture_normal = ExtResource("4_jogar")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="ActionBar/ActionMenu/Jogar"]
+[node name="Label" type="Label" parent="ActionBar/ActionMenu/Jogar" unique_id=114368267]
 layout_mode = 1
 anchors_preset = 12
-anchor_right = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -38.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.04, 0.12, 0.98)
 theme_override_constants/outline_size = 5
@@ -349,17 +349,16 @@ texture_normal = ExtResource("5_treinar")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="ActionBar/ActionMenu/Treinar"]
+[node name="Label" type="Label" parent="ActionBar/ActionMenu/Treinar" unique_id=899497963]
 layout_mode = 1
 anchors_preset = 12
-anchor_right = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -38.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.04, 0.12, 0.98)
 theme_override_constants/outline_size = 5
@@ -378,17 +377,16 @@ texture_normal = ExtResource("6_batalhar")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="ActionBar/ActionMenu/Batalhar"]
+[node name="Label" type="Label" parent="ActionBar/ActionMenu/Batalhar" unique_id=831058000]
 layout_mode = 1
 anchors_preset = 12
-anchor_right = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -38.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.04, 0.12, 0.98)
 theme_override_constants/outline_size = 5
