@@ -9,6 +9,11 @@ signal flow_completed
 
 const SAVE_PATH := "user://aurorapet_save.json"
 const HATCH_HITS_REQUIRED := 8
+const EGG_TEXTURES := {
+	&"luz": "res://assets/UI/minigames/ovos/ovo_cosmico_Luz.png",
+	&"trevas": "res://assets/UI/minigames/ovos/ovo_cosmico_trevas.png",
+	&"neutro": "res://assets/UI/minigames/ovos/ovo_cosmico_neutro.png",
+}
 
 var active := true
 var state: StringName = &"logo"
@@ -24,7 +29,10 @@ var pet_skills: PetSkills
 var pet_randomizer: PetRandomizer
 var pet_ui: PetUI
 var deepworld: Node
+var pet_node: Node2D
 var skill_tree: Node
+var egg_base_position := Vector2(317, 320)
+var egg_shake_tween: Tween
 
 @onready var background: ColorRect = $Background
 @onready var logo: Label = $Logo
@@ -44,6 +52,7 @@ var skill_tree: Node
 @onready var faction_hint: Label = $FactionPanel/Hint
 @onready var egg_panel: Panel = $EggPanel
 @onready var egg_label: Label = $EggPanel/Egg
+@onready var egg_image: TextureRect = $EggImage
 @onready var egg_progress: ProgressBar = $EggPanel/Progress
 @onready var egg_hint: Label = $EggPanel/Hint
 @onready var status_panel: Panel = $PetStatusPanel
@@ -62,9 +71,12 @@ func configure(identity: PetIdentity, skills: PetSkills, randomizer: PetRandomiz
 	pet_randomizer = randomizer
 	pet_ui = ui
 	deepworld = world
+	pet_node = deepworld.get_node_or_null("Paisagem/Pet") as Node2D if deepworld != null else null
 	skill_tree = tree
 	if deepworld != null:
 		deepworld.visible = false
+	if pet_node != null:
+		pet_node.visible = false
 	if pet_ui != null:
 		pet_ui.visible = false
 	if skill_tree != null:
@@ -248,25 +260,47 @@ func _confirm_faction() -> void:
 
 func _show_egg() -> void:
 	state = &"egg"
-	background.color = Color("#08152F")
+	background.color = Color(0, 0, 0, 0)
 	_hide_all_panels()
+	if deepworld != null:
+		deepworld.visible = true
+	if pet_node != null:
+		pet_node.visible = false
 	egg_panel.visible = true
+	egg_image.visible = true
+	egg_image.position = egg_base_position
+	egg_image.texture = load(String(EGG_TEXTURES.get(selected_faction, EGG_TEXTURES[&"neutro"]))) as Texture2D
 	hatch_hits = 0
-	egg_label.text = "OVO"
+	egg_label.text = ""
 	egg_progress.value = 0.0
 	egg_hint.text = "APERTE VERDE PARA AJUDAR O OVO A CHOCAR\n0 / %d" % HATCH_HITS_REQUIRED
 
 func _hatch_step() -> void:
+	if hatch_hits >= HATCH_HITS_REQUIRED:
+		return
 	hatch_hits = mini(hatch_hits + 1, HATCH_HITS_REQUIRED)
 	egg_progress.value = float(hatch_hits) / float(HATCH_HITS_REQUIRED) * 100.0
-	var cracks := ""
-	for index in hatch_hits:
-		cracks += "*"
-	egg_label.text = "OVO\n" + cracks
 	egg_hint.text = "O OVO ESTÁ REAGINDO...\n%d / %d" % [hatch_hits, HATCH_HITS_REQUIRED]
+	_shake_egg()
 	if hatch_hits >= HATCH_HITS_REQUIRED:
+		if egg_shake_tween != null:
+			egg_shake_tween.kill()
+		egg_image.position = egg_base_position
+		egg_image.visible = false
+		if pet_node != null:
+			pet_node.visible = true
 		_save_new_pet()
 		_show_pet_status()
+
+func _shake_egg() -> void:
+	if egg_shake_tween != null:
+		egg_shake_tween.kill()
+	egg_image.position = egg_base_position
+	egg_shake_tween = create_tween()
+	egg_shake_tween.tween_property(egg_image, "position", egg_base_position + Vector2(-9, 0), 0.045)
+	egg_shake_tween.tween_property(egg_image, "position", egg_base_position + Vector2(9, 0), 0.09)
+	egg_shake_tween.tween_property(egg_image, "position", egg_base_position + Vector2(-5, 0), 0.07)
+	egg_shake_tween.tween_property(egg_image, "position", egg_base_position, 0.06)
 
 func _show_pet_status() -> void:
 	state = &"status"
@@ -321,6 +355,8 @@ func _finish_flow() -> void:
 	visible = false
 	if deepworld != null:
 		deepworld.visible = true
+	if pet_node != null:
+		pet_node.visible = true
 	if pet_ui != null:
 		pet_ui.visible = true
 	if skill_tree != null:
@@ -338,6 +374,7 @@ func _hide_all_panels() -> void:
 	story_panel.visible = false
 	faction_panel.visible = false
 	egg_panel.visible = false
+	egg_image.visible = false
 	status_panel.visible = false
 
 func _on_menu_button_pressed(index: int) -> void:

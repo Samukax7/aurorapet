@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" path="res://scripts/opening_flow.gd" id="1_opening"]
 [ext_resource type="Texture2D" path="res://assets/UI/auroralogo.png" id="2_logo"]
+[ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_Luz.png" id="3_egg_luz"]
+[ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_trevas.png" id="4_egg_trevas"]
+[ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_neutro.png" id="5_egg_neutro"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_MenuPanel"]
 bg_color = Color(0.97, 0.98, 1, 0.98)
@@ -46,12 +49,12 @@ shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 14
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_EggPanel"]
-bg_color = Color(0.025, 0.06, 0.15, 0.98)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(1, 0.77, 0.3, 1)
+bg_color = Color(0.025, 0.06, 0.15, 0.0)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color(1, 0.77, 0.3, 0.0)
 corner_radius_top_left = 18
 corner_radius_top_right = 18
 corner_radius_bottom_right = 18
@@ -224,9 +227,9 @@ horizontal_alignment = 1
 [node name="StoryPanel" type="Panel" parent="."]
 visible = false
 offset_left = 80.0
-offset_top = 120.0
-offset_right = 815.0
-offset_bottom = 640.0
+offset_top = 125.0
+offset_right = 435.0
+offset_bottom = 330.0
 theme_override_styles/panel = SubResource("StyleBox_StoryPanel")
 
 [node name="Page" type="Label" parent="StoryPanel"]
@@ -309,6 +312,9 @@ alignment = 1
 [node name="Luz" type="Button" parent="FactionPanel/Options"]
 custom_minimum_size = Vector2(205, 85)
 layout_mode = 2
+icon = ExtResource("3_egg_luz")
+expand_icon = true
+icon_max_width = 54
 theme_override_colors/font_color = Color(0.98, 0.91, 0.54, 1)
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -318,6 +324,9 @@ text = "LUZ"
 [node name="Trevas" type="Button" parent="FactionPanel/Options"]
 custom_minimum_size = Vector2(205, 85)
 layout_mode = 2
+icon = ExtResource("4_egg_trevas")
+expand_icon = true
+icon_max_width = 54
 theme_override_colors/font_color = Color(0.86, 0.6, 1, 1)
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -327,6 +336,9 @@ text = "TREVAS"
 [node name="Neutro" type="Button" parent="FactionPanel/Options"]
 custom_minimum_size = Vector2(205, 85)
 layout_mode = 2
+icon = ExtResource("5_egg_neutro")
+expand_icon = true
+icon_max_width = 54
 theme_override_colors/font_color = Color(0.52, 0.92, 0.86, 1)
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -362,6 +374,7 @@ text = "NASCIMENTO DEEPMON"
 horizontal_alignment = 1
 
 [node name="Egg" type="Label" parent="EggPanel"]
+visible = false
 offset_left = 80.0
 offset_top = 125.0
 offset_right = 435.0
@@ -397,11 +410,23 @@ horizontal_alignment = 1
 [node name="HitButton" type="Button" parent="EggPanel"]
 modulate = Color(1, 1, 1, 0)
 offset_left = 85.0
-offset_top = 95.0
+offset_top = 210.0
 offset_right = 430.0
-offset_bottom = 350.0
+offset_bottom = 485.0
 mouse_default_cursor_shape = 2
 flat = true
+
+[node name="EggImage" type="TextureRect" parent="."]
+visible = false
+offset_left = 317.0
+offset_top = 320.0
+offset_right = 577.0
+offset_bottom = 580.0
+texture_filter = 1
+texture = ExtResource("5_egg_neutro")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
 
 [node name="PetStatusPanel" type="Panel" parent="."]
 visible = false
