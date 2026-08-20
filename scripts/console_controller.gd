@@ -10,9 +10,12 @@ extends Sprite2D
 @onready var pet_randomizer: PetRandomizer = $ScreenContent/Deepworld/Paisagem/Pet
 @onready var pet_identity: PetIdentity = $ScreenContent/Deepworld/Paisagem/Pet/PetIdentity
 @onready var skill_tree: ArvoreDeHabilidades = $ScreenContent/ArvoreDeHabilidades
+@onready var opening_flow: OpeningFlow = $ScreenContent/OpeningFlow
 
 func _ready() -> void:
 	_connect_console_buttons()
+	if opening_flow != null:
+		opening_flow.configure(pet_identity, pet_skills, pet_randomizer, pet_ui, $ScreenContent/Deepworld, skill_tree)
 	if pet_ui != null:
 		pet_ui.action_requested.connect(_on_action_requested)
 	if pet_stats != null:
@@ -34,6 +37,26 @@ func _ready() -> void:
 		call_deferred("_show_identity_intro")
 
 func _unhandled_input(event: InputEvent) -> void:
+	if opening_flow != null and opening_flow.active:
+		if event.is_action_pressed("ui_left"):
+			opening_flow.handle_direction(Vector2i.LEFT)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_right"):
+			opening_flow.handle_direction(Vector2i.RIGHT)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_up"):
+			opening_flow.handle_direction(Vector2i.UP)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_down"):
+			opening_flow.handle_direction(Vector2i.DOWN)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_accept"):
+			opening_flow.confirm()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_cancel"):
+			opening_flow.back()
+			get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_R:
 		if pet_randomizer != null:
 			pet_randomizer.reroll()
@@ -92,12 +115,20 @@ func _connect_console_buttons() -> void:
 	$DPadRight.pressed.connect(func(): _move_active_selection(Vector2i.RIGHT))
 
 func _on_green_pressed() -> void:
+	if opening_flow != null and opening_flow.active:
+		opening_flow.confirm()
+		return
 	_confirm_active_selection()
 
 func _on_yellow_pressed() -> void:
+	if opening_flow != null and opening_flow.active:
+		return
 	pet_ui.toggle_status()
 
 func _on_pink_pressed() -> void:
+	if opening_flow != null and opening_flow.active:
+		opening_flow.back()
+		return
 	if skill_tree != null and skill_tree.visible:
 		skill_tree.close_tree()
 	elif pet_ui != null and pet_ui.submenu_visible:
@@ -106,6 +137,9 @@ func _on_pink_pressed() -> void:
 		pet_ui.toggle_menu()
 
 func _move_active_selection(direction: Vector2i) -> void:
+	if opening_flow != null and opening_flow.active:
+		opening_flow.handle_direction(direction)
+		return
 	if skill_tree != null and skill_tree.visible:
 		skill_tree.move_selection(direction)
 	elif pet_ui != null:

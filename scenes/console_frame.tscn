@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://c6xglxy1a0ygj" path="res://assets/console/controles/button_yellow.png" id="7_yellow"]
 [ext_resource type="Texture2D" uid="uid://bdmuu73hg762b" path="res://assets/console/controles/button_pink.png" id="8_pink"]
 [ext_resource type="PackedScene" path="res://scenes/arvore_de_habilidades.tscn" id="9_skill_tree"]
+[ext_resource type="PackedScene" path="res://scenes/opening_flow.tscn" id="10_opening"]
 
 [node name="Console Base" type="Sprite2D" unique_id=1879046692]
 texture = ExtResource("1_5l2bk")
@@ -37,6 +38,9 @@ offset_left = -4.8731008
 offset_right = -4.873108
 
 [node name="ArvoreDeHabilidades" parent="ScreenContent" instance=ExtResource("9_skill_tree")]
+layout_mode = 1
+
+[node name="OpeningFlow" parent="ScreenContent" instance=ExtResource("10_opening")]
 layout_mode = 1
 
 [node name="Tela" type="Sprite2D" parent="." unique_id=1217496962]

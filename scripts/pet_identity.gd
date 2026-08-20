@@ -143,6 +143,7 @@ func ensure_generated() -> void:
 		generate_new_identity()
 
 func generate_new_identity(new_seed: int = 0) -> void:
+	_bias_applied = false
 	if new_seed != 0:
 		identity_seed = new_seed
 	elif identity_seed == 0:
@@ -171,6 +172,38 @@ func generate_new_identity(new_seed: int = 0) -> void:
 	part_weights = lineage["part_weights"].duplicate(true)
 	pet_name = _generate_name(lineage["names"])
 	if apply_attribute_bias_on_ready and not _bias_applied:
+		call_deferred("_apply_attribute_bias_once")
+	identity_generated.emit(get_identity_snapshot())
+
+## Gera uma identidade completa mantendo a facção escolhida pelo jogador.
+## O seed continua preservando a identidade para o menu Continue.
+func generate_new_identity_for_faction(new_faction: StringName, new_seed: int = 0) -> void:
+	_bias_applied = false
+	if new_seed != 0:
+		identity_seed = new_seed
+	else:
+		_rng.randomize()
+		identity_seed = int(_rng.randi())
+	_rng.seed = identity_seed
+	var faction_id_safe: StringName = new_faction if FACTION_DATA.has(new_faction) else &"neutro"
+	faction_id = faction_id_safe
+	var faction: Dictionary = FACTION_DATA[faction_id]
+	faction_label = String(faction["label"])
+	var lineage_options: Array = faction["lineages"]
+	lineage_id = lineage_options[_rng.randi_range(0, lineage_options.size() - 1)]
+	var lineage: Dictionary = LINEAGE_DATA[lineage_id]
+	lineage_label = String(lineage["label"])
+	var elements: Array = lineage["elements"]
+	element = elements[_rng.randi_range(0, elements.size() - 1)]
+	gender = [&"feminino", &"masculino", &"neutro"][_rng.randi_range(0, 2)]
+	traits = _pick_unique_traits(lineage["traits"], 2)
+	attribute_bias = lineage["attribute_bias"].duplicate(true)
+	preferred_palette_names.clear()
+	for palette_name in lineage["palettes"]:
+		preferred_palette_names.append(palette_name)
+	part_weights = lineage["part_weights"].duplicate(true)
+	pet_name = _generate_name(lineage["names"])
+	if apply_attribute_bias_on_ready:
 		call_deferred("_apply_attribute_bias_once")
 	identity_generated.emit(get_identity_snapshot())
 
