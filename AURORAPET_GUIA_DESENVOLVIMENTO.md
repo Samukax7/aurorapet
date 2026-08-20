@@ -199,13 +199,16 @@ O ícone selecionado recebe modulação completa, pequeno aumento de escala e um
 | Botão verde ou `ui_accept` | Confirma a seleção |
 | Botão amarelo | Alterna a visibilidade das barras de status |
 | Botão rosa ou `ui_cancel` | Abre/fecha menu, volta do submenu ou fecha a árvore |
+| Ao abrir Treinar | Exibe atributos RPG, progressão e habilidades no mesmo painel |
 | Tecla `R` | Refaz o sorteio visual de peças e paleta, mantendo a identidade |
 
-O `ConsoleController` é a camada de integração. Ele recebe ações da UI, encaminha os efeitos para `PetStats`, atribui XP em `PetSkills`, abre a árvore de habilidades e exibe mensagens de nascimento, evolução, nível e habilidades desbloqueadas.
+O `ConsoleController` é a camada de integração. Ele recebe ações da UI, encaminha os efeitos para `PetStats`, atribui XP em `PetSkills`, abre a árvore de habilidades e exibe mensagens de nascimento, evolução, nível e habilidades desbloqueadas. Ao abrir Treinar, ele injeta tanto `PetSkills` quanto `PetIdentity` na árvore, mantendo a ficha RPG sincronizada com a identidade procedural ativa.
 
 ## 10. Progressão, treino e evolução
 
 `PetSkills` possui nível, XP atual, XP total e quatro atributos treináveis: Força, Defesa, Agilidade e Inteligência. A árvore atual contém oito habilidades: quatro iniciais e quatro avançadas. O desbloqueio verifica nível, XP total, atributo mínimo e pré-requisito.
+
+A tela de Treinar funciona como o primeiro painel de progressão para o combate. Além da árvore de habilidades, ela exibe uma ficha compacta com nome, linhagem, elemento, nível, XP total e os quatro atributos RPG atuais do pet. Os valores vêm diretamente de `PetSkills`, portanto permanecem iguais aos valores apresentados na ficha de nascimento e refletem imediatamente bônus de linhagem e treino. A estrutura visual foi organizada com o painel `AttributesPanel` ao lado das duas colunas de habilidades, mantendo o espaço preparado para adicionar estatísticas de combate, resistências e equipamentos posteriormente.
 
 O XP é concedido por ações de cuidado, jogos e treino. O nível sobe enquanto o XP atual alcança `level * 100`. Ao subir de nível, o sistema sincroniza `PetEvolution` e tenta desbloquear habilidades disponíveis.
 

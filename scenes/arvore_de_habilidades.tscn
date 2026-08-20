@@ -53,6 +53,7 @@ bg_color = Color(0.055, 0.12, 0.21, 0.95)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
+border_width_bottom = 2
 border_color = Color(0.25, 0.38, 0.53, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
@@ -62,6 +63,22 @@ content_margin_left = 10.0
 content_margin_top = 7.0
 content_margin_right = 10.0
 content_margin_bottom = 7.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Attributes"]
+bg_color = Color(0.045, 0.13, 0.21, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.36, 0.76, 0.92, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
 
 [node name="ArvoreDeHabilidades" type="Control"]
 layout_mode = 3
@@ -118,7 +135,7 @@ theme_override_styles/panel = SubResource("StyleBox_Header")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 1, 0.95, 1)
 theme_override_font_sizes/font_size = 24
-text = "ÁRVORE DE HABILIDADES"
+text = "TREINO • PROGRESSÃO RPG"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -157,7 +174,7 @@ custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.82, 0.4, 1)
 theme_override_font_sizes/font_size = 15
-text = "HABILIDADES — ATIVAS EM CIANO  •  FUTURAS EM CINZA"
+text = "HABILIDADES DE COMBATE — ATIVAS EM CIANO  •  FUTURAS EM CINZA"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -165,6 +182,88 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 282)
 layout_mode = 2
 theme_override_constants/separation = 10
+
+[node name="AttributesPanel" type="PanelContainer" parent="Panel/Margin/Content/SkillColumns"]
+custom_minimum_size = Vector2(218, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_Attributes")
+
+[node name="Content" type="VBoxContainer" parent="Panel/Margin/Content/SkillColumns/AttributesPanel"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Title" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "ATRIBUTOS RPG"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Identity" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "IDENTIDADE CARREGANDO..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Level" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 1, 0.86, 1)
+theme_override_font_sizes/font_size = 13
+text = "NÍVEL --  |  XP --"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Divider" type="HSeparator" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]
+layout_mode = 2
+
+[node name="Stats" type="GridContainer" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]
+custom_minimum_size = Vector2(0, 112)
+layout_mode = 2
+columns = 1
+theme_override_constants/v_separation = 4
+
+[node name="Strength" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.56, 0.48, 1)
+theme_override_font_sizes/font_size = 15
+text = "FORÇA  10"
+horizontal_alignment = 1
+
+[node name="Defense" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "DEFESA  10"
+horizontal_alignment = 1
+
+[node name="Agility" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 1, 0.65, 1)
+theme_override_font_sizes/font_size = 15
+text = "AGILIDADE  10"
+horizontal_alignment = 1
+
+[node name="Intelligence" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.62, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "INTELIGÊNCIA  10"
+horizontal_alignment = 1
+
+[node name="CombatHint" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.68, 0.78, 1)
+theme_override_font_sizes/font_size = 11
+text = "BASE PARA\nCOMBATE FUTURO"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ColumnLeft" type="VBoxContainer" parent="Panel/Margin/Content/SkillColumns"]
 layout_mode = 2

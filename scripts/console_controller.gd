@@ -41,6 +41,7 @@ func _ready() -> void:
 		pet_skills.skill_unlocked.connect(_on_skill_unlocked)
 		pet_skills.level_up.connect(_on_level_up)
 	if skill_tree != null:
+		skill_tree.set_pet_identity(pet_identity)
 		skill_tree.set_pet_skills(pet_skills)
 		skill_tree.training_requested.connect(_on_training_requested)
 	if jogo_da_velha != null:

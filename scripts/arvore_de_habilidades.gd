@@ -22,11 +22,18 @@ const SKILL_ORDER: Array[StringName] = [
 @export var selected_index := 0
 
 var _pet_skills: PetSkills
+var _pet_identity: PetIdentity
 var _train_button: Button
 var _skill_buttons: Array[Button] = []
 var _progress_label: Label
 var _detail_label: Label
 var _level_label: Label
+var _attribute_identity_label: Label
+var _attribute_level_label: Label
+var _attribute_strength_label: Label
+var _attribute_defense_label: Label
+var _attribute_agility_label: Label
+var _attribute_intelligence_label: Label
 
 func _ready() -> void:
 	_cache_nodes()
@@ -38,6 +45,12 @@ func _cache_nodes() -> void:
 	_progress_label = get_node_or_null(^"Panel/Margin/Content/Progress") as Label
 	_detail_label = get_node_or_null(^"Panel/Margin/Content/Detail") as Label
 	_level_label = get_node_or_null(^"Panel/Margin/Content/Header/Level") as Label
+	_attribute_identity_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Identity") as Label
+	_attribute_level_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Level") as Label
+	_attribute_strength_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats/Strength") as Label
+	_attribute_defense_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats/Defense") as Label
+	_attribute_agility_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats/Agility") as Label
+	_attribute_intelligence_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats/Intelligence") as Label
 	_skill_buttons.clear()
 	var paths: Array[NodePath] = [
 		^"Panel/Margin/Content/SkillColumns/ColumnLeft/GolpeFraco",
@@ -64,6 +77,14 @@ func _connect_skill_buttons() -> void:
 			selected_index = selection_index
 			_refresh_tree()
 		)
+
+func set_pet_identity(value: PetIdentity) -> void:
+	if _pet_identity != null and _pet_identity.identity_generated.is_connected(_on_identity_generated):
+		_pet_identity.identity_generated.disconnect(_on_identity_generated)
+	_pet_identity = value
+	if _pet_identity != null:
+		_pet_identity.identity_generated.connect(_on_identity_generated)
+	_refresh_tree()
 
 func set_pet_skills(value: PetSkills) -> void:
 	if _pet_skills != null:
@@ -116,7 +137,37 @@ func _on_skill_tree_changed(_all_skills: Array[StringName], _unlocked_skills: Ar
 func _on_progression_changed(_level: int, _xp: int) -> void:
 	_refresh_tree()
 
+func _on_identity_generated(_snapshot: Dictionary) -> void:
+	_refresh_tree()
+
+func _refresh_attributes() -> void:
+	if _attribute_identity_label == null:
+		return
+	if _pet_identity == null:
+		_attribute_identity_label.text = "IDENTIDADE CARREGANDO..."
+	else:
+		_attribute_identity_label.text = "%s\n%s • %s" % [
+			_pet_identity.pet_name.to_upper(),
+			_pet_identity.lineage_label.to_upper(),
+			String(_pet_identity.element).to_upper(),
+		]
+	if _pet_skills == null:
+		if _attribute_level_label != null:
+			_attribute_level_label.text = "NÍVEL --  |  XP --"
+		return
+	if _attribute_level_label != null:
+		_attribute_level_label.text = "NÍVEL %d  |  XP TOTAL %d" % [_pet_skills.level, _pet_skills.total_xp]
+	if _attribute_strength_label != null:
+		_attribute_strength_label.text = "FORÇA  %02d" % _pet_skills.strength
+	if _attribute_defense_label != null:
+		_attribute_defense_label.text = "DEFESA  %02d" % _pet_skills.defense
+	if _attribute_agility_label != null:
+		_attribute_agility_label.text = "AGILIDADE  %02d" % _pet_skills.agility
+	if _attribute_intelligence_label != null:
+		_attribute_intelligence_label.text = "INTELIGÊNCIA  %02d" % _pet_skills.intelligence
+
 func _refresh_tree() -> void:
+	_refresh_attributes()
 	if _pet_skills == null:
 		if _level_label != null:
 			_level_label.text = "NÍVEL --  |  XP --"
