@@ -10,7 +10,9 @@ config_version=5
 
 [application]
 
-config/name="Aurorapets"
+config/name="AuroraPet V 0.0"
+config/version="0.0"
+config/description="AuroraPet V 0.0 — protótipo web em desenvolvimento, sem áudio."
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://assets/UI/aurorapet_icon.png"

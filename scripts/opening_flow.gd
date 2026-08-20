@@ -174,7 +174,7 @@ func _show_menu() -> void:
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
 	menu_panel.visible = true
-	menu_notice.text = "D-PAD: NAVEGAR   •   VERDE: CONFIRMAR"
+	menu_notice.text = "V 0.0 • PROTÓTIPO EM DESENVOLVIMENTO • SEM ÁUDIO\nD-PAD: NAVEGAR   •   VERDE: CONFIRMAR"
 	menu_options = [&"start", &"options"]
 	if _has_save():
 		menu_options = [&"start", &"continue", &"options"]
