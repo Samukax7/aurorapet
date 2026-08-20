@@ -21,18 +21,18 @@ shadow_color = Color(0.1, 0.15, 0.25, 0.28)
 shadow_size = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_StoryPanel"]
-bg_color = Color(0.98, 0.99, 1, 0.98)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.36, 0.7, 0.86, 1)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-shadow_color = Color(0.04, 0.08, 0.18, 0.32)
-shadow_size = 12
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+shadow_color = Color(0, 0, 0, 0)
+shadow_size = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_FactionPanel"]
 bg_color = Color(0.035, 0.075, 0.19, 0.98)
@@ -55,12 +55,12 @@ border_width_top = 0
 border_width_right = 0
 border_width_bottom = 0
 border_color = Color(1, 0.77, 0.3, 0.0)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
-shadow_color = Color(0, 0, 0, 0.6)
-shadow_size = 14
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+shadow_color = Color(0, 0, 0, 0)
+shadow_size = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_StatusPanel"]
 bg_color = Color(0.97, 0.98, 1, 0.99)
@@ -113,7 +113,7 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_ProgressFill"]
-bg_color = Color(1, 0.68, 0.27, 1)
+bg_color = Color(0.24, 0.86, 0.4, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -145,10 +145,18 @@ visible = false
 
 [node name="LogoImage" type="TextureRect" parent="."]
 visible = false
-offset_left = 107.5
-offset_top = 203.5
-offset_right = 787.5
-offset_bottom = 611.5
+layout_mode = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -204.0
+offset_right = 340.0
+offset_bottom = 204.0
+grow_horizontal = 2
+grow_vertical = 2
 texture_filter = 1
 texture = ExtResource("2_logo")
 expand_mode = 1
@@ -364,6 +372,7 @@ offset_bottom = 680.0
 theme_override_styles/panel = SubResource("StyleBox_EggPanel")
 
 [node name="Title" type="Label" parent="EggPanel"]
+visible = false
 offset_left = 30.0
 offset_top = 28.0
 offset_right = 485.0
@@ -410,18 +419,18 @@ horizontal_alignment = 1
 [node name="HitButton" type="Button" parent="EggPanel"]
 modulate = Color(1, 1, 1, 0)
 offset_left = 85.0
-offset_top = 275.0
+offset_top = 295.0
 offset_right = 430.0
-offset_bottom = 555.0
+offset_bottom = 575.0
 mouse_default_cursor_shape = 2
 flat = true
 
 [node name="EggImage" type="TextureRect" parent="."]
 visible = false
 offset_left = 317.0
-offset_top = 385.0
+offset_top = 405.0
 offset_right = 577.0
-offset_bottom = 645.0
+offset_bottom = 665.0
 texture_filter = 1
 texture = ExtResource("5_egg_neutro")
 expand_mode = 1
