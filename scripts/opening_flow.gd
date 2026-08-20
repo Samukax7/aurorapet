@@ -151,11 +151,11 @@ func _show_logo() -> void:
 	logo_image.visible = false
 	logo_subtitle.visible = false
 	logo_image.visible = true
-	logo_image.position = Vector2(-760, 0)
+	logo_image.position = Vector2(-760, 130)
 	logo_image.modulate = Color(1, 1, 1, 0)
 	var tween := create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(logo_image, "position", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(logo_image, "position", Vector2(0, 130), 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(logo_image, "modulate:a", 1.0, 0.55)
 	tween.set_parallel(false)
 	tween.tween_interval(0.65)
