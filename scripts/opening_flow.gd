@@ -43,6 +43,9 @@ var egg_shake_tween: Tween
 @onready var menu_title: Label = $MenuPanel/Title
 @onready var menu_buttons: Array[Button] = [$MenuPanel/Menu/Start, $MenuPanel/Menu/Continue, $MenuPanel/Menu/Options]
 @onready var menu_notice: Label = $MenuPanel/Notice
+@onready var access_panel: Panel = $AccessCodePanel
+@onready var access_edit: LineEdit = $AccessCodePanel/Code
+@onready var access_message: Label = $AccessCodePanel/Message
 @onready var story_panel: Panel = $StoryPanel
 @onready var story_page_label: Label = $StoryPanel/Page
 @onready var story_body: Label = $StoryPanel/Body
@@ -93,6 +96,8 @@ func _connect_buttons() -> void:
 	story_next.pressed.connect(_on_story_next_pressed)
 	$EggPanel/HitButton.pressed.connect(_on_egg_button_pressed)
 	$PetStatusPanel/ExitButton.pressed.connect(_on_status_exit_pressed)
+	$AccessCodePanel/Load.pressed.connect(_on_access_load_pressed)
+	$AccessCodePanel/Cancel.pressed.connect(_on_access_cancel_pressed)
 
 func handle_direction(direction: Vector2i) -> void:
 	if not active:
@@ -125,6 +130,8 @@ func confirm() -> void:
 			_next_story()
 		&"faction":
 			_confirm_faction()
+		&"access_code":
+			_load_access_code()
 		&"egg":
 			_hatch_step()
 		&"status":
@@ -140,6 +147,8 @@ func back() -> void:
 			_back_story()
 		&"faction":
 			_show_story(1)
+		&"access_code":
+			_show_menu()
 		&"egg":
 			_show_faction()
 		&"status":
@@ -208,7 +217,35 @@ func _confirm_menu() -> void:
 		&"continue":
 			_continue_saved_pet()
 		&"options":
-			menu_notice.text = "OPTIONS: CONFIGURAÇÕES EM BREVE"
+			_show_access_code()
+
+func _show_access_code() -> void:
+	state = &"access_code"
+	background.color = Color("#071332")
+	_hide_all_panels()
+	access_panel.visible = true
+	access_edit.text = ""
+	access_message.text = "DIGITE 3 CARACTERES PARA GERAR O PET"
+	access_edit.grab_focus()
+
+func _load_access_code() -> void:
+	var code := access_edit.text.to_upper().strip_edges()
+	if code.length() != 3:
+		access_message.text = "ERRO: USE EXATAMENTE 3 LETRAS OU NÚMEROS"
+		return
+	if pet_identity == null:
+		access_message.text = "ERRO: IDENTIDADE INDISPONÍVEL"
+		return
+	var seed := pet_identity.access_code_to_seed(code)
+	pet_identity.generate_new_identity(seed)
+	selected_faction = pet_identity.faction_id
+	if pet_skills != null:
+		pet_skills.reset_for_new_pet()
+	if pet_stats != null:
+		pet_stats.begin_newborn_tutorial()
+	if pet_randomizer != null:
+		pet_randomizer.reroll()
+	_show_egg()
 
 func _show_story(page: int) -> void:
 	state = &"story"
@@ -320,7 +357,7 @@ func _show_pet_status() -> void:
 		status_identity.text = "IDENTIDADE AINDA NÃO DISPONÍVEL"
 		status_attributes.text = "FORÇA --   DEFESA --\nAGILIDADE --   INTELIGÊNCIA --"
 	else:
-		status_identity.text = "%s\nFACÇÃO: %s\nLINHAGEM: %s\nELEMENTO: %s" % [pet_identity.pet_name.to_upper(), pet_identity.faction_label.to_upper(), pet_identity.lineage_label.to_upper(), String(pet_identity.element).to_upper()]
+		status_identity.text = "%s\nCHAVE: %s\nFACÇÃO: %s\nLINHAGEM: %s\nELEMENTO: %s" % [pet_identity.pet_name.to_upper(), pet_identity.get_access_code(), pet_identity.faction_label.to_upper(), pet_identity.lineage_label.to_upper(), String(pet_identity.element).to_upper()]
 		status_attributes.text = "NÍVEL %d   XP %d\nFORÇA %d   DEFESA %d\nAGILIDADE %d   INTELIGÊNCIA %d" % [pet_skills.level, pet_skills.total_xp, pet_skills.strength, pet_skills.defense, pet_skills.agility, pet_skills.intelligence]
 	status_hint.text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
 
@@ -350,6 +387,7 @@ func _save_new_pet() -> void:
 		"version": 1,
 		"has_pet": true,
 		"identity_seed": pet_identity.identity_seed,
+		"access_code": pet_identity.get_access_code(),
 		"faction": String(pet_identity.faction_id),
 		"name": pet_identity.pet_name,
 		"lineage": String(pet_identity.lineage_id),
@@ -389,6 +427,13 @@ func _hide_all_panels() -> void:
 	egg_panel.visible = false
 	egg_image.visible = false
 	status_panel.visible = false
+	access_panel.visible = false
+
+func _on_access_load_pressed() -> void:
+	_load_access_code()
+
+func _on_access_cancel_pressed() -> void:
+	_show_menu()
 
 func _on_menu_button_pressed(index: int) -> void:
 	if index >= 0 and index < menu_options.size():

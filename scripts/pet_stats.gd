@@ -266,7 +266,7 @@ func get_action_feedback(action: StringName) -> String:
 		&"jogo_da_velha": return "JOGO DA VELHA: +20 HUMOR / +20 XP"
 		&"2048": return "2048: +22 HUMOR / +20 XP"
 		&"treinar": return "TREINO: +4 DISCIPLINA / +25 XP"
-		&"batalhar": return "EM BREVE: BATALHAS"
+		&"batalhar": return "BATALHA: -12 ENERGIA / +12 HUMOR"
 	return "AÇÃO: " + String(action).to_upper()
 
 func perform_action(action: StringName) -> bool:
@@ -310,6 +310,11 @@ func perform_action(action: StringName) -> bool:
 			hunger -= 10.0
 			health += 3.0
 			discipline += discipline_gain_per_training
+		&"batalhar":
+			mood += 12.0
+			energy -= 12.0
+			hunger -= 6.0
+			health += 1.0
 		&"dormir":
 			_start_sleep()
 			mood += 5.0

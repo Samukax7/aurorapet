@@ -43,6 +43,7 @@ const ACTION_UNLOCK_LEVELS: Dictionary = {
 	&"jokenpo": 3,
 	&"jogo_da_velha": 2,
 	&"2048": 5,
+	&"batalha_exploracao": 6,
 }
 
 const SKILLS: Dictionary = {

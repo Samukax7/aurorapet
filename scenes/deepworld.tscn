@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://270f2dct6ovq" path="res://assets/fundo/faccoes/deepworld_trevas.png" id="5_trevas"]
 [ext_resource type="Texture2D" uid="uid://bnm4hglqsqfqk" path="res://assets/fundo/faccoes/deepworld_neutro.png" id="6_neutro"]
 [ext_resource type="Texture2D" uid="uid://cynjcps2q8ggw" path="res://assets/fundo/deepworld_plataforma.png" id="7_plataforma"]
+[ext_resource type="PackedScene" path="res://scenes/quarto_cosmico.tscn" id="8_room"]
 
 [node name="Deepworld" type="Node2D" unique_id=152526842]
 script = ExtResource("3_controller")
@@ -45,6 +46,8 @@ texture = ExtResource("6_neutro")
 z_index = 2
 scale = Vector2(3.0363233, 2.980633)
 texture = ExtResource("7_plataforma")
+
+[node name="QuartoCosmico" parent="." instance=ExtResource("8_room")]
 
 [node name="Paisagem" type="Node2D" parent="." unique_id=2012485492]
 

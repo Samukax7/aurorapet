@@ -1,0 +1,319 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/batalha_de_exploracao.gd" id="1_exploration"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Back"]
+bg_color = Color(0.02, 0.035, 0.11, 0.99)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.38, 0.62, 0.96, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0, 0, 0, 0.7)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Card"]
+bg_color = Color(0.04, 0.12, 0.27, 0.97)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.78, 0.98, 0.9)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Player"]
+bg_color = Color(0.03, 0.19, 0.23, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.95, 0.78, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Enemy"]
+bg_color = Color(0.22, 0.06, 0.18, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.35, 0.48, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Log"]
+bg_color = Color(0.015, 0.025, 0.08, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.58, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_PlayerBar"]
+bg_color = Color(0.12, 0.82, 0.62, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_EnemyBar"]
+bg_color = Color(0.95, 0.2, 0.35, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_BarBg"]
+bg_color = Color(0.02, 0.05, 0.12, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.28, 0.4, 0.6, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="BatalhaDeExploracao" type="Control"]
+visible = false
+z_index = 40
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+focus_mode = 2
+script = ExtResource("1_exploration")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBox_Back")
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="."]
+offset_left = 70.0
+offset_top = 18.0
+offset_right = 840.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(0.72, 0.94, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 28
+text = "BATALHA DE EXPLORAÇÃO"
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="."]
+offset_left = 80.0
+offset_top = 62.0
+offset_right = 830.0
+offset_bottom = 92.0
+theme_override_colors/font_color = Color(1, 0.83, 0.4, 1)
+theme_override_font_sizes/font_size = 18
+text = "ÁREA PRONTA PARA EXPLORAÇÃO"
+horizontal_alignment = 1
+
+[node name="Points" type="Label" parent="."]
+offset_left = 80.0
+offset_top = 94.0
+offset_right = 830.0
+offset_bottom = 126.0
+theme_override_colors/font_color = Color(0.55, 0.95, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "PONTOS DE EXPLORAÇÃO: 00000"
+horizontal_alignment = 1
+
+[node name="LobbyCard" type="Panel" parent="."]
+offset_left = 120.0
+offset_top = 170.0
+offset_right = 790.0
+offset_bottom = 430.0
+theme_override_styles/panel = SubResource("StyleBox_Card")
+
+[node name="Label" type="Label" parent="LobbyCard"]
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 646.0
+offset_bottom = 176.0
+theme_override_colors/font_color = Color(0.88, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "ENCONTRO COM UM ECO PROCEDURAL\n\nPARTIR: inicia um combate de turnos\nEQUIPAMENTO: reservado para o level design\n\nAtributos treinados, facção e D20 influenciam o resultado."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BattleCard" type="Panel" parent="."]
+visible = false
+offset_left = 55.0
+offset_top = 150.0
+offset_right = 855.0
+offset_bottom = 690.0
+theme_override_styles/panel = SubResource("StyleBox_Card")
+
+[node name="PlayerPanel" type="Panel" parent="BattleCard"]
+offset_left = 22.0
+offset_top = 20.0
+offset_right = 382.0
+offset_bottom = 142.0
+theme_override_styles/panel = SubResource("StyleBox_Player")
+
+[node name="PlayerName" type="Label" parent="BattleCard"]
+offset_left = 38.0
+offset_top = 34.0
+offset_right = 220.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(0.65, 1, 0.9, 1)
+theme_override_font_sizes/font_size = 18
+text = "PET"
+
+[node name="PlayerHP" type="Label" parent="BattleCard"]
+offset_left = 255.0
+offset_top = 36.0
+offset_right = 365.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(0.65, 1, 0.9, 1)
+theme_override_font_sizes/font_size = 16
+text = "HP 000 / 000"
+horizontal_alignment = 2
+
+[node name="PlayerHPBar" type="ProgressBar" parent="BattleCard"]
+offset_left = 38.0
+offset_top = 70.0
+offset_right = 366.0
+offset_bottom = 91.0
+theme_override_styles/background = SubResource("StyleBox_BarBg")
+theme_override_styles/fill = SubResource("StyleBox_PlayerBar")
+value = 100.0
+show_percentage = false
+
+[node name="PlayerRole" type="Label" parent="BattleCard"]
+offset_left = 38.0
+offset_top = 101.0
+offset_right = 360.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(0.55, 0.76, 0.9, 1)
+theme_override_font_sizes/font_size = 14
+text = "ATRIBUTOS TREINADOS • PET"
+
+[node name="EnemyPanel" type="Panel" parent="BattleCard"]
+offset_left = 418.0
+offset_top = 20.0
+offset_right = 778.0
+offset_bottom = 142.0
+theme_override_styles/panel = SubResource("StyleBox_Enemy")
+
+[node name="EnemyName" type="Label" parent="BattleCard"]
+offset_left = 434.0
+offset_top = 34.0
+offset_right = 650.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(1, 0.65, 0.72, 1)
+theme_override_font_sizes/font_size = 18
+text = "ECO"
+
+[node name="EnemyHP" type="Label" parent="BattleCard"]
+offset_left = 650.0
+offset_top = 36.0
+offset_right = 760.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(1, 0.65, 0.72, 1)
+theme_override_font_sizes/font_size = 16
+text = "HP 000 / 000"
+horizontal_alignment = 2
+
+[node name="EnemyHPBar" type="ProgressBar" parent="BattleCard"]
+offset_left = 434.0
+offset_top = 70.0
+offset_right = 762.0
+offset_bottom = 91.0
+theme_override_styles/background = SubResource("StyleBox_BarBg")
+theme_override_styles/fill = SubResource("StyleBox_EnemyBar")
+value = 100.0
+show_percentage = false
+
+[node name="EnemyRole" type="Label" parent="BattleCard"]
+offset_left = 434.0
+offset_top = 101.0
+offset_right = 760.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(0.95, 0.55, 0.65, 1)
+theme_override_font_sizes/font_size = 14
+text = "ECO PROCEDURAL • OPONENTE"
+
+[node name="Turn" type="Label" parent="BattleCard"]
+offset_left = 22.0
+offset_top = 162.0
+offset_right = 778.0
+offset_bottom = 192.0
+theme_override_colors/font_color = Color(1, 0.83, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "TURNO 01 • SUA VEZ"
+horizontal_alignment = 1
+
+[node name="Action" type="Label" parent="BattleCard"]
+offset_left = 22.0
+offset_top = 198.0
+offset_right = 778.0
+offset_bottom = 232.0
+theme_override_colors/font_color = Color(0.65, 1, 0.9, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 18
+text = "GOLPE FRACO • VERDE: USAR"
+horizontal_alignment = 1
+
+[node name="Log" type="Label" parent="BattleCard"]
+offset_left = 32.0
+offset_top = 250.0
+offset_right = 768.0
+offset_bottom = 456.0
+theme_override_colors/font_color = Color(0.82, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBox_Log")
+text = "AGUARDANDO REGISTROS..."
+vertical_alignment = 1
+
+[node name="Result" type="Label" parent="."]
+offset_left = 80.0
+offset_top = 570.0
+offset_right = 830.0
+offset_bottom = 610.0
+theme_override_colors/font_color = Color(0.45, 0.96, 0.84, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "ENCONTROS GERAM PONTOS PARA O QUARTO CÓSMICO"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 60.0
+offset_top = 730.0
+offset_right = 850.0
+offset_bottom = 770.0
+theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+text = "D-PAD: PARTIR/EQUIPAMENTO   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR"
+horizontal_alignment = 1

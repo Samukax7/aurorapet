@@ -48,6 +48,9 @@ const SUBMENU_DEFINITIONS: Dictionary = {
 		{"action": &"jokenpo", "label": "Jokenpô", "icon": "res://assets/UI/submenus/jokenpo.png"},
 		{"action": &"2048", "label": "2048", "icon": "res://assets/UI/submenus/2048.png"},
 	],
+	&"batalhar": [
+		{"action": &"batalha_exploracao", "label": "Batalha de Exploração", "icon": "res://assets/UI/batalhar.png"},
+	],
 }
 
 var _slots: Array[TextureButton] = []
@@ -74,6 +77,10 @@ var _message_tween: Tween
 var _sleeping := false
 var _glow_materials: Array[ShaderMaterial] = []
 var _glow_tween: Tween
+var _selected_bob_tween: Tween
+var _selected_bob_slot: Control
+var _selected_bob_base_y := 0.0
+var _selection_frame: Panel
 var _pet_skills: PetSkills
 
 func _ready() -> void:
@@ -81,6 +88,7 @@ func _ready() -> void:
 	_connect_menu_buttons()
 	_setup_menu_glows()
 	_refresh_selection()
+	call_deferred("_update_selection_frame")
 	_refresh_status_bars()
 	_set_menu_visibility(menu_visible)
 	_set_status_visibility(status_visible)
@@ -112,6 +120,7 @@ func _cache_menu_nodes() -> void:
 		if option_label != null:
 			_submenu_option_labels.append(option_label)
 	_selection_label = get_node_or_null(^"SelectedAction") as Label
+	_selection_frame = get_node_or_null(^"ActionBar/ActionMenu/Comer/SelectionFrame") as Panel
 	_hint_label = get_node_or_null(^"StatusBar/Hint") as Label
 	_needs_summary_label = get_node_or_null(^"StatusBar/NeedsSummary") as Label
 	_progression_label = get_node_or_null(^"ProgressionFeedback") as Label
@@ -396,11 +405,42 @@ func _refresh_selection() -> void:
 		var label := slot.get_node_or_null(^"Label") as Label
 		if label != null:
 			label.text = String(action).to_upper() if unlocked else String(action).to_upper() + "\nNÍVEL " + str(_pet_skills.get_unlock_level(action) if _pet_skills != null else 1)
-	if _selection_label != null:
-		var selected_action := ACTIONS[selected_index]
-		_selection_label.text = String(selected_action).to_upper() if _is_category_unlocked(selected_action) else _unlock_message(selected_action)
+		if _selection_label != null:
+			var selected_action := ACTIONS[selected_index]
+			_selection_label.text = String(selected_action).to_upper() if _is_category_unlocked(selected_action) else _unlock_message(selected_action)
+	_update_selection_frame()
+	_start_selected_bob()
 	_pulse_selected_glow()
 	selection_changed.emit(ACTIONS[selected_index])
+
+func _update_selection_frame() -> void:
+	if _selection_frame == null or _slots.is_empty():
+		return
+	var selected_slot := _slots[clampi(selected_index, 0, _slots.size() - 1)]
+	if _selection_frame.get_parent() != selected_slot:
+		_selection_frame.reparent(selected_slot, false)
+	_selection_frame.position = Vector2(6.0, 4.0)
+	_selection_frame.size = selected_slot.size - Vector2(12.0, 8.0)
+	_selection_frame.visible = true
+
+func _start_selected_bob() -> void:
+	if _selected_bob_tween != null:
+		_selected_bob_tween.kill()
+	if _selected_bob_slot != null and is_instance_valid(_selected_bob_slot):
+		_selected_bob_slot.position.y = _selected_bob_base_y
+	_selected_bob_slot = null
+	if selected_index < 0 or selected_index >= _slots.size():
+		return
+	if not _is_category_unlocked(ACTIONS[selected_index]):
+		return
+	_selected_bob_slot = _slots[selected_index]
+	_selected_bob_base_y = _selected_bob_slot.position.y
+	_selected_bob_tween = create_tween()
+	_selected_bob_tween.set_loops()
+	_selected_bob_tween.set_trans(Tween.TRANS_SINE)
+	_selected_bob_tween.set_ease(Tween.EASE_IN_OUT)
+	_selected_bob_tween.tween_property(_selected_bob_slot, "position:y", _selected_bob_base_y - 5.0, 0.72)
+	_selected_bob_tween.tween_property(_selected_bob_slot, "position:y", _selected_bob_base_y, 0.72)
 
 func _pulse_selected_glow() -> void:
 	if _glow_tween != null:

@@ -25,6 +25,7 @@ var part_weights: Dictionary = {}
 var _bias_applied := false
 var _used_names: Array[String] = []
 var _rng := RandomNumberGenerator.new()
+const ACCESS_CHARS := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 const FACTION_DATA: Dictionary = {
 	&"luz": {
@@ -223,9 +224,29 @@ func choose_part_variant(part: StringName, rng: RandomNumberGenerator) -> int:
 			return variant
 	return 5
 
+func get_access_code(seed_value: int = identity_seed) -> String:
+	var safe_seed: int = absi(seed_value)
+	var first := ACCESS_CHARS.substr(safe_seed % ACCESS_CHARS.length(), 1)
+	var second := ACCESS_CHARS.substr(floori(float(safe_seed) / ACCESS_CHARS.length()) % ACCESS_CHARS.length(), 1)
+	var third := ACCESS_CHARS.substr(floori(float(safe_seed) / (ACCESS_CHARS.length() * ACCESS_CHARS.length())) % ACCESS_CHARS.length(), 1)
+	return first + second + third
+
+func access_code_to_seed(code: String) -> int:
+	var clean := code.to_upper().strip_edges().left(3)
+	while clean.length() < 3:
+		clean += "A"
+	var value := 0
+	for index in 3:
+		var char_index := ACCESS_CHARS.find(clean.substr(index, 1))
+		if char_index < 0:
+			char_index = 0
+		value += char_index * int(pow(ACCESS_CHARS.length(), index))
+	return value if value > 0 else 777123
+
 func get_identity_snapshot() -> Dictionary:
 	return {
 		"identity_seed": identity_seed,
+		"access_code": get_access_code(),
 		"name": pet_name,
 		"gender": gender,
 		"faction": faction_id,

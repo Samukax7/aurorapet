@@ -54,6 +54,20 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBox_SelectionFrame"]
+bg_color = Color(0.08, 0.9, 1, 0.12)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.22, 0.95, 1, 0.96)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+shadow_color = Color(0.05, 0.9, 1, 0.36)
+shadow_size = 10
+
 [sub_resource type="StyleBoxFlat" id="StyleBox_SubmenuPanel"]
 bg_color = Color(0.027, 0.075, 0.145, 0.98)
 border_width_left = 4
@@ -307,6 +321,18 @@ tooltip_text = "Comer"
 texture_normal = ExtResource("2_comer")
 ignore_texture_size = true
 stretch_mode = 5
+
+[node name="SelectionFrame" type="Panel" parent="ActionBar/ActionMenu/Comer" unique_id=1819911055]
+z_index = -1
+show_behind_parent = true
+visible = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 158.0
+offset_bottom = 211.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_SelectionFrame")
 
 [node name="Label" type="Label" parent="ActionBar/ActionMenu/Comer" unique_id=166973551]
 layout_mode = 1

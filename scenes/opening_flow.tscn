@@ -168,34 +168,34 @@ visible = false
 
 [node name="MenuPanel" type="Panel" parent="."]
 visible = false
-offset_left = 205.0
-offset_top = 180.0
-offset_right = 690.0
-offset_bottom = 610.0
+offset_left = 70.0
+offset_top = 72.0
+offset_right = 825.0
+offset_bottom = 744.0
 theme_override_styles/panel = SubResource("StyleBox_MenuPanel")
 
 [node name="Title" type="Label" parent="MenuPanel"]
-offset_left = 30.0
-offset_top = 30.0
-offset_right = 455.0
-offset_bottom = 80.0
+offset_left = 40.0
+offset_top = 34.0
+offset_right = 715.0
+offset_bottom = 92.0
 theme_override_colors/font_color = Color(0.15, 0.26, 0.62, 1)
-theme_override_font_sizes/font_size = 34
+theme_override_font_sizes/font_size = 40
 text = "AURORAPETS"
 horizontal_alignment = 1
 
 [node name="Menu" type="VBoxContainer" parent="MenuPanel"]
-offset_left = 80.0
-offset_top = 110.0
-offset_right = 405.0
-offset_bottom = 320.0
+offset_left = 125.0
+offset_top = 145.0
+offset_right = 645.0
+offset_bottom = 500.0
 theme_override_constants/separation = 12
 
 [node name="Start" type="Button" parent="MenuPanel/Menu"]
-custom_minimum_size = Vector2(325, 52)
+custom_minimum_size = Vector2(520, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 theme_override_styles/pressed = SubResource("StyleBox_ButtonHover")
@@ -203,33 +203,115 @@ text = "START"
 
 [node name="Continue" type="Button" parent="MenuPanel/Menu"]
 visible = false
-custom_minimum_size = Vector2(325, 52)
+custom_minimum_size = Vector2(520, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 theme_override_styles/pressed = SubResource("StyleBox_ButtonHover")
 text = "CONTINUE"
 
 [node name="Options" type="Button" parent="MenuPanel/Menu"]
-custom_minimum_size = Vector2(325, 52)
+custom_minimum_size = Vector2(520, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 theme_override_styles/pressed = SubResource("StyleBox_ButtonHover")
 text = "OPTIONS"
 
 [node name="Notice" type="Label" parent="MenuPanel"]
-offset_left = 35.0
-offset_top = 365.0
-offset_right = 450.0
-offset_bottom = 395.0
+offset_left = 55.0
+offset_top = 575.0
+offset_right = 700.0
+offset_bottom = 655.0
 theme_override_colors/font_color = Color(0.28, 0.4, 0.58, 1)
 theme_override_font_sizes/font_size = 20
 text = "D-PAD: NAVEGAR   •   VERDE: CONFIRMAR"
+horizontal_alignment = 1
+
+[node name="AccessCodePanel" type="Panel" parent="."]
+visible = false
+offset_left = 100.0
+offset_top = 125.0
+offset_right = 795.0
+offset_bottom = 640.0
+theme_override_styles/panel = SubResource("StyleBox_FactionPanel")
+
+[node name="Title" type="Label" parent="AccessCodePanel"]
+offset_left = 35.0
+offset_top = 30.0
+offset_right = 660.0
+offset_bottom = 78.0
+theme_override_colors/font_color = Color(0.75, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "CHAVE DE ACESSO CÓSMICA"
+horizontal_alignment = 1
+
+[node name="Body" type="Label" parent="AccessCodePanel"]
+offset_left = 45.0
+offset_top = 105.0
+offset_right = 650.0
+offset_bottom = 180.0
+theme_override_colors/font_color = Color(0.82, 0.92, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Digite a chave de 3 caracteres do protótipo.\nA chave gera uma identidade procedural a partir da seed."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Code" type="LineEdit" parent="AccessCodePanel"]
+offset_left = 245.0
+offset_top = 215.0
+offset_right = 450.0
+offset_bottom = 275.0
+theme_override_colors/font_color = Color(1, 0.84, 0.34, 1)
+theme_override_colors/caret_color = Color(0.45, 0.95, 0.86, 1)
+theme_override_font_sizes/font_size = 32
+placeholder_text = "1WX"
+max_length = 3
+alignment = 1
+
+[node name="Message" type="Label" parent="AccessCodePanel"]
+offset_left = 45.0
+offset_top = 300.0
+offset_right = 650.0
+offset_bottom = 350.0
+theme_override_colors/font_color = Color(0.63, 0.84, 0.93, 1)
+theme_override_font_sizes/font_size = 16
+text = "DIGITE 3 CARACTERES PARA GERAR O PET"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Load" type="Button" parent="AccessCodePanel"]
+offset_left = 85.0
+offset_top = 385.0
+offset_right = 300.0
+offset_bottom = 445.0
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBox_Button")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
+text = "CARREGAR"
+
+[node name="Cancel" type="Button" parent="AccessCodePanel"]
+offset_left = 395.0
+offset_top = 385.0
+offset_right = 610.0
+offset_bottom = 445.0
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBox_Button")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
+text = "VOLTAR"
+
+[node name="Hint" type="Label" parent="AccessCodePanel"]
+offset_left = 35.0
+offset_top = 465.0
+offset_right = 660.0
+offset_bottom = 500.0
+theme_override_colors/font_color = Color(0.62, 0.8, 0.93, 1)
+theme_override_font_sizes/font_size = 18
+text = "VERDE: CARREGAR   •   ROSA: VOLTAR"
 horizontal_alignment = 1
 
 [node name="StoryPanel" type="Panel" parent="."]
