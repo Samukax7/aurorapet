@@ -17,6 +17,7 @@ func _ready() -> void:
 	if opening_flow != null:
 		opening_flow.configure(pet_identity, pet_skills, pet_randomizer, pet_ui, $ScreenContent/Deepworld, skill_tree)
 	if pet_ui != null:
+		pet_ui.set_progression_source(pet_skills)
 		pet_ui.action_requested.connect(_on_action_requested)
 	if pet_stats != null:
 		pet_stats.stats_changed.connect(_on_stats_changed)
@@ -205,7 +206,8 @@ func _on_skill_unlocked(skill_id: StringName) -> void:
 func _on_level_up(new_level: int) -> void:
 	print("Nível aumentado: ", new_level)
 	if pet_ui != null:
-		pet_ui.show_progression_message("NÍVEL " + str(new_level))
+		pet_ui.refresh_progression_locks()
+		pet_ui.show_progression_message("NÍVEL %d • NOVO CONTEÚDO DISPONÍVEL" % new_level)
 
 func _on_evolution_completed(new_stage: int, stage_name: StringName, visual_scale: float) -> void:
 	print("Evolução concluída: ", stage_name, " escala=", visual_scale)

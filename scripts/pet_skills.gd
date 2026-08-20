@@ -24,6 +24,26 @@ signal level_up(new_level: int)
 @export_category("Habilidades desbloqueadas")
 @export var unlocked_skills: Array[StringName] = [&"golpe_fraco"]
 
+const CATEGORY_UNLOCK_LEVELS: Dictionary = {
+	&"comer": 1,
+	&"cuidar": 1,
+	&"jogar": 2,
+	&"treinar": 4,
+	&"batalhar": 6,
+}
+
+const ACTION_UNLOCK_LEVELS: Dictionary = {
+	&"fruta_estelar": 1,
+	&"limpar_sujeira": 1,
+	&"nectar_cosmico": 2,
+	&"banquete_nebulosa": 3,
+	&"dar_remedio": 2,
+	&"jokenpo": 2,
+	&"jogo_da_velha": 3,
+	&"dormir": 3,
+	&"2048": 5,
+}
+
 const SKILLS: Dictionary = {
 	&"golpe_fraco": {
 		"name": "Golpe Fraco",
@@ -124,6 +144,22 @@ func _ready() -> void:
 	progression_changed.emit(level, xp)
 	if evolution != null:
 		evolution.sync_with_level(level)
+
+func is_category_unlocked(category: StringName) -> bool:
+	return level >= int(CATEGORY_UNLOCK_LEVELS.get(category, 1))
+
+func is_action_unlocked(action: StringName) -> bool:
+	return level >= int(ACTION_UNLOCK_LEVELS.get(action, CATEGORY_UNLOCK_LEVELS.get(action, 1)))
+
+func get_unlock_level(action: StringName) -> int:
+	if ACTION_UNLOCK_LEVELS.has(action):
+		return int(ACTION_UNLOCK_LEVELS[action])
+	return int(CATEGORY_UNLOCK_LEVELS.get(action, 1))
+
+func get_unlock_message(action: StringName) -> String:
+	if is_action_unlocked(action):
+		return "CONTEÚDO DISPONÍVEL"
+	return "DESBLOQUEIA NO NÍVEL %d" % get_unlock_level(action)
 
 func get_skill(skill_id: StringName) -> Dictionary:
 	return SKILLS.get(skill_id, {}).duplicate(true)

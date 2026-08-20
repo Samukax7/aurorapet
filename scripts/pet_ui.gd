@@ -63,6 +63,7 @@ var _needs_summary_label: Label
 var _progression_label: Label
 var _glow_materials: Array[ShaderMaterial] = []
 var _glow_tween: Tween
+var _pet_skills: PetSkills
 
 func _ready() -> void:
 	_cache_menu_nodes()
@@ -125,6 +126,25 @@ func _connect_menu_buttons() -> void:
 		if not option.pressed.is_connected(_on_submenu_option_pressed):
 			option.pressed.connect(_on_submenu_option_pressed.bind(index))
 
+func set_progression_source(skills: PetSkills) -> void:
+	_pet_skills = skills
+	refresh_progression_locks()
+
+func refresh_progression_locks() -> void:
+	_refresh_selection()
+	_refresh_submenu()
+
+func _is_category_unlocked(action: StringName) -> bool:
+	return _pet_skills == null or _pet_skills.is_category_unlocked(action)
+
+func _is_action_unlocked(action: StringName) -> bool:
+	return _pet_skills == null or _pet_skills.is_action_unlocked(action)
+
+func _unlock_message(action: StringName) -> String:
+	if _pet_skills == null:
+		return "CONTEÚDO DISPONÍVEL"
+	return _pet_skills.get_unlock_message(action)
+
 func _on_menu_slot_pressed(index: int) -> void:
 	selected_index = clampi(index, 0, ACTIONS.size() - 1)
 	confirm_selected()
@@ -151,6 +171,9 @@ func confirm_selected() -> void:
 	if ACTIONS.is_empty():
 		return
 	var action := ACTIONS[selected_index]
+	if not _is_category_unlocked(action):
+		show_progression_message(_unlock_message(action))
+		return
 	if SUBMENU_DEFINITIONS.has(action):
 		open_submenu(action)
 		return
@@ -159,6 +182,9 @@ func confirm_selected() -> void:
 		_hint_label.text = "AÇÃO: " + String(action).to_upper()
 
 func open_submenu(category: StringName) -> void:
+	if not _is_category_unlocked(category):
+		show_progression_message(_unlock_message(category))
+		return
 	if not SUBMENU_DEFINITIONS.has(category):
 		return
 	active_category = category
@@ -190,6 +216,10 @@ func _confirm_submenu_selected() -> void:
 		return
 	var index := clampi(submenu_selected_index, 0, entries.size() - 1)
 	var action: StringName = entries[index]["action"]
+	if not _is_action_unlocked(action):
+		show_progression_message(_unlock_message(action))
+		_refresh_submenu()
+		return
 	var category := active_category
 	close_submenu()
 	action_requested.emit(action)
@@ -265,11 +295,20 @@ func _refresh_selection() -> void:
 	selected_index = clampi(selected_index, 0, ACTIONS.size() - 1)
 	for index in _slots.size():
 		var slot := _slots[index]
+		var action := ACTIONS[index]
 		var is_selected := index == selected_index
-		slot.modulate = Color(1.0, 1.0, 1.0, 1.0 if is_selected else 0.62)
-		slot.scale = Vector2(1.04, 1.04) if is_selected else Vector2.ONE
+		var unlocked := _is_category_unlocked(action)
+		if not unlocked:
+			slot.modulate = Color(0.42, 0.48, 0.62, 0.46 if not is_selected else 0.7)
+		else:
+			slot.modulate = Color(1.0, 1.0, 1.0, 1.0 if is_selected else 0.62)
+		slot.scale = Vector2(1.04, 1.04) if is_selected and unlocked else Vector2.ONE
+		var label := slot.get_node_or_null(^"Label") as Label
+		if label != null:
+			label.text = String(action).to_upper() if unlocked else String(action).to_upper() + "\nNÍVEL " + str(_pet_skills.get_unlock_level(action) if _pet_skills != null else 1)
 	if _selection_label != null:
-		_selection_label.text = String(ACTIONS[selected_index]).to_upper()
+		var selected_action := ACTIONS[selected_index]
+		_selection_label.text = String(selected_action).to_upper() if _is_category_unlocked(selected_action) else _unlock_message(selected_action)
 	_pulse_selected_glow()
 	selection_changed.emit(ACTIONS[selected_index])
 
@@ -278,7 +317,7 @@ func _pulse_selected_glow() -> void:
 		_glow_tween.kill()
 	for material in _glow_materials:
 		material.set_shader_parameter("glow_strength", 0.0)
-	if selected_index < 0 or selected_index >= _glow_materials.size():
+	if selected_index < 0 or selected_index >= _glow_materials.size() or not _is_category_unlocked(ACTIONS[selected_index]):
 		return
 	var selected_material := _glow_materials[selected_index]
 	_glow_tween = create_tween()
@@ -304,18 +343,22 @@ func _refresh_submenu() -> void:
 		if not available:
 			continue
 		var entry: Dictionary = entries[index]
+		var action: StringName = entry["action"]
+		var unlocked := _is_action_unlocked(action)
 		option.texture_normal = load(String(entry["icon"])) as Texture2D
 		option.tooltip_text = String(entry["label"])
 		if label != null:
-			label.text = String(entry["label"])
+			label.text = String(entry["label"]) if unlocked else String(entry["label"]) + "\nNÍVEL " + str(_pet_skills.get_unlock_level(action) if _pet_skills != null else 1)
 		var selected := index == submenu_selected_index
-		option.modulate = Color.WHITE if selected else Color(1.0, 1.0, 1.0, 0.58)
-		option.scale = Vector2(1.06, 1.06) if selected else Vector2.ONE
+		option.modulate = Color.WHITE if selected and unlocked else Color(0.42, 0.48, 0.62, 0.55 if not selected else 0.72) if not unlocked else Color(1.0, 1.0, 1.0, 0.58)
+		option.scale = Vector2(1.06, 1.06) if selected and unlocked else Vector2.ONE
 	if _submenu_hint != null:
 		if entries.is_empty():
 			_submenu_hint.text = "SEM OPÇÕES DISPONÍVEIS"
 		else:
-			_submenu_hint.text = "D-PAD: escolher   •   VERDE: confirmar   •   ROSA: voltar"
+			var selected_entry: Dictionary = entries[clampi(submenu_selected_index, 0, entries.size() - 1)]
+			var selected_action: StringName = selected_entry["action"]
+			_submenu_hint.text = "D-PAD: escolher   •   VERDE: confirmar   •   ROSA: voltar" if _is_action_unlocked(selected_action) else _unlock_message(selected_action)
 
 func _refresh_status_bars() -> void:
 	var values := {

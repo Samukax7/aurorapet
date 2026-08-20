@@ -203,6 +203,21 @@ O XP é concedido por ações de cuidado, jogos e treino. O nível sobe enquanto
 
 `PetEvolution` contém sete estágios: Bebê, Criança, Juvenil, Jovem, Adulto, Forma Máxima e Entidade Cósmica. A escala inicial foi ajustada para `4.0` para corresponder ao enquadramento visual aprovado. As escalas atuais são `4.0`, `4.6`, `5.2`, `6.0`, `7.0`, `8.0` e `9.2`. Os perfis de variantes de olhos, orelhas, asas e cauda são aplicados por estágio, embora ainda faltem assets exclusivos de aura, roupas, acessórios e efeitos para os estágios finais.
 
+### Desbloqueio gradual do menu
+
+O menu acompanha o crescimento do pet. As categorias permanecem visíveis desde o nascimento, mas aparecem apagadas enquanto ainda estão bloqueadas. As opções internas também são liberadas gradualmente, criando objetivos claros sem esconder conteúdo futuro.
+
+| Nível | Conteúdo liberado |
+|---:|---|
+| 1 | Comer, Cuidar, Fruta Estelar e Limpar Sujeira |
+| 2 | Jogar, Jokenpô, Néctar Cósmico e Dar Remédio |
+| 3 | Jogo da Velha, Dormir e Banquete Nebulosa |
+| 4 | Treinar e a árvore de habilidades |
+| 5 | 2048 |
+| 6 | Batalhar |
+
+Uma seleção bloqueada exibe a mensagem `DESBLOQUEIA NO NÍVEL X`, e a confirmação não executa a ação. Ao subir de nível, a `PetUI` atualiza imediatamente o estado visual das categorias e mostra a mensagem `NOVO CONTEÚDO DISPONÍVEL`.
+
 ## 11. Procedimento de teste manual
 
 A validação deve ser feita em blocos, para que uma falha de arte não seja confundida com uma falha de lógica.
