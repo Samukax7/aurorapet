@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://d4gcppka6konv"]
 
 [ext_resource type="PackedScene" uid="uid://dgolwmtivhayv" path="res://scenes/console_frame.tscn" id="1_o5qli"]
+[ext_resource type="Script" path="res://scripts/main_responsive.gd" id="2_responsive"]
 
 [node name="AuroraPet" type="Node2D" unique_id=167681479]
+script = ExtResource("2_responsive")
 
 [node name="Console Base" parent="." unique_id=1879046692 instance=ExtResource("1_o5qli")]
 position = Vector2(540, 325)

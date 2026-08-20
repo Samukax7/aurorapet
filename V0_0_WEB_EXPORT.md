@@ -18,6 +18,9 @@ O navegador precisa oferecer WebAssembly e WebGL 2.0 para executar o export Web 
 | Versão | `0.0` |
 | Áudio | Nenhum recurso ou nó de áudio presente; o menu informa `SEM ÁUDIO` |
 | Redimensionamento | Adaptativo ao navegador (`html/canvas_resize_policy=2`) |
+| Viewport lógico | `1080 × 650` para composição inicial |
+| Canvas Web | `100vw × 100vh`, preenchendo a janela inteira |
+| Console | Escala proporcional calculada dinamicamente em `main_responsive.gd` |
 | Orientação sugerida | Paisagem, adequada ao formato do console |
 | Threads | Desativadas para facilitar hospedagem e compatibilidade móvel |
 | PWA | Ativado para permitir instalação na tela inicial |
@@ -25,6 +28,8 @@ O navegador precisa oferecer WebAssembly e WebGL 2.0 para executar o export Web 
 | Ícones PWA | 144, 180 e 512 pixels |
 | Preset salvo em | `export_presets.cfg` |
 | Saída padrão | `build/web/V_0_0/index.html` |
+
+O canvas Web agora ocupa `100vw × 100vh`. A cena Main calcula a escala usando a menor proporção entre a janela e o design de `1080 × 650`, centralizando o console e preservando suas proporções. Em telas mais largas ou mais altas, o fundo azul-marinho preenche as áreas extras sem deixar o canvas cinza ou branco. Em celulares, a orientação paisagem evita que o console seja cortado; a escala reduz proporcionalmente para caber na menor dimensão.
 
 A exportação Web usa `html/export_icon=true`, portanto o ícone do projeto é incluído como favicon. Os três tamanhos quadrados também foram configurados para o manifesto PWA; o Godot usa esses arquivos quando o jogador adiciona a versão à tela inicial do celular.[2]
 
@@ -101,7 +106,7 @@ O projeto já contém:
 4. O aviso visual `V 0.0 • PROTÓTIPO EM DESENVOLVIMENTO • SEM ÁUDIO` no menu inicial.
 5. Threads Web desativadas para simplificar a hospedagem.
 
-A exportação automática não foi concluída nesta máquina porque os templates Web do Godot 4.7.1 ainda não estão instalados. O preset está pronto; basta instalar os templates e executar o procedimento acima.
+A exportação Web V 0.0 foi validada com o Godot 4.7.1. O pacote responsivo foi testado em uma viewport de `1280 × 1100`: o console ficou centralizado, ampliado e ocupou aproximadamente 90% da largura, enquanto o fundo preencheu toda a área restante.
 
 ## Referências
 
