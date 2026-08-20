@@ -240,6 +240,8 @@ func _refresh_faction() -> void:
 func _confirm_faction() -> void:
 	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
 	selected_faction = factions[faction_selected_index]
+	if pet_skills != null:
+		pet_skills.reset_for_new_pet()
 	if pet_identity != null:
 		pet_identity.generate_new_identity_for_faction(selected_faction)
 	if pet_randomizer != null:
@@ -282,6 +284,8 @@ func _show_pet_status() -> void:
 	status_hint.text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
 
 func _continue_saved_pet() -> void:
+	if pet_skills != null:
+		pet_skills.reset_for_new_pet()
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if file == null:
 		_show_story(0)

@@ -201,6 +201,20 @@ func apply_identity_bias(bias: Dictionary) -> void:
 	intelligence = clampi(intelligence + int(bias.get("inteligencia", 0)), 0, 100)
 	_try_unlock_available_skills()
 
+## Reinicia a progressão para o nascimento de um novo pet.
+## A identidade escolhida aplica o bônus de linhagem depois deste reset.
+func reset_for_new_pet() -> void:
+	level = 1
+	xp = 0
+	total_xp = 0
+	strength = 10
+	defense = 10
+	agility = 10
+	intelligence = 10
+	unlocked_skills = [&"golpe_fraco"]
+	_emit_skill_state()
+	progression_changed.emit(level, xp)
+
 func get_attribute(attribute: StringName) -> int:
 	match attribute:
 		&"forca": return strength
