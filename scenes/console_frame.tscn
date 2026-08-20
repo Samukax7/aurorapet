@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/arvore_de_habilidades.tscn" id="9_skill_tree"]
 [ext_resource type="PackedScene" path="res://scenes/opening_flow.tscn" id="10_opening"]
 [ext_resource type="PackedScene" path="res://scenes/jogo_da_velha.tscn" id="11_ttt"]
+[ext_resource type="PackedScene" path="res://scenes/jokenpo.tscn" id="12_rps"]
 
 [node name="Console Base" type="Sprite2D" unique_id=1879046692]
 texture = ExtResource("1_5l2bk")
@@ -45,6 +46,9 @@ layout_mode = 1
 layout_mode = 1
 
 [node name="JogoDaVelha" parent="ScreenContent" instance=ExtResource("11_ttt")]
+layout_mode = 1
+
+[node name="Jokenpo" parent="ScreenContent" instance=ExtResource("12_rps")]
 layout_mode = 1
 
 [node name="Tela" type="Sprite2D" parent="." unique_id=1217496962]

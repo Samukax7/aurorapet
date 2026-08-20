@@ -12,6 +12,7 @@ extends Sprite2D
 @onready var skill_tree: ArvoreDeHabilidades = $ScreenContent/ArvoreDeHabilidades
 @onready var opening_flow: OpeningFlow = $ScreenContent/OpeningFlow
 @onready var jogo_da_velha: JogoDaVelha = $ScreenContent/JogoDaVelha
+@onready var jokenpo: Jokenpo = $ScreenContent/Jokenpo
 
 func _ready() -> void:
 	_connect_console_buttons()
@@ -35,6 +36,8 @@ func _ready() -> void:
 		skill_tree.training_requested.connect(_on_training_requested)
 	if jogo_da_velha != null:
 		jogo_da_velha.match_completed.connect(_on_tic_tac_toe_completed)
+	if jokenpo != null:
+		jokenpo.match_completed.connect(_on_jokenpo_completed)
 	if pet_evolution != null:
 		pet_evolution.evolution_completed.connect(_on_evolution_completed)
 	if pet_identity != null:
@@ -79,6 +82,20 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		elif event.is_action_pressed("ui_cancel"):
 			_close_tic_tac_toe()
+			get_viewport().set_input_as_handled()
+		return
+	if jokenpo != null and jokenpo.visible:
+		if event.is_action_pressed("ui_left") or event.is_action_pressed("ui_up"):
+			jokenpo.handle_direction(Vector2i.LEFT)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_right") or event.is_action_pressed("ui_down"):
+			jokenpo.handle_direction(Vector2i.RIGHT)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_accept"):
+			jokenpo.confirm()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_cancel"):
+			_close_jokenpo()
 			get_viewport().set_input_as_handled()
 		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_R:
@@ -146,6 +163,9 @@ func _on_green_pressed() -> void:
 	if jogo_da_velha != null and jogo_da_velha.visible:
 		jogo_da_velha.confirm()
 		return
+	if jokenpo != null and jokenpo.visible:
+		jokenpo.confirm()
+		return
 	_confirm_active_selection()
 
 func _on_yellow_pressed() -> void:
@@ -162,6 +182,9 @@ func _on_pink_pressed() -> void:
 	if jogo_da_velha != null and jogo_da_velha.visible:
 		_close_tic_tac_toe()
 		return
+	if jokenpo != null and jokenpo.visible:
+		_close_jokenpo()
+		return
 	if skill_tree != null and skill_tree.visible:
 		skill_tree.close_tree()
 	elif pet_ui != null and pet_ui.submenu_visible:
@@ -175,6 +198,8 @@ func _move_active_selection(direction: Vector2i) -> void:
 		return
 	if jogo_da_velha != null and jogo_da_velha.visible:
 		jogo_da_velha.handle_direction(direction)
+	elif jokenpo != null and jokenpo.visible:
+		jokenpo.handle_direction(direction)
 	elif skill_tree != null and skill_tree.visible:
 		skill_tree.move_selection(direction)
 	elif pet_ui != null:
@@ -183,6 +208,8 @@ func _move_active_selection(direction: Vector2i) -> void:
 func _confirm_active_selection() -> void:
 	if jogo_da_velha != null and jogo_da_velha.visible:
 		jogo_da_velha.confirm()
+	elif jokenpo != null and jokenpo.visible:
+		jokenpo.confirm()
 	elif skill_tree != null and skill_tree.visible:
 		skill_tree.confirm_selected()
 	elif pet_ui != null:
@@ -225,6 +252,9 @@ func _on_action_requested(action: StringName) -> void:
 	if action == &"jogo_da_velha":
 		_open_tic_tac_toe()
 		return
+	if action == &"jokenpo":
+		_open_jokenpo()
+		return
 	if pet_stats != null:
 		pet_stats.perform_action(action)
 	if pet_skills != null and pet_stats != null:
@@ -256,6 +286,29 @@ func _close_tic_tac_toe() -> void:
 		pet_ui.visible = true
 
 func _on_tic_tac_toe_completed(result: StringName, reward: int) -> void:
+	if pet_skills != null:
+		pet_skills.add_xp(reward)
+
+func _open_jokenpo() -> void:
+	if jokenpo == null:
+		return
+	if pet_ui != null:
+		pet_ui.visible = false
+	var deepworld := $ScreenContent/Deepworld as Node2D
+	if deepworld != null:
+		deepworld.visible = false
+	jokenpo.open_game()
+
+func _close_jokenpo() -> void:
+	if jokenpo != null:
+		jokenpo.close_game()
+	var deepworld := $ScreenContent/Deepworld as Node2D
+	if deepworld != null:
+		deepworld.visible = true
+	if pet_ui != null:
+		pet_ui.visible = true
+
+func _on_jokenpo_completed(result: StringName, reward: int) -> void:
 	if pet_skills != null:
 		pet_skills.add_xp(reward)
 
