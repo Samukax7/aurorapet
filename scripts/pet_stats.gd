@@ -2,14 +2,14 @@ extends Node
 class_name PetStats
 
 const ACTION_XP: Dictionary = {
-	&"fruta_estelar": 5,
-	&"nectar_cosmico": 5,
-	&"banquete_nebulosa": 5,
-	&"dar_remedio": 5,
-	&"limpar_sujeira": 5,
-	&"dormir": 5,
+	&"fruta_estelar": 8,
+	&"nectar_cosmico": 8,
+	&"banquete_nebulosa": 8,
+	&"dar_remedio": 8,
+	&"limpar_sujeira": 8,
+	&"dormir": 8,
 	&"jokenpo": 15,
-	&"jogo_da_velha": 18,
+	&"jogo_da_velha": 20,
 	&"2048": 20,
 	&"treinar": 25,
 	&"batalhar": 0,
@@ -200,7 +200,7 @@ func get_action_feedback(action: StringName) -> String:
 		&"limpar_sujeira": return "SUJEIRA LIMPA: +35 HIGIENE"
 		&"dormir": return "SONO INICIADO: ENERGIA RECUPERANDO"
 		&"jokenpo": return "JOKENPÔ: +18 HUMOR / +15 XP"
-		&"jogo_da_velha": return "JOGO DA VELHA: +20 HUMOR / +18 XP"
+		&"jogo_da_velha": return "JOGO DA VELHA: +20 HUMOR / +20 XP"
 		&"2048": return "2048: +22 HUMOR / +20 XP"
 		&"treinar": return "TREINO: +4 DISCIPLINA / +25 XP"
 		&"batalhar": return "EM BREVE: BATALHAS"

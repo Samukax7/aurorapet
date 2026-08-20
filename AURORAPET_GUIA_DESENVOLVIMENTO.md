@@ -2,7 +2,7 @@
 
 > Documento de referência para continuar o desenvolvimento do AuroraPet no Godot 4.7.1. Ele consolida o que está implementado no repositório, descreve como executar e testar o protótipo e separa as próximas tarefas de **lógica** das tarefas de **level design**.
 
-**Estado de referência:** protótipo Godot validado em 19 de agosto de 2026.  
+**Estado de referência:** protótipo Godot validado em 20 de agosto de 2026.
 **Repositório:** [Samukax7/aurorapet](https://github.com/Samukax7/aurorapet)  
 **Engine:** Godot 4.7.1 stable  
 **Cena de entrada:** `scenes/main.tscn`
@@ -165,14 +165,14 @@ O decaimento é intencionalmente tranquilo e ocorre por intervalos configurávei
 
 | Categoria | Ação | Efeito principal | XP |
 |---|---|---|---:|
-| Comer | Fruta Estelar | `+18` fome, `+2` humor, `+1` saúde, `+1` peso | 5 |
-| Comer | Néctar Cósmico | `+28` fome, `+4` energia, `+2` saúde, `+2` peso | 5 |
-| Comer | Banquete Nebulosa | `+42` fome, `+6` humor, `+3` saúde, `+4` peso | 5 |
-| Cuidar | Dar Remédio | Trata doença ou restaura saúde | 5 |
-| Cuidar | Limpar Sujeira | `+35` higiene, `+14` saúde, `+8` humor, `-3` energia | 5 |
-| Cuidar | Dormir | Recupera energia e humor durante 12 segundos | 5 |
+| Comer | Fruta Estelar | `+18` fome, `+2` humor, `+1` saúde, `+1` peso | 8 |
+| Comer | Néctar Cósmico | `+28` fome, `+4` energia, `+2` saúde, `+2` peso | 8 |
+| Comer | Banquete Nebulosa | `+42` fome, `+6` humor, `+3` saúde, `+4` peso | 8 |
+| Cuidar | Dar Remédio | Trata doença ou restaura saúde | 8 |
+| Cuidar | Limpar Sujeira | `+35` higiene, `+14` saúde, `+8` humor, `-3` energia | 8 |
+| Cuidar | Dormir | Recupera energia e humor durante 12 segundos | 8 |
 | Jogar | Jokenpô | `+18` humor, custo de energia e fome | 15 |
-| Jogar | Jogo da Velha | `+20` humor, custo de energia e fome | 18 |
+| Jogar | Jogo da Velha | `+20` humor, custo de energia e fome | 20 |
 | Jogar | 2048 | `+22` humor, custo de energia e fome | 20 |
 | Treinar | Treino | `+4` disciplina, `+3` saúde, custo de energia e fome | 25 |
 | Batalhar | Em breve | Ainda sem efeito de combate | 0 |
@@ -200,6 +200,8 @@ O `ConsoleController` é a camada de integração. Ele recebe ações da UI, enc
 `PetSkills` possui nível, XP atual, XP total e quatro atributos treináveis: Força, Defesa, Agilidade e Inteligência. A árvore atual contém oito habilidades: quatro iniciais e quatro avançadas. O desbloqueio verifica nível, XP total, atributo mínimo e pré-requisito.
 
 O XP é concedido por ações de cuidado, jogos e treino. O nível sobe enquanto o XP atual alcança `level * 100`. Ao subir de nível, o sistema sincroniza `PetEvolution` e tenta desbloquear habilidades disponíveis.
+
+Para reduzir a repetição no início sem tornar a progressão instantânea, cada ação básica de cuidado concede 8 XP. Com esse valor, o nível 2 exige aproximadamente 13 cuidados, o nível 3 exige aproximadamente 38 cuidados acumulados desde o nascimento e o nível 4 exige aproximadamente 75 cuidados acumulados, caso o jogador não utilize os minigames. Jokenpô continua concedendo 15/5/2 XP por vitória, empate e derrota; Jogo da Velha concede 20/8/3 XP; e Treinar concede 25 XP.
 
 `PetEvolution` contém sete estágios: Bebê, Criança, Juvenil, Jovem, Adulto, Forma Máxima e Entidade Cósmica. A escala inicial foi ajustada para `4.0` para corresponder ao enquadramento visual aprovado. As escalas atuais são `4.0`, `4.6`, `5.2`, `6.0`, `7.0`, `8.0` e `9.2`. Os perfis de variantes de olhos, orelhas, asas e cauda são aplicados por estágio, embora ainda faltem assets exclusivos de aura, roupas, acessórios e efeitos para os estágios finais.
 
@@ -236,7 +238,7 @@ Use o D-pad para percorrer as cinco categorias. O item selecionado deve acender 
 
 ### Teste de necessidades
 
-Execute uma ação de comida, limpeza, remédio, sono, jogo e treino. Confira as quatro barras e o resumo de higiene, disciplina, peso, doença e sono. Pressione o botão amarelo para esconder e exibir as barras. Para testar criticidade, reduza temporariamente um valor no Inspector ou utilize um método de debug; confirme a chamada de atenção e a proteção da saúde fora da criticidade.
+Execute uma ação de comida, limpeza, remédio, sono, jogo e treino. Confira as quatro barras e o resumo de higiene, disciplina, peso, doença e sono. Confirme que cada cuidado básico concede 8 XP, que o Jogo da Velha exibe a mesma recompensa que entrega e que o treino concede 25 XP. Pressione o botão amarelo para esconder e exibir as barras. Para testar criticidade, reduza temporariamente um valor no Inspector ou utilize um método de debug; confirme a chamada de atenção e a proteção da saúde fora da criticidade.
 
 ### Teste de progressão
 
