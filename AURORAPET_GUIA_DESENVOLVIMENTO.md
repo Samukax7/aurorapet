@@ -62,6 +62,8 @@ graph TD
 
 A posição atual do pet no Deepworld é `Vector2(0, 488)` dentro de `Paisagem`, com escala inicial `Vector2(4, 4)`. A plataforma fixa utiliza `z_index = 2`, o pet utiliza `z_index = 3`, a UI fica acima dessas camadas e a moldura da tela permanece à frente. O fundo usa `z_index = 1`, evitando que o corpo do console encubra o cenário.
 
+A logo da abertura é filha de `ScreenContent`, mas sua centralização deve ser calculada pelo tamanho efetivo desse retângulo, não por uma coordenada fixa baseada apenas na cena `opening_flow.tscn`. O `OpeningFlow` calcula o centro como `(size - logo_size) / 2`, e o `ScreenContent` aplica a escala final do frame do console somente depois dessa composição.
+
 ## 4. Estrutura de pastas
 
 ```text
