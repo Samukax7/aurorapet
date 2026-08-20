@@ -6,6 +6,7 @@ extends Node2D
 ## A cena continua sendo a fonte principal: nenhum nó é criado ou removido.
 
 signal palette_changed(pair_index: int, palette_name: StringName, base_color: Color, complementary_color: Color)
+signal reaction_started(action: StringName, reaction_id: StringName)
 
 const EYES_PATH := "res://assets/pet_modular/modulos/olhos/eye_%02d.png"
 const EARS_PATH := "res://assets/pet_modular/modulos/orelhas/ear_%02d.png"
@@ -50,6 +51,11 @@ const COSMIC_PALETTE: Array[Dictionary] = [
 @export_category("Ajuste individual das caudas")
 @export var apply_tail_variant_scales := true
 
+@export_category("Feedback visual")
+@export var reaction_animation_state: StringName = &"idle"
+@export var reaction_shake_pixels := 4.0
+@export var reaction_particle_duration := 0.75
+
 @export_category("Peças incluídas no sorteio")
 @export var randomize_eyes := true
 @export var randomize_ears := true
@@ -70,8 +76,11 @@ const COSMIC_PALETTE: Array[Dictionary] = [
 
 var _randomizer := RandomNumberGenerator.new()
 var _palette_randomizer := RandomNumberGenerator.new()
+var _reaction_tween: Tween
+var _reaction_origin := Vector2.ZERO
 
 func _ready() -> void:
+	_reaction_origin = position
 	if Engine.is_editor_hint():
 		if randomize_in_editor:
 			call_deferred("randomize_pet")
@@ -82,6 +91,33 @@ func _ready() -> void:
 		randomize_pet()
 	if randomize_palette_on_ready:
 		reroll_palette()
+
+func play_reaction(action: StringName, reaction_id: StringName = &"") -> void:
+	var selected_reaction := reaction_id if not reaction_id.is_empty() else action
+	reaction_animation_state = selected_reaction
+	if _reaction_tween != null:
+		_reaction_tween.kill()
+	position = _reaction_origin
+	_reaction_tween = create_tween()
+	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(-reaction_shake_pixels, 0), 0.06)
+	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(reaction_shake_pixels, 0), 0.10)
+	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(-reaction_shake_pixels * 0.5, 0), 0.08)
+	_reaction_tween.tween_property(self, "position", _reaction_origin, 0.08)
+	var particle_path := "ReactionParticles/" + String(selected_reaction)
+	var particles := get_node_or_null(NodePath(particle_path)) as CPUParticles2D
+	if particles != null:
+		particles.lifetime = reaction_particle_duration
+		particles.restart()
+	var animation_player := get_node_or_null(^"AnimationPlayer") as AnimationPlayer
+	if animation_player != null and animation_player.has_animation(selected_reaction):
+		animation_player.play(selected_reaction)
+	reaction_started.emit(action, selected_reaction)
+
+func set_sleeping_visual(value: bool) -> void:
+	if value:
+		self_modulate = Color(0.72, 0.78, 1.0, 1.0)
+	else:
+		self_modulate = Color.WHITE
 
 ## Sorteia somente as peças habilitadas e mantém os nós da cena intactos.
 func randomize_pet() -> void:

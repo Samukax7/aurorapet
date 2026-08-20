@@ -163,7 +163,11 @@ Para adicionar animação de fundo, os arquivos exportados do Krita devem conser
 
 `PetStats` implementa o ciclo de cuidado inspirado em V-Pets clássicos. Os valores principais exibidos na interface são fome, energia, humor e saúde. O sistema também mantém higiene, disciplina, peso, doença, sono e histórico de cuidado.
 
-No primeiro nascimento, o loop tutorial começa com fome em 20% e energia em 30%. O objetivo inicial é alimentar o pet até a fome chegar a 100% e, em seguida, usar Cuidar > Dormir. Quando o ciclo de sono de 12 segundos termina, o tutorial concede XP suficiente para alcançar o nível 2 e libera Jogo da Velha como a primeira atividade da categoria Jogar.
+No primeiro nascimento, o loop tutorial começa com fome em 20% e energia em 30%. O objetivo inicial é alimentar o pet até a fome chegar a 100% e, em seguida, usar Cuidar > Dormir. Quando a energia volta a 100%, o tutorial concede XP suficiente para alcançar o nível 2 e libera Jogo da Velha como a primeira atividade da categoria Jogar.
+
+As respostas visuais são separadas por origem. Mensagens de sistema usam um retângulo ciano acima da cabeça do pet; falas do pet usam um balão claro deslocado para a esquerda da cabeça. Cada ação emite `reaction_requested(action, reaction_id)`, atualiza `current_reaction` e dispara shake com uma partícula dedicada. O estado `reaction_animation_state` já está preparado para substituir as partículas por animações no `AnimationPlayer` quando as animações finais forem criadas.
+
+As necessidades especiais usam dois sinais. Após três refeições bem-sucedidas, um marcador de sujeira aparece na tela e é removido por Limpar Sujeira. Periodicamente, o pet pode emitir uma vontade de brincar ou treinar; o indicador combina `!` com um símbolo específico da atividade. A primeira implementação usa Jogo da Velha e Força como exemplos, mantendo a tabela de eventos aberta para expansão futura.
 
 O decaimento é intencionalmente tranquilo e ocorre por intervalos configuráveis, com intervalo padrão de um segundo. A saúde permanece protegida fora dos estados críticos. Resistência derivada dos atributos de treino reduz a velocidade efetiva de queda. Não existe morte permanente nesta fase do protótipo.
 
@@ -174,14 +178,14 @@ O decaimento é intencionalmente tranquilo e ocorre por intervalos configurávei
 | Comer | Banquete Nebulosa | `+42` fome, `+6` humor, `+3` saúde, `+4` peso | 8 |
 | Cuidar | Dar Remédio | Trata doença ou restaura saúde | 8 |
 | Cuidar | Limpar Sujeira | `+35` higiene, `+14` saúde, `+8` humor, `-3` energia | 8 |
-| Cuidar | Dormir | Recupera energia e humor durante 12 segundos | 8 |
+| Cuidar | Dormir | Recupera energia e humor até a energia chegar a 100%; bloqueia as funções durante o processo | 8 |
 | Jogar | Jokenpô | `+18` humor, custo de energia e fome | 15 |
 | Jogar | Jogo da Velha | `+20` humor, custo de energia e fome | 20 |
 | Jogar | 2048 | `+22` humor, custo de energia e fome | 20 |
 | Treinar | Treino | `+4` disciplina, `+3` saúde, custo de energia e fome | 25 |
 | Batalhar | Em breve | Ainda sem efeito de combate | 0 |
 
-O sistema mantém chamadas de atenção quando uma necessidade entra em criticidade. A janela exportada de resposta é de quinze minutos. Se o jogador não responde, são registrados erro de cuidado, chamada perdida e perda gradual de disciplina. Higiene crítica prolongada pode gerar doença; sono cria um estado de recuperação e impede o decaimento normal enquanto está ativo.
+O sistema mantém chamadas de atenção quando uma necessidade entra em criticidade. A janela exportada de resposta é de quinze minutos. Se o jogador não responde, são registrados erro de cuidado, chamada perdida e perda gradual de disciplina. Higiene crítica prolongada pode gerar doença; sono cria um estado de recuperação, impede o decaimento normal e bloqueia todas as ações até a energia chegar a 100%. Durante o sono, a PetUI reduz visualmente o menu, exibe `Z z z` e recusa ações com uma mensagem de sistema.
 
 ## 9. Menu, submenus e controles
 

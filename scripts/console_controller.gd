@@ -26,10 +26,17 @@ func _ready() -> void:
 		pet_stats.needs_changed.connect(_on_needs_changed)
 		pet_stats.attention_changed.connect(_on_attention_changed)
 		pet_stats.illness_changed.connect(_on_illness_changed)
+		pet_stats.reaction_requested.connect(_on_reaction_requested)
+		pet_stats.action_blocked.connect(_on_action_blocked)
+		pet_stats.poop_state_changed.connect(_on_poop_state_changed)
+		pet_stats.special_need_changed.connect(_on_special_need_changed)
+		pet_stats.sleep_state_changed.connect(_on_sleep_state_changed)
 		pet_stats.newborn_tutorial_step_changed.connect(_on_newborn_tutorial_step_changed)
 		pet_stats.newborn_tutorial_completed.connect(_on_newborn_tutorial_completed)
 		_on_stats_changed(pet_stats.hunger, pet_stats.energy, pet_stats.mood, pet_stats.health)
 		_on_needs_changed(pet_stats.get_needs_snapshot())
+		_on_poop_state_changed(pet_stats.poop_visible)
+		_on_sleep_state_changed(pet_stats.is_sleeping)
 	if pet_skills != null:
 		pet_skills.skill_unlocked.connect(_on_skill_unlocked)
 		pet_skills.level_up.connect(_on_level_up)
@@ -224,8 +231,8 @@ func _open_skill_tree() -> void:
 	skill_tree.open_tree()
 
 func _on_training_requested() -> void:
-	if pet_stats != null:
-		pet_stats.perform_action(&"treinar")
+	if pet_stats != null and not pet_stats.perform_action(&"treinar"):
+		return
 	if pet_skills != null:
 		pet_skills.add_xp(25)
 		pet_skills.train_attribute(&"forca", 1)
@@ -244,6 +251,9 @@ func _show_identity_intro() -> void:
 	pet_ui.show_progression_message("NASCEU: %s • %s" % [pet_identity.pet_name.to_upper(), pet_identity.lineage_label.to_upper()])
 
 func _on_action_requested(action: StringName) -> void:
+	if pet_stats != null and pet_stats.is_sleeping:
+		pet_stats.perform_action(action)
+		return
 	if action == &"treinar":
 		_open_skill_tree()
 		return
@@ -257,8 +267,8 @@ func _on_action_requested(action: StringName) -> void:
 	if action == &"jokenpo":
 		_open_jokenpo()
 		return
-	if pet_stats != null:
-		pet_stats.perform_action(action)
+	if pet_stats != null and not pet_stats.perform_action(action):
+		return
 	if pet_skills != null and pet_stats != null:
 		var action_xp := pet_stats.get_action_xp(action)
 		if action_xp > 0:
@@ -288,6 +298,8 @@ func _close_tic_tac_toe() -> void:
 		pet_ui.visible = true
 
 func _on_tic_tac_toe_completed(result: StringName, reward: int) -> void:
+	if pet_stats != null:
+		pet_stats.perform_action(&"jogo_da_velha")
 	if pet_skills != null:
 		pet_skills.add_xp(reward)
 
@@ -311,6 +323,8 @@ func _close_jokenpo() -> void:
 		pet_ui.visible = true
 
 func _on_jokenpo_completed(result: StringName, reward: int) -> void:
+	if pet_stats != null:
+		pet_stats.perform_action(&"jokenpo")
 	if pet_skills != null:
 		pet_skills.add_xp(reward)
 
@@ -356,11 +370,43 @@ func _on_attention_changed(active: bool, reason: StringName) -> void:
 	if pet_ui == null:
 		return
 	if active and pet_stats != null:
-		pet_ui.show_progression_message(pet_stats.get_attention_message())
+		pet_ui.show_system_message(pet_stats.get_attention_message())
 	elif not active:
-		pet_ui.show_progression_message("NECESSIDADES ESTÁVEIS")
+		pet_ui.show_system_message("NECESSIDADES ESTÁVEIS")
 
 func _on_illness_changed(is_sick: bool) -> void:
 	if pet_ui == null:
 		return
-	pet_ui.show_progression_message("O PET ADOECEU" if is_sick else "DOENÇA TRATADA")
+	pet_ui.show_system_message("O PET ADOECEU" if is_sick else "DOENÇA TRATADA")
+
+func _on_reaction_requested(action: StringName, reaction_id: StringName) -> void:
+	if pet_randomizer != null:
+		pet_randomizer.play_reaction(action, reaction_id)
+	if pet_ui != null:
+		pet_ui.show_pet_message(pet_ui.get_pet_reaction_message(reaction_id))
+
+func _on_action_blocked(_action: StringName, message: String) -> void:
+	if pet_ui != null:
+		pet_ui.show_system_message(message)
+
+func _on_poop_state_changed(visible: bool) -> void:
+	if pet_ui != null:
+		pet_ui.set_poop_visible(visible)
+		if visible:
+			pet_ui.show_system_message("O PET FEZ COCÔ • LIMPE A SUJEIRA")
+
+func _on_special_need_changed(need: StringName, wish: StringName, active: bool) -> void:
+	if pet_ui != null:
+		pet_ui.set_special_need(need, wish, active)
+		if active:
+			pet_ui.show_pet_message(pet_ui.get_special_need_message(need, wish))
+
+func _on_sleep_state_changed(sleeping: bool) -> void:
+	if pet_randomizer != null:
+		pet_randomizer.set_sleeping_visual(sleeping)
+	if pet_ui != null:
+		pet_ui.set_sleeping(sleeping)
+		if sleeping:
+			pet_ui.show_system_message("SONO ATIVO • FUNÇÕES BLOQUEADAS ATÉ ENERGIA 100%")
+		else:
+			pet_ui.show_system_message("PET ACORDOU • FUNÇÕES LIBERADAS")

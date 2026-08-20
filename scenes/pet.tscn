@@ -2,16 +2,14 @@
 
 [ext_resource type="Texture2D" uid="uid://bx1b7qsf6wpaw" path="res://assets/pet_modular/base/aurorapet-neutral-pet-base.png" id="1_mdqe4"]
 [ext_resource type="Script" uid="uid://gxa74cqwghhi" path="res://scripts/pet_randomizer.gd" id="2_randomizer"]
+[ext_resource type="Texture2D" uid="uid://jkqtqcsqdu1w" path="res://assets/pet_modular/modulos/caudas/tail_02.png" id="4_jn77u"]
 [ext_resource type="Texture2D" uid="uid://blqukn8icucj7" path="res://assets/pet_modular/modulos/asas/wing_01.png" id="4_wings"]
-[ext_resource type="Texture2D" uid="uid://bxurs5nc8opsd" path="res://assets/pet_modular/modulos/orelhas/ear_01.png" id="5_ears"]
-[ext_resource type="Texture2D" uid="uid://dw4n73jmnk8db" path="res://assets/pet_modular/modulos/olhos/eye_01.png" id="6_eyes"]
+[ext_resource type="Texture2D" uid="uid://c21138vlgkcft" path="res://assets/pet_modular/modulos/orelhas/ear_02.png" id="5_ekye6"]
+[ext_resource type="Texture2D" uid="uid://kcigl7k8gcsw" path="res://assets/pet_modular/modulos/olhos/eye_04.png" id="6_ekye6"]
 [ext_resource type="Script" uid="uid://qtkrr3gxxe5r" path="res://scripts/pet_stats.gd" id="7_stats"]
 [ext_resource type="Script" uid="uid://cvgb8mn8arkrh" path="res://scripts/pet_skills.gd" id="8_skills"]
 [ext_resource type="Script" uid="uid://dt6qlkfececri" path="res://scripts/pet_evolution.gd" id="9_evolution"]
-[ext_resource type="Script" path="res://scripts/pet_identity.gd" id="10_identity"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6nmc3"]
-load_path = "res://.godot/imported/tail_01.png-576d5151404532ed12999d5e969e5de8.ctex"
+[ext_resource type="Script" uid="uid://uhhpcmmce7b1" path="res://scripts/pet_identity.gd" id="10_identity"]
 
 [sub_resource type="Animation" id="Animation_8wqpi"]
 length = 0.001
@@ -61,7 +59,48 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-2, -34)]
+"values": [Vector2(-13.000001, -49)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Orelhas:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.99999905, -80.99999)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Asas:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.56, 0.57)]
+}
+
+[sub_resource type="Animation" id="Animation_jn77u"]
+resource_name = "asas"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Asas:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.56, 0.57), Vector2(0.23999962, 0.57), Vector2(0.5200002, 0.57), Vector2(0.23999959, 0.57), Vector2(0.51999867, 0.57)]
 }
 
 [sub_resource type="Animation" id="Animation_axfbl"]
@@ -136,31 +175,43 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Orelhas:scale")
+tracks/2/path = NodePath("Olhos:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.19),
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.45806456, 0.41090906), Vector2(0.45806456, 0.2909089), Vector2(0.45806456, 0.41090876), Vector2(0.41806424, 0.41090876), Vector2(0.45806456, 0.41090876)]
+"values": [Vector2(-13.000001, -49), Vector2(-5.999999, -49), Vector2(5.000002, -48.999996), Vector2(-3.999998, -48.999996), Vector2(-10.23077, -49)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Olhos:position")
+tracks/3/path = NodePath("Orelhas:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.18),
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-2, -34), Vector2(-5, -34), Vector2(-1, -34), Vector2(4, -34), Vector2(-1, -34)]
+"values": [Vector2(-0.99999905, -80.99999), Vector2(-6, -81), Vector2(-11, -80.99999), Vector2(-6.0000005, -80.99999), Vector2(-0.99999905, -80.99999)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Asas:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.56, 0.57), Vector2(0.23999962, 0.57), Vector2(0.5200002, 0.57), Vector2(0.23999959, 0.57), Vector2(0.51999867, 0.57)]
 }
 
-[sub_resource type="Animation" id="Animation_5c8qe"]
+[sub_resource type="Animation" id="Animation_qx5n6"]
 resource_name = "olhos idle"
-length = 1.2
+length = 1.3333334
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -169,10 +220,10 @@ tracks/0/path = NodePath("Olhos:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.18),
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-2, -34), Vector2(-5, -34), Vector2(-1, -34), Vector2(4, -34), Vector2(-1, -34)]
+"values": [Vector2(-13.000001, -49), Vector2(-5.999999, -49), Vector2(5.000002, -48.999996), Vector2(-3.999998, -48.999996), Vector2(-10.23077, -49)]
 }
 
 [sub_resource type="Animation" id="Animation_hio3l"]
@@ -182,22 +233,23 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Orelhas:scale")
+tracks/0/path = NodePath("Orelhas:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.19),
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.45806456, 0.41090906), Vector2(0.45806456, 0.2909089), Vector2(0.45806456, 0.41090876), Vector2(0.41806424, 0.41090876), Vector2(0.45806456, 0.41090876)]
+"values": [Vector2(-0.99999905, -80.99999), Vector2(-6, -81), Vector2(-11, -80.99999), Vector2(-6.0000005, -80.99999), Vector2(-0.99999905, -80.99999)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8wqpi"]
 _data = {
 &"RESET": SubResource("Animation_8wqpi"),
+&"asas": SubResource("Animation_jn77u"),
 &"cauda": SubResource("Animation_axfbl"),
 &"idle": SubResource("Animation_mdqe4"),
-&"olhos idle": SubResource("Animation_5c8qe"),
+&"olhos idle": SubResource("Animation_qx5n6"),
 &"orelhas idle": SubResource("Animation_hio3l")
 }
 
@@ -205,16 +257,8 @@ _data = {
 z_index = 1
 script = ExtResource("2_randomizer")
 randomize_on_ready = false
-randomize_palette_on_ready = null
-randomize_palette_in_editor = null
-palette_seed_value = null
-apply_tail_variant_scales = null
-palette_pair_index = null
-palette_name = null
-base_color = null
-complementary_color = null
 
-[node name="PetIdentity" type="Node" parent="."]
+[node name="PetIdentity" type="Node" parent="." unique_id=384229598]
 script = ExtResource("10_identity")
 
 [node name="CorpoBase" type="Sprite2D" parent="." unique_id=1061939328]
@@ -224,31 +268,32 @@ scale = Vector2(0.12, 0.12)
 texture = ExtResource("1_mdqe4")
 
 [node name="Cauda" type="Sprite2D" parent="." unique_id=1829523514]
-position = Vector2(5, 49.000004)
+position = Vector2(-8.000003, 21)
 rotation = -1.2740904
-scale = Vector2(-0.68833846, 0.7042247)
-texture = SubResource("CompressedTexture2D_6nmc3")
+scale = Vector2(-0.5620271, 0.5347036)
+texture = ExtResource("4_jn77u")
 metadata/pet_modular_layer = true
 
 [node name="Asas" type="Sprite2D" parent="." unique_id=1852237058]
 z_index = 1
-position = Vector2(0, -12)
+position = Vector2(-3, 26)
 scale = Vector2(0.56, 0.57)
 texture = ExtResource("4_wings")
 metadata/pet_modular_layer = true
 
 [node name="Orelhas" type="Sprite2D" parent="." unique_id=2130643465]
 z_index = 2
-position = Vector2(0, -82)
+position = Vector2(-0.99999905, -80.99999)
 scale = Vector2(0.45806456, 0.41090906)
-texture = ExtResource("5_ears")
+texture = ExtResource("5_ekye6")
 metadata/pet_modular_layer = true
 
 [node name="Olhos" type="Sprite2D" parent="." unique_id=1078626972]
 z_index = 4
-position = Vector2(-2, -34)
-scale = Vector2(0.35049525, -0.29012373)
-texture = ExtResource("6_eyes")
+position = Vector2(-13.000001, -49)
+rotation = 3.1346195
+scale = Vector2(0.30974925, -0.2831536)
+texture = ExtResource("6_ekye6")
 metadata/pet_modular_layer = true
 
 [node name="PetEvolution" type="Node" parent="." unique_id=622724358]
@@ -259,6 +304,190 @@ script = ExtResource("7_stats")
 
 [node name="PetSkills" type="Node" parent="." unique_id=451928036]
 script = ExtResource("8_skills")
+
+[node name="ReactionParticles" type="Node2D" parent="."]
+position = Vector2(0, -112)
+z_index = 10
+
+[node name="comer" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 10
+lifetime = 0.72
+one_shot = true
+explosiveness = 0.9
+direction = Vector2(0, -1)
+spread = 42.0
+gravity = Vector2(0, 18)
+initial_velocity_min = 28.0
+initial_velocity_max = 48.0
+scale_amount_min = 1.8
+scale_amount_max = 3.2
+color = Color(1, 0.73, 0.2, 1)
+
+[node name="brincar" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 12
+lifetime = 0.78
+one_shot = true
+explosiveness = 0.92
+direction = Vector2(0, -1)
+spread = 70.0
+gravity = Vector2(0, 8)
+initial_velocity_min = 38.0
+initial_velocity_max = 62.0
+scale_amount_min = 1.5
+scale_amount_max = 2.6
+color = Color(0.3, 0.9, 1, 1)
+
+[node name="limpar_sujeira" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 9
+lifetime = 0.7
+one_shot = true
+explosiveness = 0.88
+direction = Vector2(0, -1)
+spread = 32.0
+gravity = Vector2(0, 24)
+initial_velocity_min = 24.0
+initial_velocity_max = 42.0
+scale_amount_min = 2.0
+scale_amount_max = 3.5
+color = Color(0.5, 1, 0.65, 1)
+
+[node name="dar_remedio" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 8
+lifetime = 0.82
+one_shot = true
+explosiveness = 0.9
+direction = Vector2(0, -1)
+spread = 25.0
+gravity = Vector2(0, 12)
+initial_velocity_min = 30.0
+initial_velocity_max = 52.0
+scale_amount_min = 1.8
+scale_amount_max = 3.0
+color = Color(0.95, 0.55, 1, 1)
+
+[node name="treinar" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 11
+lifetime = 0.66
+one_shot = true
+explosiveness = 0.94
+direction = Vector2(0, -1)
+spread = 18.0
+gravity = Vector2(0, 34)
+initial_velocity_min = 34.0
+initial_velocity_max = 58.0
+scale_amount_min = 1.7
+scale_amount_max = 2.8
+color = Color(1, 0.35, 0.42, 1)
+
+[node name="dormir" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 7
+lifetime = 1.1
+one_shot = true
+explosiveness = 0.86
+direction = Vector2(0, -1)
+spread = 20.0
+gravity = Vector2(0, -8)
+initial_velocity_min = 18.0
+initial_velocity_max = 30.0
+scale_amount_min = 2.2
+scale_amount_max = 3.8
+color = Color(0.55, 0.75, 1, 1)
+
+[node name="fruta_estelar" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 10
+lifetime = 0.72
+one_shot = true
+explosiveness = 0.9
+direction = Vector2(0, -1)
+spread = 38.0
+gravity = Vector2(0, 16)
+initial_velocity_min = 26.0
+initial_velocity_max = 45.0
+scale_amount_min = 1.8
+scale_amount_max = 3.2
+color = Color(1, 0.82, 0.28, 1)
+
+[node name="nectar_cosmico" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 9
+lifetime = 0.9
+one_shot = true
+explosiveness = 0.9
+direction = Vector2(0, -1)
+spread = 52.0
+gravity = Vector2(0, 4)
+initial_velocity_min = 24.0
+initial_velocity_max = 44.0
+scale_amount_min = 2.0
+scale_amount_max = 3.4
+color = Color(0.3, 0.92, 1, 1)
+
+[node name="banquete_nebulosa" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 14
+lifetime = 0.86
+one_shot = true
+explosiveness = 0.94
+direction = Vector2(0, -1)
+spread = 82.0
+gravity = Vector2(0, 20)
+initial_velocity_min = 32.0
+initial_velocity_max = 60.0
+scale_amount_min = 2.0
+scale_amount_max = 3.8
+color = Color(1, 0.37, 0.72, 1)
+
+[node name="jokenpo" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 12
+lifetime = 0.72
+one_shot = true
+explosiveness = 0.92
+direction = Vector2(0, -1)
+spread = 68.0
+gravity = Vector2(0, 10)
+initial_velocity_min = 35.0
+initial_velocity_max = 58.0
+scale_amount_min = 1.4
+scale_amount_max = 2.6
+color = Color(0.3, 1, 0.9, 1)
+
+[node name="jogo_da_velha" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 10
+lifetime = 0.84
+one_shot = true
+explosiveness = 0.92
+direction = Vector2(0, -1)
+spread = 48.0
+gravity = Vector2(0, -2)
+initial_velocity_min = 28.0
+initial_velocity_max = 48.0
+scale_amount_min = 1.8
+scale_amount_max = 3.2
+color = Color(0.76, 0.5, 1, 1)
+
+[node name="2048" type="CPUParticles2D" parent="ReactionParticles"]
+emitting = false
+amount = 13
+lifetime = 0.68
+one_shot = true
+explosiveness = 0.94
+direction = Vector2(0, -1)
+spread = 58.0
+gravity = Vector2(0, 28)
+initial_velocity_min = 38.0
+initial_velocity_max = 64.0
+scale_amount_min = 1.5
+scale_amount_max = 2.8
+color = Color(1, 0.58, 0.25, 1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1889298100]
 libraries/ = SubResource("AnimationLibrary_8wqpi")

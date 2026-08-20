@@ -61,6 +61,17 @@ var _selection_label: Label
 var _hint_label: Label
 var _needs_summary_label: Label
 var _progression_label: Label
+var _system_message_panel: Panel
+var _system_message_label: Label
+var _pet_message_bubble: Panel
+var _pet_message_label: Label
+var _poop_marker: Control
+var _special_need_indicator: Control
+var _special_need_icon: Label
+var _special_need_wish_icon: Label
+var _sleep_indicator: Label
+var _message_tween: Tween
+var _sleeping := false
 var _glow_materials: Array[ShaderMaterial] = []
 var _glow_tween: Tween
 var _pet_skills: PetSkills
@@ -104,6 +115,15 @@ func _cache_menu_nodes() -> void:
 	_hint_label = get_node_or_null(^"StatusBar/Hint") as Label
 	_needs_summary_label = get_node_or_null(^"StatusBar/NeedsSummary") as Label
 	_progression_label = get_node_or_null(^"ProgressionFeedback") as Label
+	_system_message_panel = get_node_or_null(^"SystemMessagePanel") as Panel
+	_system_message_label = get_node_or_null(^"SystemMessagePanel/Label") as Label
+	_pet_message_bubble = get_node_or_null(^"PetMessageBubble") as Panel
+	_pet_message_label = get_node_or_null(^"PetMessageBubble/Label") as Label
+	_poop_marker = get_node_or_null(^"PoopMarker") as Control
+	_special_need_indicator = get_node_or_null(^"SpecialNeedIndicator") as Control
+	_special_need_icon = get_node_or_null(^"SpecialNeedIndicator/NeedIcon") as Label
+	_special_need_wish_icon = get_node_or_null(^"SpecialNeedIndicator/WishIcon") as Label
+	_sleep_indicator = get_node_or_null(^"SleepIndicator") as Label
 	_submenu_title = get_node_or_null(^"SubmenuOverlay/Panel/Margin/Content/Title") as Label
 	_submenu_hint = get_node_or_null(^"SubmenuOverlay/Panel/Margin/Content/Hint") as Label
 
@@ -272,16 +292,86 @@ func set_status_values(new_hunger: float, new_energy: float, new_mood: float, ne
 	_refresh_status_bars()
 
 func show_progression_message(message: String) -> void:
-	if _progression_label == null:
-		return
-	_progression_label.text = message
-	_progression_label.visible = true
-	if not Engine.is_editor_hint() and is_inside_tree():
-		get_tree().create_timer(2.5).timeout.connect(_hide_progression_message)
+	show_system_message(message)
 
-func _hide_progression_message() -> void:
-	if _progression_label != null:
-		_progression_label.visible = false
+func show_system_message(message: String) -> void:
+	if _system_message_panel == null or _system_message_label == null:
+		return
+	_system_message_label.text = message
+	_system_message_panel.visible = true
+	if _message_tween != null:
+		_message_tween.kill()
+	_message_tween = create_tween()
+	_system_message_panel.modulate.a = 0.0
+	_message_tween.tween_property(_system_message_panel, "modulate:a", 1.0, 0.18)
+	if not Engine.is_editor_hint() and is_inside_tree():
+		get_tree().create_timer(3.2).timeout.connect(_hide_system_message)
+
+func show_pet_message(message: String) -> void:
+	if _pet_message_bubble == null or _pet_message_label == null:
+		return
+	_pet_message_label.text = message
+	_pet_message_bubble.visible = true
+	_pet_message_bubble.modulate.a = 0.0
+	if _message_tween != null:
+		_message_tween.kill()
+	_message_tween = create_tween()
+	_message_tween.tween_property(_pet_message_bubble, "modulate:a", 1.0, 0.16)
+	if not Engine.is_editor_hint() and is_inside_tree():
+		get_tree().create_timer(2.6).timeout.connect(_hide_pet_message)
+
+func get_pet_reaction_message(reaction_id: StringName) -> String:
+	match reaction_id:
+		&"comer": return "NHAM! ISSO ESTAVA BOM!"
+		&"brincar": return "QUE LEGAL!"
+		&"limpar": return "AHH... MELHOROU!"
+		&"remedio": return "VOU FICAR BEM!"
+		&"treinar": return "VOU TENTAR MAIS!"
+		&"dormir": return "Zzz..."
+	return "..."
+
+func get_special_need_message(need: StringName, wish: StringName) -> String:
+	if need == &"brincar":
+		return "QUERO BRINCAR DE JOGO DA VELHA!"
+	if need == &"treinar":
+		return "QUERO TREINAR FORÇA!"
+	return "ESTOU QUERENDO ALGO..."
+
+func set_poop_visible(value: bool) -> void:
+	if _poop_marker != null:
+		_poop_marker.visible = value
+
+func set_special_need(need: StringName, wish: StringName, active: bool) -> void:
+	if _special_need_indicator == null:
+		return
+	_special_need_indicator.visible = active
+	if not active:
+		return
+	if _special_need_icon != null:
+		_special_need_icon.text = "!"
+	if _special_need_wish_icon != null:
+		_special_need_wish_icon.text = "✦" if wish == &"jogo_da_velha" else "▲"
+
+func set_sleeping(value: bool) -> void:
+	_sleeping = value
+	var action_bar := get_node_or_null(^"ActionBar") as Control
+	if action_bar != null:
+		action_bar.modulate = Color(0.48, 0.56, 0.72, 0.62) if value else Color.WHITE
+		action_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE if value else Control.MOUSE_FILTER_PASS
+	if value:
+		close_submenu()
+	if _sleep_indicator != null:
+		_sleep_indicator.visible = value
+	if _selection_label != null and value:
+		_selection_label.text = "DORMINDO • ENERGIA RECUPERANDO"
+
+func _hide_system_message() -> void:
+	if _system_message_panel != null:
+		_system_message_panel.visible = false
+
+func _hide_pet_message() -> void:
+	if _pet_message_bubble != null:
+		_pet_message_bubble.visible = false
 
 func set_selected_action(action: StringName) -> void:
 	var index := ACTIONS.find(action)

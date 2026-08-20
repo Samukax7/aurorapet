@@ -28,12 +28,23 @@ signal illness_changed(is_sick: bool)
 signal sleep_state_changed(is_sleeping: bool)
 signal newborn_tutorial_step_changed(step: StringName, message: String)
 signal newborn_tutorial_completed
+signal reaction_requested(action: StringName, reaction_id: StringName)
+signal action_blocked(action: StringName, message: String)
+signal poop_state_changed(visible: bool)
+signal special_need_changed(need: StringName, wish: StringName, active: bool)
 
 const NEWBORN_TUTORIAL_FEED_TARGET := 100.0
+const SPECIAL_NEED_INTERVAL_SECONDS := 45.0
 
 var newborn_tutorial_active := false
 var newborn_tutorial_step: StringName = &"inactive"
 var newborn_tutorial_fed := false
+var current_reaction: StringName = &"idle"
+var special_need: StringName = &""
+var special_need_wish: StringName = &""
+var poop_visible := false
+var _special_need_elapsed := 0.0
+var _meals_since_poop := 0
 
 @export_category("Valores iniciais")
 @export_range(0.0, 100.0, 1.0) var hunger := 82.0
@@ -70,9 +81,9 @@ var newborn_tutorial_fed := false
 @export_range(0.0, 20.0, 0.5) var discipline_gain_per_training := 4.0
 
 @export_category("Sono")
-@export_range(1.0, 120.0, 1.0) var sleep_recovery_duration_seconds := 12.0
-@export_range(0.0, 10.0, 0.1) var sleep_energy_recovery_per_second := 2.4
+@export_range(0.0, 20.0, 0.1) var sleep_energy_recovery_per_second := 6.0
 @export_range(0.0, 5.0, 0.1) var sleep_mood_recovery_per_second := 0.25
+@export var sleep_requires_full_energy := true
 
 @export_category("Resistência")
 @export var use_skill_resistance := true
@@ -91,7 +102,6 @@ var is_sick := false
 var is_sleeping := false
 var attention_reason: StringName = &""
 var _decay_accumulator := 0.0
-var _sleep_remaining := 0.0
 var _hygiene_critical_elapsed := 0.0
 var _attention_elapsed := 0.0
 var _last_critical_state := false
@@ -133,9 +143,7 @@ func _process(delta: float) -> void:
 		return
 	if is_sleeping:
 		_process_sleep(delta)
-	else:
-		if not decay_enabled:
-			return
+	elif decay_enabled:
 		_decay_accumulator += delta
 		if _decay_accumulator >= decay_tick_interval:
 			var elapsed := _decay_accumulator
@@ -143,18 +151,36 @@ func _process(delta: float) -> void:
 			_apply_decay(elapsed)
 	_update_attention(delta)
 	_update_illness(delta)
+	if not is_sleeping:
+		_update_special_need(delta)
 
 func _process_sleep(delta: float) -> void:
 	energy += sleep_energy_recovery_per_second * delta
 	mood += sleep_mood_recovery_per_second * delta
-	_sleep_remaining -= delta
 	_clamp_values()
-	if _sleep_remaining <= 0.0:
+	if sleep_requires_full_energy and energy >= 100.0:
+		energy = 100.0
 		is_sleeping = false
 		sleep_state_changed.emit(false)
 		if newborn_tutorial_active and newborn_tutorial_step == &"sleep":
 			call_deferred("_complete_newborn_tutorial")
 	_emit_all_state()
+
+func _update_special_need(delta: float) -> void:
+	if not special_need.is_empty() or poop_visible:
+		return
+	_special_need_elapsed += delta
+	if _special_need_elapsed < SPECIAL_NEED_INTERVAL_SECONDS:
+		return
+	_special_need_elapsed = 0.0
+	var wishes: Array[Dictionary] = [
+		{"need": &"brincar", "wish": &"jogo_da_velha"},
+		{"need": &"treinar", "wish": &"forca"},
+	]
+	var selected: Dictionary = wishes[randi_range(0, wishes.size() - 1)]
+	special_need = selected["need"]
+	special_need_wish = selected["wish"]
+	special_need_changed.emit(special_need, special_need_wish, true)
 
 func _apply_decay(elapsed: float) -> void:
 	var effective_multiplier := decay_multiplier * _get_resistance_factor()
@@ -235,7 +261,7 @@ func get_action_feedback(action: StringName) -> String:
 		&"banquete_nebulosa": return "BANQUETE NEBULOSA: +42 FOME / +6 HUMOR"
 		&"dar_remedio": return "REMÉDIO APLICADO: +SAÚDE"
 		&"limpar_sujeira": return "SUJEIRA LIMPA: +35 HIGIENE"
-		&"dormir": return "SONO INICIADO: ENERGIA RECUPERANDO"
+		&"dormir": return "SONO INICIADO: FUNÇÕES PAUSADAS ATÉ ENERGIA 100%"
 		&"jokenpo": return "JOKENPÔ: +18 HUMOR / +15 XP"
 		&"jogo_da_velha": return "JOGO DA VELHA: +20 HUMOR / +20 XP"
 		&"2048": return "2048: +22 HUMOR / +20 XP"
@@ -243,7 +269,11 @@ func get_action_feedback(action: StringName) -> String:
 		&"batalhar": return "EM BREVE: BATALHAS"
 	return "AÇÃO: " + String(action).to_upper()
 
-func perform_action(action: StringName) -> void:
+func perform_action(action: StringName) -> bool:
+	if is_sleeping and action != &"dormir":
+		var sleep_message := "PET DORMINDO: ENERGIA %d%% / 100%%" % roundi(energy)
+		action_blocked.emit(action, sleep_message)
+		return false
 	match action:
 		&"comer":
 			_apply_food(18.0, 0.0, 1.0, 1.0)
@@ -260,6 +290,7 @@ func perform_action(action: StringName) -> void:
 		&"2048":
 			_apply_game(22.0, 12.0, 4.0)
 		&"limpar", &"limpar_sujeira":
+			_set_poop_visible(false)
 			hygiene += 35.0
 			health += 14.0
 			mood += 8.0
@@ -286,13 +317,16 @@ func perform_action(action: StringName) -> void:
 			health += 2.0
 		_:
 			push_warning("Ação desconhecida: %s" % action)
-			return
+			return false
 	_clamp_values()
 	_refresh_attention_after_action()
+	_clear_special_need_if_completed(action)
 	_emit_critical_state_if_changed()
 	_emit_all_state()
 	_advance_newborn_tutorial(action)
+	_emit_reaction(action)
 	action_performed.emit(action)
+	return true
 
 func _advance_newborn_tutorial(action: StringName) -> void:
 	if not newborn_tutorial_active:
@@ -309,12 +343,45 @@ func _complete_newborn_tutorial() -> void:
 	_set_newborn_tutorial_step(&"complete")
 	newborn_tutorial_completed.emit()
 
+func _emit_reaction(action: StringName) -> void:
+	var reaction_id: StringName = action
+	if action == &"limpar":
+		reaction_id = &"limpar_sujeira"
+	elif action == &"dar_remedio":
+		reaction_id = &"dar_remedio"
+	elif action == &"treinar":
+		reaction_id = &"treinar"
+	elif action == &"dormir":
+		reaction_id = &"dormir"
+	current_reaction = reaction_id
+	reaction_requested.emit(action, reaction_id)
+
+func _clear_special_need_if_completed(action: StringName) -> void:
+	if special_need == &"brincar" and action in [&"jokenpo", &"jogo_da_velha", &"2048", &"brincar"]:
+		special_need = &""
+		special_need_wish = &""
+		special_need_changed.emit(&"", &"", false)
+	elif special_need == &"treinar" and action == &"treinar":
+		special_need = &""
+		special_need_wish = &""
+		special_need_changed.emit(&"", &"", false)
+
+func _set_poop_visible(value: bool) -> void:
+	if poop_visible == value:
+		return
+	poop_visible = value
+	poop_state_changed.emit(poop_visible)
+
 func _apply_food(hunger_gain: float, mood_gain: float, health_gain: float, weight_gain: float) -> void:
 	if hunger >= 94.0:
 		excessive_meals += 1
 		mood -= 2.0
 	else:
 		meals_served += 1
+		_meals_since_poop += 1
+		if _meals_since_poop >= 3:
+			_meals_since_poop = 0
+			_set_poop_visible(true)
 		hunger += hunger_gain
 		mood += mood_gain
 		health += health_gain
@@ -329,7 +396,6 @@ func _apply_game(mood_gain: float, energy_cost: float, hunger_cost: float) -> vo
 
 func _start_sleep() -> void:
 	is_sleeping = true
-	_sleep_remaining = sleep_recovery_duration_seconds
 	attention_reason = &""
 	_attention_elapsed = 0.0
 	sleep_state_changed.emit(true)
@@ -377,8 +443,11 @@ func get_needs_snapshot() -> Dictionary:
 		"discipline": discipline,
 		"weight": weight,
 		"is_sick": is_sick,
-		"is_sleeping": is_sleeping,
-		"attention_active": not attention_reason.is_empty(),
+			"is_sleeping": is_sleeping,
+			"poop_visible": poop_visible,
+			"special_need": special_need,
+			"special_need_wish": special_need_wish,
+			"attention_active": not attention_reason.is_empty(),
 		"attention_reason": attention_reason,
 		"missed_calls": missed_calls,
 		"care_mistakes": care_mistakes,
