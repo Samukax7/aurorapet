@@ -38,9 +38,10 @@ const ACTION_UNLOCK_LEVELS: Dictionary = {
 	&"nectar_cosmico": 2,
 	&"banquete_nebulosa": 3,
 	&"dar_remedio": 2,
+	&"dormir": 1,
+	&"banho": 99,
 	&"jokenpo": 2,
 	&"jogo_da_velha": 3,
-	&"dormir": 3,
 	&"2048": 5,
 }
 

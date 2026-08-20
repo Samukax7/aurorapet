@@ -353,6 +353,8 @@ func _save_new_pet() -> void:
 func _finish_flow() -> void:
 	active = false
 	visible = false
+	if deepworld != null and pet_identity != null and deepworld.has_method("activate_faction_background"):
+		deepworld.call("activate_faction_background", pet_identity.faction_id)
 	if deepworld != null:
 		deepworld.visible = true
 	if pet_node != null:

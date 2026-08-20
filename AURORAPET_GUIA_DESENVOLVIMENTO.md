@@ -181,7 +181,7 @@ O sistema mantém chamadas de atenção quando uma necessidade entra em criticid
 
 ## 9. Menu, submenus e controles
 
-O menu principal possui cinco categorias: **Comer, Cuidar, Jogar, Treinar e Batalhar**. Comer abre as três comidas; Cuidar abre remédio, limpeza e dormir; Jogar abre Jokenpô, Jogo da Velha e 2048. Treinar abre a árvore de habilidades. Batalhar apresenta a mensagem de que o sistema ainda está em desenvolvimento.
+O menu principal possui cinco categorias: **Comer, Cuidar, Jogar, Treinar e Batalhar**. Comer abre as três comidas; Cuidar abre limpeza e dormir desde os primeiros níveis, enquanto remédio é liberado posteriormente. A ação legada de banho permanece bloqueada para uma implementação futura. Jogar abre Jokenpô, Jogo da Velha e 2048. Treinar abre a árvore de habilidades. Batalhar apresenta a mensagem de que o sistema ainda está em desenvolvimento.
 
 O ícone selecionado recebe modulação completa, pequeno aumento de escala e um shader de glow que pulsa por 0,5 segundo. Os ícones não selecionados usam opacidade reduzida para melhorar a leitura sobre o cenário.
 
@@ -209,14 +209,14 @@ O menu acompanha o crescimento do pet. As categorias permanecem visíveis desde 
 
 | Nível | Conteúdo liberado |
 |---:|---|
-| 1 | Comer, Cuidar, Fruta Estelar e Limpar Sujeira |
+| 1 | Comer, Cuidar, Fruta Estelar, Limpar Sujeira e Dormir |
 | 2 | Jogar, Jokenpô, Néctar Cósmico e Dar Remédio |
-| 3 | Jogo da Velha, Dormir e Banquete Nebulosa |
+| 3 | Jogo da Velha e Banquete Nebulosa |
 | 4 | Treinar e a árvore de habilidades |
 | 5 | 2048 |
 | 6 | Batalhar |
 
-Uma seleção bloqueada exibe a mensagem `DESBLOQUEIA NO NÍVEL X`, e a confirmação não executa a ação. Ao subir de nível, a `PetUI` atualiza imediatamente o estado visual das categorias e mostra a mensagem `NOVO CONTEÚDO DISPONÍVEL`.
+Uma seleção bloqueada exibe a mensagem `DESBLOQUEIA NO NÍVEL X`, e a confirmação não executa a ação. Dormir permanece disponível desde o nível 1 para que o jogador consiga recuperar energia no começo do jogo. Banho está explicitamente bloqueado no nível 99, funcionando como conteúdo reservado para uma implementação futura. Ao subir de nível, a `PetUI` atualiza imediatamente o estado visual das categorias e mostra a mensagem `NOVO CONTEÚDO DISPONÍVEL`.
 
 ## 11. Procedimento de teste manual
 

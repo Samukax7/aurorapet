@@ -57,6 +57,11 @@ func _on_identity_generated(snapshot: Dictionary) -> void:
 	var faction_value: StringName = snapshot.get("faction", default_faction)
 	apply_faction(faction_value)
 
+func activate_faction_background(faction: StringName) -> void:
+	## Abertura segura: o fundo por facção só entra depois da ficha de nascimento.
+	use_faction_backgrounds = true
+	apply_faction(faction)
+
 func apply_faction(faction: StringName) -> void:
 	if not use_faction_backgrounds:
 		_show_legacy_background()
