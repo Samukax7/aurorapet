@@ -1,0 +1,292 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/jogo_da_velha.gd" id="1_ttt"]
+[ext_resource type="Texture2D" path="res://assets/UI/minigames/jogo_da_velha/gradetictactoe.png" id="2_grid"]
+[ext_resource type="Texture2D" path="res://assets/UI/minigames/jogo_da_velha/bolinha_tictactoe.png" id="3_o"]
+[ext_resource type="Texture2D" path="res://assets/UI/minigames/jogo_da_velha/xis_tictactoe.png" id="4_x"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Back"]
+bg_color = Color(0.02, 0.055, 0.15, 0.99)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.25, 0.72, 0.9, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Cell"]
+bg_color = Color(0, 0, 0, 0)
+
+[node name="JogoDaVelha" type="Control"]
+visible = false
+z_index = 40
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_ttt")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBox_Back")
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="."]
+offset_left = 140.0
+offset_top = 22.0
+offset_right = 755.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.7, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "JOGO DA VELHA CÓSMICO"
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="."]
+offset_left = 100.0
+offset_top = 75.0
+offset_right = 795.0
+offset_bottom = 108.0
+theme_override_colors/font_color = Color(0.96, 0.84, 0.38, 1)
+theme_override_font_sizes/font_size = 17
+text = "SUA VEZ — ESCOLHA UMA CASA"
+horizontal_alignment = 1
+
+[node name="Board" type="TextureRect" parent="."]
+offset_left = 170.0
+offset_top = 125.0
+offset_right = 725.0
+offset_bottom = 680.0
+texture_filter = 1
+texture = ExtResource("2_grid")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Marks" type="Control" parent="."]
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Mark0" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 175.0
+offset_top = 130.0
+offset_right = 350.0
+offset_bottom = 305.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Mark1" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 360.0
+offset_top = 130.0
+offset_right = 535.0
+offset_bottom = 305.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Mark2" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 545.0
+offset_top = 130.0
+offset_right = 720.0
+offset_bottom = 305.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Mark3" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 175.0
+offset_top = 315.0
+offset_right = 350.0
+offset_bottom = 490.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Mark4" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 360.0
+offset_top = 315.0
+offset_right = 535.0
+offset_bottom = 490.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Mark5" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 545.0
+offset_top = 315.0
+offset_right = 720.0
+offset_bottom = 490.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Mark6" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 175.0
+offset_top = 500.0
+offset_right = 350.0
+offset_bottom = 675.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Mark7" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 360.0
+offset_top = 500.0
+offset_right = 535.0
+offset_bottom = 675.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Mark8" type="TextureRect" parent="Marks"]
+visible = false
+offset_left = 545.0
+offset_top = 500.0
+offset_right = 720.0
+offset_bottom = 675.0
+texture_filter = 1
+texture = ExtResource("3_o")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Cells" type="Control" parent="."]
+layout_mode = 0
+
+[node name="Cell0" type="Button" parent="Cells"]
+offset_left = 175.0
+offset_top = 130.0
+offset_right = 350.0
+offset_bottom = 305.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Cell1" type="Button" parent="Cells"]
+offset_left = 360.0
+offset_top = 130.0
+offset_right = 535.0
+offset_bottom = 305.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Cell2" type="Button" parent="Cells"]
+offset_left = 545.0
+offset_top = 130.0
+offset_right = 720.0
+offset_bottom = 305.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Cell3" type="Button" parent="Cells"]
+offset_left = 175.0
+offset_top = 315.0
+offset_right = 350.0
+offset_bottom = 490.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Cell4" type="Button" parent="Cells"]
+offset_left = 360.0
+offset_top = 315.0
+offset_right = 535.0
+offset_bottom = 490.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Cell5" type="Button" parent="Cells"]
+offset_left = 545.0
+offset_top = 315.0
+offset_right = 720.0
+offset_bottom = 490.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Cell6" type="Button" parent="Cells"]
+offset_left = 175.0
+offset_top = 500.0
+offset_right = 350.0
+offset_bottom = 675.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Cell7" type="Button" parent="Cells"]
+offset_left = 360.0
+offset_top = 500.0
+offset_right = 535.0
+offset_bottom = 675.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Cell8" type="Button" parent="Cells"]
+offset_left = 545.0
+offset_top = 500.0
+offset_right = 720.0
+offset_bottom = 675.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBox_Cell")
+text = ""
+
+[node name="Result" type="Label" parent="."]
+offset_left = 100.0
+offset_top = 690.0
+offset_right = 795.0
+offset_bottom = 730.0
+theme_override_colors/font_color = Color(0.45, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 18
+text = ""
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 85.0
+offset_top = 744.0
+offset_right = 810.0
+offset_bottom = 785.0
+theme_override_colors/font_color = Color(0.62, 0.82, 0.94, 1)
+theme_override_font_sizes/font_size = 14
+text = "D-PAD: MOVER   •   VERDE: JOGAR   •   ROSA: SAIR"
+horizontal_alignment = 1

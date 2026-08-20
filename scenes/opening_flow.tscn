@@ -142,10 +142,10 @@ visible = false
 
 [node name="LogoImage" type="TextureRect" parent="."]
 visible = false
-offset_left = 110.0
-offset_top = 150.0
-offset_right = 790.0
-offset_bottom = 558.0
+offset_left = 107.5
+offset_top = 203.5
+offset_right = 787.5
+offset_bottom = 611.5
 texture_filter = 1
 texture = ExtResource("2_logo")
 expand_mode = 1
