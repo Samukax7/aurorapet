@@ -31,7 +31,7 @@ var pet_ui: PetUI
 var deepworld: Node
 var pet_node: Node2D
 var skill_tree: Node
-var egg_base_position := Vector2(317, 320)
+var egg_base_position := Vector2(317, 385)
 var egg_shake_tween: Tween
 
 @onready var background: ColorRect = $Background
