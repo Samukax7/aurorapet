@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/opening_flow.gd" id="1_opening"]
+[ext_resource type="Texture2D" path="res://assets/UI/auroralogo.png" id="2_logo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_MenuPanel"]
 bg_color = Color(0.97, 0.98, 1, 0.98)
@@ -138,28 +139,21 @@ color = Color(1, 1, 1, 1)
 
 [node name="Logo" type="Label" parent="."]
 visible = false
-offset_left = 245.0
-offset_top = 270.0
-offset_right = 650.0
-offset_bottom = 340.0
-theme_override_colors/font_color = Color(0.18, 0.3, 0.72, 1)
-theme_override_colors/font_outline_color = Color(0.52, 0.86, 1, 1)
-theme_override_constants/outline_size = 7
-theme_override_font_sizes/font_size = 52
-text = "AURORAPETS"
-horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="LogoImage" type="TextureRect" parent="."]
+visible = false
+offset_left = 110.0
+offset_top = 150.0
+offset_right = 790.0
+offset_bottom = 558.0
+texture_filter = 1
+texture = ExtResource("2_logo")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
 
 [node name="LogoSubtitle" type="Label" parent="."]
 visible = false
-offset_left = 245.0
-offset_top = 352.0
-offset_right = 650.0
-offset_bottom = 382.0
-theme_override_colors/font_color = Color(0.28, 0.36, 0.58, 1)
-theme_override_font_sizes/font_size = 16
-text = "UM V-PET CÓSMICO"
-horizontal_alignment = 1
 
 [node name="MenuPanel" type="Panel" parent="."]
 visible = false

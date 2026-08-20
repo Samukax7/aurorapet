@@ -28,6 +28,7 @@ var skill_tree: Node
 
 @onready var background: ColorRect = $Background
 @onready var logo: Label = $Logo
+@onready var logo_image: TextureRect = $LogoImage
 @onready var logo_subtitle: Label = $LogoSubtitle
 @onready var menu_panel: Panel = $MenuPanel
 @onready var menu_title: Label = $MenuPanel/Title
@@ -134,22 +135,19 @@ func _show_logo() -> void:
 	state = &"logo"
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
-	logo.visible = true
-	logo_subtitle.visible = true
-	logo.position = Vector2(-520, 270)
-	logo.modulate = Color(1, 1, 1, 0)
-	logo_subtitle.position = Vector2(-520, 352)
-	logo_subtitle.modulate = Color(1, 1, 1, 0)
+	logo.visible = false
+	logo_image.visible = false
+	logo_subtitle.visible = false
+	logo_image.visible = true
+	logo_image.position = Vector2(-760, 0)
+	logo_image.modulate = Color(1, 1, 1, 0)
 	var tween := create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(logo, "position", Vector2(245, 270), 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(logo, "modulate:a", 1.0, 0.55)
-	tween.tween_property(logo_subtitle, "position", Vector2(245, 352), 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(logo_subtitle, "modulate:a", 1.0, 0.7)
+	tween.tween_property(logo_image, "position", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(logo_image, "modulate:a", 1.0, 0.55)
 	tween.set_parallel(false)
 	tween.tween_interval(0.65)
-	tween.tween_property(logo, "modulate:a", 0.0, 0.35)
-	tween.parallel().tween_property(logo_subtitle, "modulate:a", 0.0, 0.35)
+	tween.tween_property(logo_image, "modulate:a", 0.0, 0.35)
 	tween.tween_callback(_show_menu)
 
 func _show_menu() -> void:
@@ -334,6 +332,7 @@ func _has_save() -> bool:
 
 func _hide_all_panels() -> void:
 	logo.visible = false
+	logo_image.visible = false
 	logo_subtitle.visible = false
 	menu_panel.visible = false
 	story_panel.visible = false
