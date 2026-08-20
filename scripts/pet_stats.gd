@@ -26,6 +26,14 @@ signal critical_state_changed(is_critical: bool)
 signal attention_changed(active: bool, reason: StringName)
 signal illness_changed(is_sick: bool)
 signal sleep_state_changed(is_sleeping: bool)
+signal newborn_tutorial_step_changed(step: StringName, message: String)
+signal newborn_tutorial_completed
+
+const NEWBORN_TUTORIAL_FEED_TARGET := 100.0
+
+var newborn_tutorial_active := false
+var newborn_tutorial_step: StringName = &"inactive"
+var newborn_tutorial_fed := false
 
 @export_category("Valores iniciais")
 @export_range(0.0, 100.0, 1.0) var hunger := 82.0
@@ -93,6 +101,33 @@ func _ready() -> void:
 	_last_critical_state = _is_needs_critical()
 	_emit_all_state()
 
+func begin_newborn_tutorial() -> void:
+	newborn_tutorial_active = true
+	newborn_tutorial_step = &"feed"
+	newborn_tutorial_fed = false
+	hunger = 20.0
+	energy = 30.0
+	_clamp_values()
+	_emit_all_state()
+	newborn_tutorial_step_changed.emit(newborn_tutorial_step, get_newborn_tutorial_message())
+
+func is_newborn_tutorial_active() -> bool:
+	return newborn_tutorial_active
+
+func get_newborn_tutorial_message() -> String:
+	match newborn_tutorial_step:
+		&"feed":
+			return "TUTORIAL 1/2: ALIMENTE O PET ATÉ A FOME CHEGAR A 100%"
+		&"sleep":
+			return "FOME COMPLETA! AGORA USE CUIDAR > DORMIR"
+		&"complete":
+			return "TUTORIAL CONCLUÍDO! NÍVEL 2 • JOGO DA VELHA LIBERADO"
+	return ""
+
+func _set_newborn_tutorial_step(step: StringName) -> void:
+	newborn_tutorial_step = step
+	newborn_tutorial_step_changed.emit(step, get_newborn_tutorial_message())
+
 func _process(delta: float) -> void:
 	if delta <= 0.0:
 		return
@@ -117,6 +152,8 @@ func _process_sleep(delta: float) -> void:
 	if _sleep_remaining <= 0.0:
 		is_sleeping = false
 		sleep_state_changed.emit(false)
+		if newborn_tutorial_active and newborn_tutorial_step == &"sleep":
+			call_deferred("_complete_newborn_tutorial")
 	_emit_all_state()
 
 func _apply_decay(elapsed: float) -> void:
@@ -254,7 +291,23 @@ func perform_action(action: StringName) -> void:
 	_refresh_attention_after_action()
 	_emit_critical_state_if_changed()
 	_emit_all_state()
+	_advance_newborn_tutorial(action)
 	action_performed.emit(action)
+
+func _advance_newborn_tutorial(action: StringName) -> void:
+	if not newborn_tutorial_active:
+		return
+	var is_food_action := action in [&"comer", &"fruta_estelar", &"nectar_cosmico", &"banquete_nebulosa"]
+	if newborn_tutorial_step == &"feed" and is_food_action and hunger >= NEWBORN_TUTORIAL_FEED_TARGET:
+		newborn_tutorial_fed = true
+		_set_newborn_tutorial_step(&"sleep")
+
+func _complete_newborn_tutorial() -> void:
+	if not newborn_tutorial_active or newborn_tutorial_step != &"sleep" or not newborn_tutorial_fed:
+		return
+	newborn_tutorial_active = false
+	_set_newborn_tutorial_step(&"complete")
+	newborn_tutorial_completed.emit()
 
 func _apply_food(hunger_gain: float, mood_gain: float, health_gain: float, weight_gain: float) -> void:
 	if hunger >= 94.0:

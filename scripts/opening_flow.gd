@@ -25,6 +25,7 @@ var selected_faction: StringName = &"neutro"
 var hatch_hits := 0
 
 var pet_identity: PetIdentity
+var pet_stats: PetStats
 var pet_skills: PetSkills
 var pet_randomizer: PetRandomizer
 var pet_ui: PetUI
@@ -65,8 +66,9 @@ func _ready() -> void:
 	_hide_all_panels()
 	_show_logo()
 
-func configure(identity: PetIdentity, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node) -> void:
+func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node) -> void:
 	pet_identity = identity
+	pet_stats = stats
 	pet_skills = skills
 	pet_randomizer = randomizer
 	pet_ui = ui
@@ -252,6 +254,8 @@ func _confirm_faction() -> void:
 	selected_faction = factions[faction_selected_index]
 	if pet_skills != null:
 		pet_skills.reset_for_new_pet()
+	if pet_stats != null:
+		pet_stats.begin_newborn_tutorial()
 	if pet_identity != null:
 		pet_identity.generate_new_identity_for_faction(selected_faction)
 	if pet_randomizer != null:
@@ -361,6 +365,8 @@ func _finish_flow() -> void:
 		pet_node.visible = true
 	if pet_ui != null:
 		pet_ui.visible = true
+		if pet_stats != null and pet_stats.is_newborn_tutorial_active():
+			pet_ui.show_progression_message(pet_stats.get_newborn_tutorial_message())
 	if skill_tree != null:
 		skill_tree.visible = false
 	flow_completed.emit()

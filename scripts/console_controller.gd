@@ -17,7 +17,7 @@ extends Sprite2D
 func _ready() -> void:
 	_connect_console_buttons()
 	if opening_flow != null:
-		opening_flow.configure(pet_identity, pet_skills, pet_randomizer, pet_ui, $ScreenContent/Deepworld, skill_tree)
+		opening_flow.configure(pet_identity, pet_stats, pet_skills, pet_randomizer, pet_ui, $ScreenContent/Deepworld, skill_tree)
 	if pet_ui != null:
 		pet_ui.set_progression_source(pet_skills)
 		pet_ui.action_requested.connect(_on_action_requested)
@@ -26,6 +26,8 @@ func _ready() -> void:
 		pet_stats.needs_changed.connect(_on_needs_changed)
 		pet_stats.attention_changed.connect(_on_attention_changed)
 		pet_stats.illness_changed.connect(_on_illness_changed)
+		pet_stats.newborn_tutorial_step_changed.connect(_on_newborn_tutorial_step_changed)
+		pet_stats.newborn_tutorial_completed.connect(_on_newborn_tutorial_completed)
 		_on_stats_changed(pet_stats.hunger, pet_stats.energy, pet_stats.mood, pet_stats.health)
 		_on_needs_changed(pet_stats.get_needs_snapshot())
 	if pet_skills != null:
@@ -323,6 +325,19 @@ func _on_level_up(new_level: int) -> void:
 	if pet_ui != null:
 		pet_ui.refresh_progression_locks()
 		pet_ui.show_progression_message("NÍVEL %d • NOVO CONTEÚDO DISPONÍVEL" % new_level)
+
+func _on_newborn_tutorial_step_changed(_step: StringName, message: String) -> void:
+	if pet_ui != null:
+		pet_ui.show_progression_message(message)
+
+func _on_newborn_tutorial_completed() -> void:
+	if pet_skills == null:
+		return
+	if pet_skills.level < 2:
+		pet_skills.add_xp(pet_skills.xp_required_for_next_level() - pet_skills.xp)
+	if pet_ui != null:
+		pet_ui.refresh_progression_locks()
+		pet_ui.show_progression_message("TUTORIAL CONCLUÍDO! NÍVEL 2 • JOGO DA VELHA LIBERADO")
 
 func _on_evolution_completed(new_stage: int, stage_name: StringName, visual_scale: float) -> void:
 	print("Evolução concluída: ", stage_name, " escala=", visual_scale)

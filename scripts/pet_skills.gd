@@ -40,8 +40,8 @@ const ACTION_UNLOCK_LEVELS: Dictionary = {
 	&"dar_remedio": 2,
 	&"dormir": 1,
 	&"banho": 99,
-	&"jokenpo": 2,
-	&"jogo_da_velha": 3,
+	&"jokenpo": 3,
+	&"jogo_da_velha": 2,
 	&"2048": 5,
 }
 

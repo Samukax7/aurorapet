@@ -161,6 +161,8 @@ Para adicionar animação de fundo, os arquivos exportados do Krita devem conser
 
 `PetStats` implementa o ciclo de cuidado inspirado em V-Pets clássicos. Os valores principais exibidos na interface são fome, energia, humor e saúde. O sistema também mantém higiene, disciplina, peso, doença, sono e histórico de cuidado.
 
+No primeiro nascimento, o loop tutorial começa com fome em 20% e energia em 30%. O objetivo inicial é alimentar o pet até a fome chegar a 100% e, em seguida, usar Cuidar > Dormir. Quando o ciclo de sono de 12 segundos termina, o tutorial concede XP suficiente para alcançar o nível 2 e libera Jogo da Velha como a primeira atividade da categoria Jogar.
+
 O decaimento é intencionalmente tranquilo e ocorre por intervalos configuráveis, com intervalo padrão de um segundo. A saúde permanece protegida fora dos estados críticos. Resistência derivada dos atributos de treino reduz a velocidade efetiva de queda. Não existe morte permanente nesta fase do protótipo.
 
 | Categoria | Ação | Efeito principal | XP |
@@ -181,7 +183,7 @@ O sistema mantém chamadas de atenção quando uma necessidade entra em criticid
 
 ## 9. Menu, submenus e controles
 
-O menu principal possui cinco categorias: **Comer, Cuidar, Jogar, Treinar e Batalhar**. Comer abre as três comidas; Cuidar abre limpeza e dormir desde os primeiros níveis, enquanto remédio é liberado posteriormente. A ação legada de banho permanece bloqueada para uma implementação futura. Jogar abre Jokenpô, Jogo da Velha e 2048. Treinar abre a árvore de habilidades. Batalhar apresenta a mensagem de que o sistema ainda está em desenvolvimento.
+O menu principal possui cinco categorias: **Comer, Cuidar, Jogar, Treinar e Batalhar**. Comer abre as três comidas; Cuidar abre limpeza e dormir desde os primeiros níveis, enquanto remédio é liberado posteriormente. A ação legada de banho permanece bloqueada para uma implementação futura. Jogar abre Jogo da Velha primeiro, seguido de Jokenpô e 2048. Treinar abre a árvore de habilidades. Batalhar apresenta a mensagem de que o sistema ainda está em desenvolvimento.
 
 O ícone selecionado recebe modulação completa, pequeno aumento de escala e um shader de glow que pulsa por 0,5 segundo. Os ícones não selecionados usam opacidade reduzida para melhorar a leitura sobre o cenário.
 
@@ -212,13 +214,15 @@ O menu acompanha o crescimento do pet. As categorias permanecem visíveis desde 
 | Nível | Conteúdo liberado |
 |---:|---|
 | 1 | Comer, Cuidar, Fruta Estelar, Limpar Sujeira e Dormir |
-| 2 | Jogar, Jokenpô, Néctar Cósmico e Dar Remédio |
-| 3 | Jogo da Velha e Banquete Nebulosa |
+| 2 | Jogar, Jogo da Velha, Néctar Cósmico e Dar Remédio |
+| 3 | Jokenpô e Banquete Nebulosa |
 | 4 | Treinar e a árvore de habilidades |
 | 5 | 2048 |
 | 6 | Batalhar |
 
 Uma seleção bloqueada exibe a mensagem `DESBLOQUEIA NO NÍVEL X`, e a confirmação não executa a ação. Dormir permanece disponível desde o nível 1 para que o jogador consiga recuperar energia no começo do jogo. Banho está explicitamente bloqueado no nível 99, funcionando como conteúdo reservado para uma implementação futura. Ao subir de nível, a `PetUI` atualiza imediatamente o estado visual das categorias e mostra a mensagem `NOVO CONTEÚDO DISPONÍVEL`.
+
+O onboarding utiliza mensagens contextuais sem criar uma tela tutorial separada: primeiro orienta a alimentação, depois indica o sono e, ao concluir o descanso, informa o nível 2 e a liberação de Jogo da Velha. Essa estrutura transforma a necessidade do pet em uma sequência curta de aprendizagem e recompensa.
 
 ## 11. Procedimento de teste manual
 
@@ -242,7 +246,7 @@ Execute uma ação de comida, limpeza, remédio, sono, jogo e treino. Confira as
 
 ### Teste de progressão
 
-Execute treino e ações com XP. Confirme a mensagem de XP, a subida de nível e a tentativa automática de desbloqueio. Verifique que a evolução aumenta a escala a partir de `4.0` e que o perfil visual do estágio é aplicado sem remover nós da cena `pet.tscn`.
+Em um novo nascimento, confirme que o pet inicia com fome 20% e energia 30%. Alimente-o até 100%, abra Cuidar > Dormir e aguarde o ciclo de 12 segundos. A mensagem deve avançar de alimentação para sono e, ao final, o pet deve chegar ao nível 2 com Jogo da Velha liberado e visualmente como primeira opção de Jogar. Execute também treino e ações com XP para confirmar a progressão geral, a tentativa automática de desbloqueio e a evolução a partir da escala `4.0`, sem remover nós da cena `pet.tscn`.
 
 ### Teste de composição
 

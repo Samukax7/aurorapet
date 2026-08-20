@@ -44,8 +44,8 @@ const SUBMENU_DEFINITIONS: Dictionary = {
 		{"action": &"dormir", "label": "Dormir", "icon": "res://assets/UI/dormir.png"},
 	],
 	&"jogar": [
-		{"action": &"jokenpo", "label": "Jokenpô", "icon": "res://assets/UI/submenus/jokenpo.png"},
 		{"action": &"jogo_da_velha", "label": "Jogo da Velha", "icon": "res://assets/UI/submenus/jogo_da_velha.png"},
+		{"action": &"jokenpo", "label": "Jokenpô", "icon": "res://assets/UI/submenus/jokenpo.png"},
 		{"action": &"2048", "label": "2048", "icon": "res://assets/UI/submenus/2048.png"},
 	],
 }
