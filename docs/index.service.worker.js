@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1787237041|5829476';
+const CACHE_VERSION = '1787238859|5089055';
 /** @type {string} */
 const CACHE_PREFIX = 'AuroraPet V 0.0-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;

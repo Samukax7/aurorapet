@@ -90,6 +90,16 @@ A opção mais simples para um protótipo é publicar o ZIP como **HTML Game** e
 
 Em celulares, o usuário abre a página no navegador, escolhe **Adicionar à tela inicial** e pode executar o AuroraPet como uma aplicação Web instalada. A instalação PWA depende do navegador e do sistema operacional, mas o preset já fornece o nome, o ícone, a orientação e os tamanhos de imagem necessários.
 
+## Passe de legibilidade após testes
+
+Os primeiros testes externos apontaram três problemas convergentes: textos difíceis de ler por causa da escala e das cores, falta de instrução clara no Jogo da Velha e ausência de objetivos visuais diretos durante a progressão inicial.
+
+Para esta rodada, as labels principais da PetUI foram ampliadas e receberam uma hierarquia mais uniforme. Os textos de menu usam branco com contorno escuro, enquanto as cores saturadas ficam reservadas para barras de status e acentos de seleção. As mensagens de sistema continuam em painéis escuros com borda ciano, e as falas do pet permanecem em balões claros, mantendo a diferença entre informação e reação.
+
+A abertura também recebeu aumento tipográfico nos títulos, botões, instruções, história, seleção de facção, ovo e ficha RPG. O tutorial inicial foi encurtado para objetivos diretos: `OBJETIVO 1/2: FOME EM 100%`, `OBJETIVO 2/2: CUIDAR > DORMIR` e `NÍVEL 2: JOGO DA VELHA LIBERADO`.
+
+O Jogo da Velha agora mostra permanentemente o objetivo `3 EM LINHA`, informa que o jogador usa `O`, exibe o turno atual com instrução acionável e mantém um painel inferior com `D-PAD: MOVER`, `VERDE: MARCAR` e `ROSA: SAIR`. Mensagens de casa ocupada, pensamento da Aurora e fim da partida também foram esclarecidas.
+
 ## Limitações conhecidas da V 0.0
 
 A versão não possui áudio, combate implementado, persistência completa de todos os sistemas, animações finais de reação ou conteúdo final da história. O estado salvo usa `user://`, que no navegador depende do armazenamento local do próprio navegador. Navegação privada, bloqueio de cookies ou limpeza dos dados do site podem apagar esse estado.[1]

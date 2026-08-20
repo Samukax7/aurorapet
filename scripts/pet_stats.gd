@@ -127,11 +127,11 @@ func is_newborn_tutorial_active() -> bool:
 func get_newborn_tutorial_message() -> String:
 	match newborn_tutorial_step:
 		&"feed":
-			return "TUTORIAL 1/2: ALIMENTE O PET ATÉ A FOME CHEGAR A 100%"
+			return "OBJETIVO 1/2: FOME EM 100%"
 		&"sleep":
-			return "FOME COMPLETA! AGORA USE CUIDAR > DORMIR"
+			return "OBJETIVO 2/2: CUIDAR > DORMIR"
 		&"complete":
-			return "TUTORIAL CONCLUÍDO! NÍVEL 2 • JOGO DA VELHA LIBERADO"
+			return "NÍVEL 2: JOGO DA VELHA LIBERADO"
 	return ""
 
 func _set_newborn_tutorial_step(step: StringName) -> void:

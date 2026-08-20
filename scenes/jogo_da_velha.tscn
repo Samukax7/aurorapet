@@ -22,6 +22,18 @@ shadow_size = 14
 [sub_resource type="StyleBoxFlat" id="StyleBox_Cell"]
 bg_color = Color(0, 0, 0, 0)
 
+[sub_resource type="StyleBoxFlat" id="StyleBox_Info"]
+bg_color = Color(0.05, 0.14, 0.26, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.32, 0.78, 0.94, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [node name="JogoDaVelha" type="Control"]
 visible = false
 z_index = 40
@@ -54,14 +66,26 @@ theme_override_font_sizes/font_size = 24
 text = "JOGO DA VELHA CÓSMICO"
 horizontal_alignment = 1
 
+[node name="Objective" type="Label" parent="."]
+offset_left = 170.0
+offset_top = 68.0
+offset_right = 725.0
+offset_bottom = 98.0
+theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBox_Info")
+text = "OBJETIVO: 3 EM LINHA  •  VOCÊ = O"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Status" type="Label" parent="."]
 offset_left = 100.0
-offset_top = 75.0
+offset_top = 99.0
 offset_right = 795.0
-offset_bottom = 108.0
-theme_override_colors/font_color = Color(0.96, 0.84, 0.38, 1)
-theme_override_font_sizes/font_size = 17
-text = "SUA VEZ — ESCOLHA UMA CASA"
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(1, 0.86, 0.42, 1)
+theme_override_font_sizes/font_size = 22
+text = "SUA VEZ — MOVER E PRESSIONAR VERDE"
 horizontal_alignment = 1
 
 [node name="Board" type="TextureRect" parent="."]
@@ -276,17 +300,19 @@ offset_left = 100.0
 offset_top = 690.0
 offset_right = 795.0
 offset_bottom = 730.0
-theme_override_colors/font_color = Color(0.45, 0.95, 0.85, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.72, 1, 0.9, 1)
+theme_override_font_sizes/font_size = 24
 text = ""
 horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="."]
 offset_left = 85.0
-offset_top = 744.0
+offset_top = 740.0
 offset_right = 810.0
-offset_bottom = 785.0
-theme_override_colors/font_color = Color(0.62, 0.82, 0.94, 1)
-theme_override_font_sizes/font_size = 14
-text = "D-PAD: MOVER   •   VERDE: JOGAR   •   ROSA: SAIR"
+offset_bottom = 792.0
+theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBox_Info")
+text = "D-PAD: MOVER  •  VERDE: MARCAR  •  ROSA: SAIR"
 horizontal_alignment = 1
+vertical_alignment = 1

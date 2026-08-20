@@ -59,8 +59,8 @@ func new_round() -> void:
 	game_over = false
 	player_turn = true
 	result_label.text = ""
-	status_label.text = "SUA VEZ — ESCOLHA UMA CASA"
-	hint_label.text = "D-PAD: MOVER   •   VERDE: JOGAR   •   ROSA: SAIR"
+	status_label.text = "SUA VEZ — MOVER E PRESSIONAR VERDE"
+	hint_label.text = "D-PAD: MOVER  •  VERDE: MARCAR  •  ROSA: SAIR"
 	_update_board()
 
 func handle_direction(direction: Vector2i) -> void:
@@ -91,7 +91,7 @@ func _try_player_move(index: int) -> void:
 	if not player_turn or index < 0 or index >= board.size():
 		return
 	if not board[index].is_empty():
-		status_label.text = "ESSA CASA JÁ ESTÁ OCUPADA"
+		status_label.text = "ESSA CASA JÁ ESTÁ OCUPADA — ESCOLHA OUTRA"
 		return
 	board[index] = PLAYER
 	_update_board()
@@ -100,7 +100,7 @@ func _try_player_move(index: int) -> void:
 		_finish_match(result)
 		return
 	player_turn = false
-	status_label.text = "AURORA ESTÁ PENSANDO..."
+	status_label.text = "AURORA ESTÁ PENSANDO... AGUARDE"
 	if is_inside_tree():
 		get_tree().create_timer(0.35).timeout.connect(_computer_move)
 
@@ -117,7 +117,7 @@ func _computer_move() -> void:
 		_finish_match(result)
 		return
 	player_turn = true
-	status_label.text = "SUA VEZ — ESCOLHA UMA CASA"
+	status_label.text = "SUA VEZ — MOVER E PRESSIONAR VERDE"
 
 func _choose_computer_move() -> int:
 	var winning := _find_tactical_move(COMPUTER)
@@ -189,7 +189,7 @@ func _finish_match(result: StringName) -> void:
 			status_label.text = "EMPATE CÓSMICO"
 			result_label.text = "+%d XP" % DRAW_XP
 			reward = DRAW_XP
-	hint_label.text = "VERDE: NOVA PARTIDA   •   ROSA: VOLTAR"
+	hint_label.text = "VERDE: NOVA PARTIDA  •  ROSA: VOLTAR"
 	match_completed.emit(result, reward)
 
 func _update_board() -> void:
