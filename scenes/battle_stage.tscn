@@ -37,7 +37,7 @@ theme_override_colors/font_color = Color(0.35, 1, 0.8, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.02, 0.12, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 28
-text = "PET"
+text = ""
 horizontal_alignment = 1
 
 [node name="EcoCaption" type="Label" parent="."]
@@ -50,7 +50,7 @@ theme_override_colors/font_color = Color(1, 0.42, 0.62, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.02, 0.12, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 28
-text = "ECO"
+text = ""
 horizontal_alignment = 1
 
 [node name="StageBanner" type="Label" parent="."]
@@ -63,5 +63,5 @@ theme_override_colors/font_color = Color(0.85, 0.75, 1, 0.9)
 theme_override_colors/font_outline_color = Color(0.04, 0.02, 0.14, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 22
-text = "CAMPO DE EXPLORAÇÃO"
+text = ""
 horizontal_alignment = 1
