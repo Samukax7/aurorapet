@@ -23,13 +23,13 @@ signal evolution_changed(stage: int, stage_name: StringName, visual_scale: float
 @export var randomizer_path: NodePath = NodePath("..")
 
 const STAGE_DATA: Dictionary = {
-	0: {"name": &"bebe", "label": "Bebê", "level": 1, "scale": 4.00},
-	1: {"name": &"crianca", "label": "Criança", "level": 10, "scale": 4.60},
-	2: {"name": &"juvenil", "label": "Juvenil", "level": 20, "scale": 5.20},
-	3: {"name": &"jovem", "label": "Jovem", "level": 30, "scale": 6.00},
-	4: {"name": &"adulto", "label": "Adulto", "level": 50, "scale": 7.00},
-	5: {"name": &"forma_maxima", "label": "Forma Máxima", "level": 75, "scale": 8.00},
-	6: {"name": &"entidade_cosmica", "label": "Entidade Cósmica", "level": 100, "scale": 9.20},
+	0: {"name": &"bebe", "label": "Bebê", "level": 1, "scale": 4.00, "min_attribute_average": 0, "power_multiplier": 1.00, "description": "Primeiro estágio: curioso e dependente de cuidados."},
+	1: {"name": &"crianca", "label": "Criança", "level": 10, "scale": 4.60, "min_attribute_average": 12, "power_multiplier": 1.10, "description": "Aprende a responder aos cuidados e aos primeiros treinos."},
+	2: {"name": &"juvenil", "label": "Juvenil", "level": 20, "scale": 5.20, "min_attribute_average": 18, "power_multiplier": 1.22, "description": "Desenvolve técnicas de combate e vontades próprias."},
+	3: {"name": &"jovem", "label": "Jovem", "level": 30, "scale": 6.00, "min_attribute_average": 25, "power_multiplier": 1.36, "description": "A identidade cósmica começa a se manifestar com força."},
+	4: {"name": &"adulto", "label": "Adulto", "level": 50, "scale": 7.00, "min_attribute_average": 35, "power_multiplier": 1.52, "description": "Pet experiente, pronto para expedições mais perigosas."},
+	5: {"name": &"forma_maxima", "label": "Forma Máxima", "level": 75, "scale": 8.00, "min_attribute_average": 48, "power_multiplier": 1.72, "description": "A forma máxima de sua linhagem antes da transcendência."},
+	6: {"name": &"entidade_cosmica", "label": "Entidade Cósmica", "level": 100, "scale": 9.20, "min_attribute_average": 65, "power_multiplier": 2.00, "description": "A forma final: uma presença viva do Deepworld."},
 }
 
 func _ready() -> void:
@@ -56,6 +56,25 @@ func get_stage_data(stage_id: int = stage) -> Dictionary:
 
 func get_current_stage_label() -> String:
 	return String(get_stage_data()["label"])
+
+func get_stage_description(stage_id: int = stage) -> String:
+	return String(get_stage_data(stage_id).get("description", ""))
+
+func get_stage_power_multiplier(stage_id: int = stage) -> float:
+	return float(get_stage_data(stage_id).get("power_multiplier", 1.0))
+
+func get_stage_requirement(stage_id: int = stage) -> Dictionary:
+	var data := get_stage_data(stage_id)
+	return {
+		"level": int(data.get("level", 1)),
+		"min_attribute_average": int(data.get("min_attribute_average", 0)),
+		"label": String(data.get("label", "")),
+	}
+
+func get_attribute_average(pet_skills: PetSkills) -> float:
+	if pet_skills == null:
+		return 0.0
+	return (pet_skills.strength + pet_skills.defense + pet_skills.agility + pet_skills.intelligence + pet_skills.resistance) / 5.0
 
 func evolve_to(new_stage: int) -> bool:
 	new_stage = clampi(new_stage, 0, STAGE_DATA.size() - 1)

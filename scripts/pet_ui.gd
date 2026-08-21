@@ -276,10 +276,12 @@ func set_needs_summary(snapshot: Dictionary) -> void:
 		return
 	var hygiene_value := roundi(float(snapshot.get("hygiene", 0.0)))
 	var discipline_value := roundi(float(snapshot.get("discipline", 0.0)))
+	var obedience_value := roundi(float(snapshot.get("obedience", 0.0)))
+	var audacity_value := roundi(float(snapshot.get("audacity", 0.0)))
 	var weight_value := roundi(float(snapshot.get("weight", 0.0)))
 	var illness := "  •  DOENTE" if bool(snapshot.get("is_sick", false)) else ""
 	var sleeping := "  •  DORMINDO" if bool(snapshot.get("is_sleeping", false)) else ""
-	_needs_summary_label.text = "HIGIENE %d%%  •  DISCIPLINA %d%%  •  PESO %d%s%s" % [hygiene_value, discipline_value, weight_value, illness, sleeping]
+	_needs_summary_label.text = "HIGIENE %d%%  •  DISCIPLINA %d%%  •  PESO %d\nOBEDIÊNCIA %d%%  •  OUSADIA %d%%%s%s" % [hygiene_value, discipline_value, weight_value, obedience_value, audacity_value, illness, sleeping]
 
 func set_status(status: StringName, value: float) -> void:
 	var safe_value := clampf(value, 0.0, 100.0)

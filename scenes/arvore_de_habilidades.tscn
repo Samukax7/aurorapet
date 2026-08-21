@@ -131,6 +131,15 @@ custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_Header")
 
+[node name="HeaderPlaceholderIcon" type="ColorRect" parent="Panel/Margin/Content/Header"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 11.0
+offset_right = 44.0
+offset_bottom = 45.0
+color = Color(1, 0.82, 0.4, 0.9)
+mouse_filter = 2
+
 [node name="Title" type="Label" parent="Panel/Margin/Content/Header"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 1, 0.95, 1)
@@ -159,6 +168,15 @@ theme_override_styles/normal = SubResource("StyleBox_Training")
 theme_override_styles/hover = SubResource("StyleBox_Training")
 theme_override_styles/pressed = SubResource("StyleBox_Training")
 text = "TREINO\n+25 XP  •  +1 FORÇA"
+
+[node name="TrainingPlaceholderIcon" type="ColorRect" parent="Panel/Margin/Content/TrainingOption"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 17.0
+offset_right = 48.0
+offset_bottom = 51.0
+color = Color(0.45, 0.95, 1, 0.9)
+mouse_filter = 2
 
 [node name="Progress" type="Label" parent="Panel/Margin/Content"]
 custom_minimum_size = Vector2(0, 26)
@@ -192,6 +210,15 @@ theme_override_styles/panel = SubResource("StyleBox_Attributes")
 layout_mode = 2
 theme_override_constants/separation = 7
 
+[node name="AttributesPlaceholderIcon" type="ColorRect" parent="Panel/Margin/Content/SkillColumns/AttributesPanel"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 38.0
+offset_bottom = 38.0
+color = Color(0.72, 0.95, 1, 0.85)
+mouse_filter = 2
+
 [node name="Title" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]
 custom_minimum_size = Vector2(0, 26)
 layout_mode = 2
@@ -223,7 +250,7 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="Stats" type="GridContainer" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]
-custom_minimum_size = Vector2(0, 112)
+custom_minimum_size = Vector2(0, 136)
 layout_mode = 2
 columns = 1
 theme_override_constants/v_separation = 4
@@ -254,6 +281,13 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.88, 0.62, 1, 1)
 theme_override_font_sizes/font_size = 15
 text = "INTELIGÊNCIA  10"
+horizontal_alignment = 1
+
+[node name="Resistance" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.38, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "RESISTÊNCIA  10"
 horizontal_alignment = 1
 
 [node name="CombatHint" type="Label" parent="Panel/Margin/Content/SkillColumns/AttributesPanel/Content"]

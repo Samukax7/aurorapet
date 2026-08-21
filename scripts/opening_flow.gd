@@ -32,6 +32,7 @@ var pet_ui: PetUI
 var deepworld: Node
 var pet_node: Node2D
 var skill_tree: Node
+var pet_save: AuroraPetSave
 var egg_base_position := Vector2(317, 405)
 var egg_shake_tween: Tween
 
@@ -69,7 +70,7 @@ func _ready() -> void:
 	_hide_all_panels()
 	_show_logo()
 
-func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node) -> void:
+func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node, save_manager: AuroraPetSave = null) -> void:
 	pet_identity = identity
 	pet_stats = stats
 	pet_skills = skills
@@ -78,6 +79,7 @@ func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, random
 	deepworld = world
 	pet_node = deepworld.get_node_or_null("Paisagem/Pet") as Node2D if deepworld != null else null
 	skill_tree = tree
+	pet_save = save_manager
 	if deepworld != null:
 		deepworld.visible = false
 	if pet_node != null:
@@ -362,6 +364,10 @@ func _show_pet_status() -> void:
 	status_hint.text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
 
 func _continue_saved_pet() -> void:
+	if pet_save != null and pet_save.load_now():
+		_finish_flow()
+		return
+	## Compatibilidade com o formato de identidade da primeira versão.
 	if pet_skills != null:
 		pet_skills.reset_for_new_pet()
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
@@ -381,6 +387,8 @@ func _continue_saved_pet() -> void:
 	_finish_flow()
 
 func _save_new_pet() -> void:
+	if pet_save != null and pet_save.save_now():
+		return
 	if pet_identity == null:
 		return
 	var data := {
@@ -415,7 +423,7 @@ func _finish_flow() -> void:
 	flow_completed.emit()
 
 func _has_save() -> bool:
-	return FileAccess.file_exists(SAVE_PATH)
+	return pet_save != null and pet_save.has_save() or FileAccess.file_exists(SAVE_PATH)
 
 func _hide_all_panels() -> void:
 	logo.visible = false

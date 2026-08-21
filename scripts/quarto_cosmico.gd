@@ -12,9 +12,11 @@ signal wardrobe_requested
 signal exit_confirmation_requested
 signal exit_confirmation_cancelled
 signal exit_confirmed
+signal purchase_completed(item_id: StringName, price: int, remaining_points: int, accumulated_value: int)
 
 var exploration_points := 0
 var shop_total_value := 0
+var owned_items: Array[StringName] = []
 var selected_index := 0
 var player_level := 1
 var player_xp := 0
@@ -159,6 +161,19 @@ func get_exploration_points() -> int:
 func get_shop_total_value() -> int:
 	return shop_total_value
 
+func get_owned_items() -> Array[StringName]:
+	return owned_items.duplicate()
+
+func set_owned_items(items: Array) -> void:
+	owned_items.clear()
+	for item_id in items:
+		var normalized := StringName(String(item_id))
+		if not normalized.is_empty() and not owned_items.has(normalized):
+			owned_items.append(normalized)
+
+func has_owned_item(item_id: StringName) -> bool:
+	return owned_items.has(item_id)
+
 func _open_shop() -> void:
 	if shop == null:
 		return
@@ -168,11 +183,16 @@ func _open_shop() -> void:
 	shop_requested.emit()
 
 func _on_purchase_requested(item_id: StringName, price: int) -> void:
+	if has_owned_item(item_id):
+		shop.show_purchase_result("ITEM JÁ ADQUIRIDO • USE-O NO GUARDA-ROUPAS")
+		return
 	if not spend_points(price):
 		shop.show_purchase_result("PONTOS INSUFICIENTES • PRECISA DE %d" % price)
 		return
+	owned_items.append(item_id)
 	shop_total_value += price
 	shop.apply_purchase(item_id, exploration_points, shop_total_value)
+	purchase_completed.emit(item_id, price, exploration_points, shop_total_value)
 
 func _update_selection_message() -> void:
 	var options := ["LOJA CÓSMICA", "GUARDA-ROUPAS"]

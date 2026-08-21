@@ -20,6 +20,7 @@ signal level_up(new_level: int)
 @export_range(0, 100, 1) var defense := 10
 @export_range(0, 100, 1) var agility := 10
 @export_range(0, 100, 1) var intelligence := 10
+@export_range(0, 100, 1) var resistance := 10
 
 @export_category("Habilidades desbloqueadas")
 @export var unlocked_skills: Array[StringName] = [&"golpe_fraco"]
@@ -52,6 +53,9 @@ const SKILLS: Dictionary = {
 		"description": "Ataque básico de baixo custo.",
 		"slot": "ataque",
 		"cost": 10,
+		"en_cost": 10,
+		"power": 14,
+		"accuracy": 0.90,
 		"level": 1,
 		"xp": 0,
 		"attribute": &"forca",
@@ -63,6 +67,9 @@ const SKILLS: Dictionary = {
 		"description": "Ataque poderoso que consome mais energia.",
 		"slot": "ataque",
 		"cost": 25,
+		"en_cost": 25,
+		"power": 26,
+		"accuracy": 0.78,
 		"level": 2,
 		"xp": 100,
 		"attribute": &"forca",
@@ -74,6 +81,9 @@ const SKILLS: Dictionary = {
 		"description": "Aplica um efeito tático no adversário.",
 		"slot": "status",
 		"cost": 15,
+		"en_cost": 15,
+		"power": 12,
+		"accuracy": 0.86,
 		"level": 2,
 		"xp": 100,
 		"attribute": &"inteligencia",
@@ -85,6 +95,9 @@ const SKILLS: Dictionary = {
 		"description": "Reduz dano recebido e recupera controle do combate.",
 		"slot": "defesa",
 		"cost": 20,
+		"en_cost": 5,
+		"power": 0,
+		"accuracy": 1.0,
 		"level": 2,
 		"xp": 100,
 		"attribute": &"defesa",
@@ -96,6 +109,9 @@ const SKILLS: Dictionary = {
 		"description": "Versão aprimorada do ataque básico.",
 		"slot": "ataque",
 		"cost": 8,
+		"en_cost": 8,
+		"power": 18,
+		"accuracy": 0.94,
 		"level": 3,
 		"xp": 300,
 		"attribute": &"agilidade",
@@ -107,6 +123,9 @@ const SKILLS: Dictionary = {
 		"description": "Ataque de alto impacto desbloqueado pela evolução.",
 		"slot": "ataque",
 		"cost": 30,
+		"en_cost": 30,
+		"power": 32,
+		"accuracy": 0.72,
 		"level": 4,
 		"xp": 600,
 		"attribute": &"forca",
@@ -118,6 +137,9 @@ const SKILLS: Dictionary = {
 		"description": "Efeito tático com maior duração e precisão.",
 		"slot": "status",
 		"cost": 18,
+		"en_cost": 18,
+		"power": 16,
+		"accuracy": 0.90,
 		"level": 4,
 		"xp": 600,
 		"attribute": &"inteligencia",
@@ -129,6 +151,9 @@ const SKILLS: Dictionary = {
 		"description": "Postura defensiva com recuperação ampliada.",
 		"slot": "defesa",
 		"cost": 22,
+		"en_cost": 8,
+		"power": 0,
+		"accuracy": 1.0,
 		"level": 4,
 		"xp": 600,
 		"attribute": &"defesa",
@@ -225,6 +250,7 @@ func train_attribute(attribute: StringName, amount: int = 1) -> void:
 		&"defesa": defense = clampi(defense + amount, 0, 100)
 		&"agilidade": agility = clampi(agility + amount, 0, 100)
 		&"inteligencia": intelligence = clampi(intelligence + amount, 0, 100)
+		&"resistencia": resistance = clampi(resistance + amount, 0, 100)
 		_:
 			push_warning("Atributo de treino desconhecido: %s" % attribute)
 			return
@@ -237,6 +263,7 @@ func apply_identity_bias(bias: Dictionary) -> void:
 	defense = clampi(defense + int(bias.get("defesa", 0)), 0, 100)
 	agility = clampi(agility + int(bias.get("agilidade", 0)), 0, 100)
 	intelligence = clampi(intelligence + int(bias.get("inteligencia", 0)), 0, 100)
+	resistance = clampi(resistance + int(bias.get("resistencia", 0)), 0, 100)
 	_try_unlock_available_skills()
 
 ## Reinicia a progressão para o nascimento de um novo pet.
@@ -249,6 +276,7 @@ func reset_for_new_pet() -> void:
 	defense = 10
 	agility = 10
 	intelligence = 10
+	resistance = 10
 	unlocked_skills = [&"golpe_fraco"]
 	_emit_skill_state()
 	progression_changed.emit(level, xp)
@@ -259,6 +287,7 @@ func get_attribute(attribute: StringName) -> int:
 		&"defesa": return defense
 		&"agilidade": return agility
 		&"inteligencia": return intelligence
+		&"resistencia": return resistance
 	return 0
 
 func _try_unlock_available_skills() -> void:

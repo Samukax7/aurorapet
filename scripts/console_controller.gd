@@ -16,13 +16,16 @@ extends Sprite2D
 @onready var jogo_2048: Jogo2048 = $ScreenContent/Jogo2048
 @onready var batalha_exploracao: BatalhaDeExploracao = $ScreenContent/BatalhaDeExploracao
 @onready var quarto_cosmico: QuartoCosmico = $ScreenContent/Deepworld/QuartoCosmico
+@onready var aurora_pet_save: AuroraPetSave = $ScreenContent/AuroraPetSave
 
 var quarto_entry_pending := false
 
 func _ready() -> void:
 	_connect_console_buttons()
+	if aurora_pet_save != null:
+		aurora_pet_save.configure(pet_identity, pet_stats, pet_skills, pet_evolution, pet_randomizer, quarto_cosmico, batalha_exploracao)
 	if opening_flow != null:
-		opening_flow.configure(pet_identity, pet_stats, pet_skills, pet_randomizer, pet_ui, $ScreenContent/Deepworld, skill_tree)
+		opening_flow.configure(pet_identity, pet_stats, pet_skills, pet_randomizer, pet_ui, $ScreenContent/Deepworld, skill_tree, aurora_pet_save)
 	if pet_ui != null:
 		pet_ui.set_progression_source(pet_skills)
 		pet_ui.action_requested.connect(_on_action_requested)
@@ -33,8 +36,12 @@ func _ready() -> void:
 		pet_stats.illness_changed.connect(_on_illness_changed)
 		pet_stats.reaction_requested.connect(_on_reaction_requested)
 		pet_stats.action_blocked.connect(_on_action_blocked)
+		pet_stats.action_refused.connect(_on_action_refused)
+		pet_stats.action_info.connect(_on_action_info)
+		pet_stats.behavior_event.connect(_on_behavior_event)
 		pet_stats.poop_state_changed.connect(_on_poop_state_changed)
 		pet_stats.special_need_changed.connect(_on_special_need_changed)
+
 		pet_stats.sleep_state_changed.connect(_on_sleep_state_changed)
 		pet_stats.newborn_tutorial_step_changed.connect(_on_newborn_tutorial_step_changed)
 		pet_stats.newborn_tutorial_completed.connect(_on_newborn_tutorial_completed)
@@ -428,6 +435,8 @@ func _on_action_requested(action: StringName) -> void:
 	print("Ação selecionada: ", action)
 
 func _open_tic_tac_toe() -> void:
+	if pet_stats != null and not pet_stats.report_action_check(&"jogo_da_velha"):
+		return
 	if jogo_da_velha == null:
 		return
 	if pet_ui != null:
@@ -453,6 +462,8 @@ func _on_tic_tac_toe_completed(result: StringName, reward: int) -> void:
 		pet_skills.add_xp(reward)
 
 func _open_jokenpo() -> void:
+	if pet_stats != null and not pet_stats.report_action_check(&"jokenpo"):
+		return
 	if jokenpo == null:
 		return
 	if pet_ui != null:
@@ -478,6 +489,8 @@ func _on_jokenpo_completed(result: StringName, reward: int) -> void:
 		pet_skills.add_xp(reward)
 
 func _open_2048() -> void:
+	if pet_stats != null and not pet_stats.report_action_check(&"2048"):
+		return
 	if jogo_2048 == null:
 		return
 	if pet_ui != null:
@@ -549,6 +562,8 @@ func _on_quarto_exit_confirmed() -> void:
 	_close_quarto()
 
 func _open_exploration() -> void:
+	if pet_stats != null and not pet_stats.report_action_check(&"batalha_exploracao"):
+		return
 	if batalha_exploracao == null:
 		return
 	if pet_ui != null:
@@ -607,6 +622,8 @@ func _on_newborn_tutorial_completed() -> void:
 		pet_ui.show_progression_message("TUTORIAL CONCLUÍDO! NÍVEL 2 • JOGO DA VELHA LIBERADO")
 
 func _on_evolution_completed(new_stage: int, stage_name: StringName, visual_scale: float) -> void:
+	if aurora_pet_save != null:
+		aurora_pet_save.mark_dirty()
 	print("Evolução concluída: ", stage_name, " escala=", visual_scale)
 	if pet_ui != null:
 		pet_ui.show_progression_message("EVOLUÇÃO: " + String(stage_name).to_upper())
@@ -641,6 +658,27 @@ func _on_reaction_requested(action: StringName, reaction_id: StringName) -> void
 func _on_action_blocked(_action: StringName, message: String) -> void:
 	if pet_ui != null:
 		pet_ui.show_system_message(message)
+
+func _on_action_refused(_action: StringName, system_message: String, pet_message: String) -> void:
+	if pet_ui == null:
+		return
+	pet_ui.show_system_message(system_message)
+	if not pet_message.is_empty():
+		pet_ui.show_pet_message(pet_message)
+
+func _on_action_info(_action: StringName, system_message: String, pet_message: String) -> void:
+	if pet_ui == null:
+		return
+	pet_ui.show_system_message(system_message)
+	if not pet_message.is_empty():
+		pet_ui.show_pet_message(pet_message)
+
+func _on_behavior_event(_event_id: StringName, system_message: String, pet_message: String) -> void:
+	if pet_ui == null:
+		return
+	pet_ui.show_system_message(system_message)
+	if not pet_message.is_empty():
+		pet_ui.show_pet_message(pet_message)
 
 func _on_poop_state_changed(visible: bool) -> void:
 	if pet_ui != null:

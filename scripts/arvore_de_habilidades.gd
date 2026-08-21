@@ -34,6 +34,8 @@ var _attribute_strength_label: Label
 var _attribute_defense_label: Label
 var _attribute_agility_label: Label
 var _attribute_intelligence_label: Label
+var _attribute_resistance_label: Label
+var _pet_evolution: PetEvolution
 
 func _ready() -> void:
 	_cache_nodes()
@@ -51,6 +53,9 @@ func _cache_nodes() -> void:
 	_attribute_defense_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats/Defense") as Label
 	_attribute_agility_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats/Agility") as Label
 	_attribute_intelligence_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats/Intelligence") as Label
+
+	_attribute_resistance_label = get_node_or_null(^"Panel/Margin/Content/SkillColumns/AttributesPanel/Content/Stats/Resistance") as Label
+
 	_skill_buttons.clear()
 	var paths: Array[NodePath] = [
 		^"Panel/Margin/Content/SkillColumns/ColumnLeft/GolpeFraco",
@@ -93,6 +98,7 @@ func set_pet_skills(value: PetSkills) -> void:
 		if _pet_skills.progression_changed.is_connected(_on_progression_changed):
 			_pet_skills.progression_changed.disconnect(_on_progression_changed)
 	_pet_skills = value
+	_pet_evolution = _pet_skills.get_parent().get_node_or_null(^"PetEvolution") as PetEvolution if _pet_skills != null else null
 	if _pet_skills != null:
 		_pet_skills.skill_tree_changed.connect(_on_skill_tree_changed)
 		_pet_skills.progression_changed.connect(_on_progression_changed)
@@ -156,7 +162,8 @@ func _refresh_attributes() -> void:
 			_attribute_level_label.text = "NÍVEL --  |  XP --"
 		return
 	if _attribute_level_label != null:
-		_attribute_level_label.text = "NÍVEL %d  |  XP TOTAL %d" % [_pet_skills.level, _pet_skills.total_xp]
+		var stage_label := _pet_evolution.get_current_stage_label().to_upper() if _pet_evolution != null else "--"
+		_attribute_level_label.text = "NÍVEL %d  |  XP TOTAL %d\nESTÁGIO: %s" % [_pet_skills.level, _pet_skills.total_xp, stage_label]
 	if _attribute_strength_label != null:
 		_attribute_strength_label.text = "FORÇA  %02d" % _pet_skills.strength
 	if _attribute_defense_label != null:
@@ -165,6 +172,8 @@ func _refresh_attributes() -> void:
 		_attribute_agility_label.text = "AGILIDADE  %02d" % _pet_skills.agility
 	if _attribute_intelligence_label != null:
 		_attribute_intelligence_label.text = "INTELIGÊNCIA  %02d" % _pet_skills.intelligence
+	if _attribute_resistance_label != null:
+		_attribute_resistance_label.text = "RESISTÊNCIA  %02d" % _pet_skills.resistance
 
 func _refresh_tree() -> void:
 	_refresh_attributes()

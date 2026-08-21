@@ -12,6 +12,8 @@ signal battle_completed(victory: bool, xp_reward: int, point_reward: int, log_te
 const BATTLE_XP_REWARD := 50
 const BATTLE_DEFEAT_XP := 10
 const BATTLE_POINT_REWARD := 10
+const EN_RECOVERY_PER_TURN := 8
+const BASE_ENERGY := 80
 const PLAYER_ACTIONS: Array[StringName] = [&"golpe_fraco", &"golpe_forte", &"golpe_status", &"defesa", &"fugir"]
 const ACTION_LABELS: Dictionary = {
 	&"golpe_fraco": "GOLPE FRACO",
@@ -31,6 +33,8 @@ var enemy_guarding := false
 var enemy_weakened := false
 var player_hp := 0
 var player_max_hp := 0
+var player_en := 0
+var player_max_en := 0
 var enemy_hp := 0
 var enemy_max_hp := 0
 var enemy_level := 1
@@ -56,6 +60,8 @@ var _pet_identity: PetIdentity
 @onready var player_name_label: Label = $BattleCard/PlayerName
 @onready var player_hp_label: Label = $BattleCard/PlayerHP
 @onready var player_hp_bar: ProgressBar = $BattleCard/PlayerHPBar
+@onready var player_en_label: Label = $BattleCard/PlayerEN
+@onready var player_en_bar: ProgressBar = $BattleCard/PlayerENBar
 @onready var enemy_name_label: Label = $BattleCard/EnemyName
 @onready var enemy_hp_label: Label = $BattleCard/EnemyHP
 @onready var enemy_hp_bar: ProgressBar = $BattleCard/EnemyHPBar
@@ -151,9 +157,11 @@ func _start_battle() -> void:
 	var strength := _get_attribute(&"forca", 10)
 	var defense := _get_attribute(&"defesa", 10)
 	var agility := _get_attribute(&"agilidade", 10)
-	var resistance := maxi(0, _get_attribute(&"resistencia", 0))
+	var resistance := maxi(0, _get_attribute(&"resistencia", 10))
 	player_max_hp = 70 + resistance * 3 + (_pet_skills.level * 10 if _pet_skills != null else 10)
 	player_hp = player_max_hp
+	player_max_en = BASE_ENERGY + resistance * 2
+	player_en = player_max_en
 	var player_level := _pet_skills.level if _pet_skills != null else 1
 	enemy_level = maxi(1, player_level + _rng.randi_range(-1, 1))
 	enemy_faction = _opposing_faction()
@@ -180,6 +188,10 @@ func _use_player_action() -> void:
 		_add_log("AÇÃO BLOQUEADA: %s ainda não foi desbloqueada." % String(ACTION_LABELS[action]))
 		_update_battle_ui()
 		return
+	if _pet_stats != null and _pet_stats.audacity > 65.0 and _pet_stats.obedience < 40.0 and _rng.randf() < 0.20:
+		_add_log("REBELDIA: o pet recusou a ordem de combate neste turno.")
+		_update_battle_ui()
+		return
 
 	is_player_turn = false
 	var d20 := _roll_d20()
@@ -190,19 +202,34 @@ func _use_player_action() -> void:
 		multiplier *= 1.20
 		_add_log("INTUIÇÃO CÓSMICA: inteligência ajustou precisão e dano.")
 
+	var skill := _pet_skills.get_skill(action) if _pet_skills != null else {}
+	var en_cost := int(skill.get("en_cost", skill.get("cost", 10)))
+	if action == &"defesa":
+		en_cost = 5
+	if player_en < en_cost:
+		_add_log("ENERGIA INSUFICIENTE: precisa de %d EN (atual %d)." % [en_cost, player_en])
+		is_player_turn = true
+		_update_battle_ui()
+		return
+	player_en = maxi(0, player_en - en_cost)
+	_add_log("CUSTO DE EN: -%d" % en_cost)
 	if action == &"defesa":
 		player_guarding = true
 		_add_log("GUARDA ESTELAR ativada: próximo dano recebido reduzido em 60%.")
 		_update_battle_ui()
 		_enemy_turn()
 		return
-
-	var skill := _pet_skills.get_skill(action) if _pet_skills != null else {}
-	var power := int(skill.get("cost", 10))
+	var power := int(skill.get("power", 12))
 	if action == &"golpe_status":
-		power = 12
+		power = maxi(8, power)
 		enemy_weakened = true
 		_add_log("O Eco foi marcado: seu próximo ataque terá força reduzida.")
+	var accuracy := clampf(float(skill.get("accuracy", 0.85)) + float(_get_attribute(&"agilidade", 10) - 10) * 0.005, 0.45, 0.98)
+	if d20 != 20 and _rng.randf() > accuracy:
+		_add_log("FALHA DE PRECISÃO: o golpe não encontrou o Eco.")
+		_update_battle_ui()
+		_enemy_turn()
+		return
 	var damage := maxi(6, int(float(_get_attribute(&"forca", 10) * power) / float(enemy_defense * 0.7 + 10.0) * multiplier))
 	if enemy_guarding:
 		damage = maxi(2, int(float(damage) * 0.40))
@@ -227,6 +254,8 @@ func _use_player_action() -> void:
 func _enemy_turn() -> void:
 	if phase != &"battle" or battle_over:
 		return
+	player_en = mini(player_max_en, player_en + EN_RECOVERY_PER_TURN)
+	_add_log("RECUPERAÇÃO DE EN: +%d (atual %d/%d)." % [EN_RECOVERY_PER_TURN, player_en, player_max_en])
 	battle_turn += 1
 	if _rng.randf() < 0.20 and not enemy_guarding:
 		enemy_guarding = true
@@ -316,6 +345,9 @@ func _update_battle_bars() -> void:
 	player_hp_label.text = "HP %d / %d" % [player_hp, player_max_hp]
 	player_hp_bar.max_value = maxi(1, player_max_hp)
 	player_hp_bar.value = player_hp
+	player_en_label.text = "EN %d / %d" % [player_en, player_max_en]
+	player_en_bar.max_value = maxi(1, player_max_en)
+	player_en_bar.value = player_en
 	enemy_name_label.text = "%s  •  LV%d" % [enemy_name, enemy_level]
 	enemy_hp_label.text = "HP %d / %d" % [enemy_hp, enemy_max_hp]
 	enemy_hp_bar.max_value = maxi(1, enemy_max_hp)
@@ -347,7 +379,7 @@ func _get_attribute(attribute: StringName, fallback: int) -> int:
 		&"defesa": return _pet_skills.defense
 		&"agilidade": return _pet_skills.agility
 		&"inteligencia": return _pet_skills.intelligence
-		&"resistencia": return (_pet_skills.strength + _pet_skills.defense + _pet_skills.agility + _pet_skills.intelligence) / 4
+		&"resistencia": return _pet_skills.resistance
 	return fallback
 
 func _get_pet_name() -> String:
