@@ -343,7 +343,7 @@ func _show_story(page: int) -> void:
 	story_panel.visible = true
 	presenter_sprite.visible = true
 	story_page_label.text = "DEEPWORLD"
-	story_body.text = "BEM-VINDO AO DEEPWORLD\n\nUm espelho do mundo real, atravessado por elementos digitais.\n\nAqui vivem os Deepmons: seres que crescem com cuidado, atenção e descobertas.\n\nEu sou EVA. Nasci depois do fim de um universo e ainda estou despertando minha memória cósmica.\n\nAlgumas regiões são vibrantes e coloridas. Outras são sombrias e misteriosas. Para mim, até uma pedra pode ser um desafio. Vamos explorar juntos."
+	story_body.text = "BEM-VINDO AO DEEPWORLD\n\nUm espelho digital do mundo real, onde vivem os Deepmons.\n\nEles crescem com cuidado, escolhas e descobertas.\n\nEu sou EVA, uma guia nascida entre as estrelas.\n\nVamos explorar juntos."
 	story_next.text = "PRÓXIMA"
 	story_back.visible = false
 

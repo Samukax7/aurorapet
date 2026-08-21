@@ -352,10 +352,10 @@ horizontal_alignment = 1
 
 [node name="StoryPanel" type="Panel" parent="."]
 visible = false
-offset_left = 300.0
-offset_top = 105.0
-offset_right = 865.0
-offset_bottom = 705.0
+offset_left = 315.0
+offset_top = 90.0
+offset_right = 870.0
+offset_bottom = 730.0
 theme_override_styles/panel = SubResource("StyleBox_TextCard")
 
 [node name="Page" type="Label" parent="StoryPanel"]
@@ -369,18 +369,19 @@ text = "DEEPWORLD 1 / 2"
 horizontal_alignment = 1
 
 [node name="Body" type="Label" parent="StoryPanel"]
-offset_left = 38.0
+offset_left = 30.0
 offset_top = 105.0
-offset_right = 527.0
+offset_right = 525.0
 offset_bottom = 485.0
 theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 text = "HISTÓRIA AQUI"
+autowrap_mode = 2
 horizontal_alignment = 1
-vertical_alignment = 1
+vertical_alignment = 0
 
 [node name="Back" type="Button" parent="StoryPanel"]
 offset_left = 38.0
@@ -404,10 +405,10 @@ text = "PRÓXIMA"
 
 [node name="FactionPanel" type="Panel" parent="."]
 visible = false
-offset_left = 255.0
-offset_top = 95.0
+offset_left = 275.0
+offset_top = 90.0
 offset_right = 870.0
-offset_bottom = 705.0
+offset_bottom = 730.0
 theme_override_styles/panel = SubResource("StyleBox_FactionPanel")
 
 [node name="Title" type="Label" parent="FactionPanel"]
@@ -577,7 +578,7 @@ text = "FICHA DO DEEPMON"
 horizontal_alignment = 1
 
 [node name="Identity" type="Label" parent="PetStatusPanel"]
-offset_left = 45.0
+offset_left = 215.0
 offset_top = 82.0
 offset_right = 650.0
 offset_bottom = 255.0
@@ -588,7 +589,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Attributes" type="Label" parent="PetStatusPanel"]
-offset_left = 45.0
+offset_left = 215.0
 offset_top = 280.0
 offset_right = 650.0
 offset_bottom = 420.0
@@ -673,8 +674,8 @@ text = "PRÓXIMA"
 [node name="PresenterSprite" type="Sprite2D" parent="."]
 visible = false
 z_index = 5
-position = Vector2(145, 645)
-scale = Vector2(3.5, 3.5)
+position = Vector2(185, 645)
+scale = Vector2(6.0, 6.0)
 texture_filter = 1
 texture = ExtResource("7_presenter_idle")
 hframes = 3
@@ -684,8 +685,8 @@ frame = 0
 [node name="GuideSprite" type="Sprite2D" parent="."]
 visible = false
 z_index = 5
-position = Vector2(125, 225)
-scale = Vector2(2.7, 2.7)
+position = Vector2(145, 285)
+scale = Vector2(5.2, 5.2)
 texture_filter = 1
 texture = ExtResource("8_presenter_pointing")
 hframes = 3
@@ -695,8 +696,8 @@ frame = 0
 [node name="StatusSprite" type="Sprite2D" parent="."]
 visible = false
 z_index = 5
-position = Vector2(135, 250)
-scale = Vector2(2.7, 2.7)
+position = Vector2(155, 205)
+scale = Vector2(5.4, 5.4)
 texture_filter = 1
 texture = ExtResource("9_presenter_close")
 hframes = 3
