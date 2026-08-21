@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/batalha_de_exploracao.gd" id="1_exploration"]
 
@@ -316,9 +316,9 @@ text = "ECO PROCEDURAL • OPONENTE"
 
 [node name="Turn" type="Label" parent="BattleCard"]
 offset_left = 22.0
-offset_top = 145.0
+offset_top = 225.0
 offset_right = 803.0
-offset_bottom = 174.0
+offset_bottom = 254.0
 theme_override_colors/font_color = Color(1, 0.84, 0.38, 1)
 theme_override_colors/font_outline_color = Color(0.12, 0.02, 0.25, 1)
 theme_override_constants/outline_size = 3
@@ -328,9 +328,9 @@ horizontal_alignment = 1
 
 [node name="Action" type="Label" parent="BattleCard"]
 offset_left = 22.0
-offset_top = 179.0
+offset_top = 259.0
 offset_right = 803.0
-offset_bottom = 209.0
+offset_bottom = 289.0
 theme_override_colors/font_color = Color(0.75, 0.92, 1, 1)
 theme_override_colors/font_outline_color = Color(0.1, 0.02, 0.25, 1)
 theme_override_constants/outline_size = 3
@@ -340,9 +340,9 @@ horizontal_alignment = 1
 
 [node name="CommandMenu" type="Label" parent="BattleCard"]
 offset_left = 22.0
-offset_top = 211.0
+offset_top = 291.0
 offset_right = 803.0
-offset_bottom = 238.0
+offset_bottom = 318.0
 theme_override_colors/font_color = Color(0.97, 0.9, 0.5, 1)
 theme_override_colors/font_outline_color = Color(0.1, 0.02, 0.25, 1)
 theme_override_constants/outline_size = 2
@@ -352,9 +352,9 @@ horizontal_alignment = 1
 
 [node name="ActionButton1" type="NinePatchRect" parent="BattleCard"]
 offset_left = 22.0
-offset_top = 245.0
+offset_top = 325.0
 offset_right = 406.0
-offset_bottom = 318.0
+offset_bottom = 398.0
 texture_filter = 1
 patch_margin_left = 16
 patch_margin_top = 16
@@ -379,9 +379,9 @@ vertical_alignment = 1
 
 [node name="ActionButton2" type="NinePatchRect" parent="BattleCard"]
 offset_left = 420.0
-offset_top = 245.0
+offset_top = 325.0
 offset_right = 804.0
-offset_bottom = 318.0
+offset_bottom = 398.0
 texture_filter = 1
 patch_margin_left = 16
 patch_margin_top = 16
@@ -406,9 +406,9 @@ vertical_alignment = 1
 
 [node name="ActionButton3" type="NinePatchRect" parent="BattleCard"]
 offset_left = 22.0
-offset_top = 327.0
+offset_top = 407.0
 offset_right = 406.0
-offset_bottom = 400.0
+offset_bottom = 480.0
 texture_filter = 1
 patch_margin_left = 16
 patch_margin_top = 16
@@ -433,9 +433,9 @@ vertical_alignment = 1
 
 [node name="ActionButton4" type="NinePatchRect" parent="BattleCard"]
 offset_left = 420.0
-offset_top = 327.0
+offset_top = 407.0
 offset_right = 804.0
-offset_bottom = 400.0
+offset_bottom = 480.0
 texture_filter = 1
 patch_margin_left = 16
 patch_margin_top = 16
@@ -460,9 +460,9 @@ vertical_alignment = 1
 
 [node name="LogFrame" type="NinePatchRect" parent="BattleCard"]
 offset_left = 22.0
-offset_top = 413.0
+offset_top = 493.0
 offset_right = 804.0
-offset_bottom = 550.0
+offset_bottom = 630.0
 texture_filter = 1
 patch_margin_left = 16
 patch_margin_top = 16
@@ -474,9 +474,9 @@ mouse_filter = 2
 
 [node name="Log" type="Label" parent="BattleCard"]
 offset_left = 42.0
-offset_top = 426.0
+offset_top = 506.0
 offset_right = 786.0
-offset_bottom = 538.0
+offset_bottom = 618.0
 theme_override_colors/font_color = Color(0.03, 0.02, 0.1, 1)
 theme_override_colors/font_outline_color = Color(0.8, 0.95, 1, 0.35)
 theme_override_constants/outline_size = 1
