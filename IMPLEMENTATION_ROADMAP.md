@@ -43,6 +43,8 @@ Transportar da estrutura do protótipo os custos de energia, poder-base, precis�
 
 **Critério de conclusão:** cada ação de batalha possui custo, resultado e log; a batalha usa os atributos reais do pet sem criar um segundo sistema de identidade. **Validado:** habilidades possuem EN, poder e precisão; a batalha recupera EN por turno, aplica Guarda com custo, registra falhas e bloqueia ações sem energia.
 
+**Refinamento desta rodada:** a interface agora usa quatro comandos de alto nível — Golpes, Técnica, Guarda e Fugir — com submenu para os golpes existentes. A iniciativa usa D20 + Agilidade, Guarda recebe prioridade simples, Fugir possui teste próprio e Golpe de Status aplica uma condição volátil curta.
+
 ### 7. Metadados de evolução — CONCLUÍDA
 
 Enriquecer `PetEvolution` com descrição, média de atributos, multiplicador de poder e dados de estágio, preservando os nomes oficiais do AuroraPet: Bebê, Criança, Juvenil, Jovem, Adulto, Forma Máxima e Entidade Cósmica.

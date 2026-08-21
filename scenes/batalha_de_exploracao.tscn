@@ -330,11 +330,23 @@ theme_override_font_sizes/font_size = 18
 text = "GOLPE FRACO • VERDE: USAR"
 horizontal_alignment = 1
 
+[node name="CommandMenu" type="Label" parent="BattleCard"]
+offset_left = 42.0
+offset_top = 258.0
+offset_right = 758.0
+offset_bottom = 365.0
+theme_override_colors/font_color = Color(0.65, 1, 0.9, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "> 1. GOLPES\n  2. TÉCNICA\n  3. GUARDA\n  4. FUGIR"
+vertical_alignment = 1
+
 [node name="Log" type="Label" parent="BattleCard"]
 offset_left = 32.0
-offset_top = 270.0
+offset_top = 378.0
 offset_right = 768.0
-offset_bottom = 456.0
+offset_bottom = 560.0
 theme_override_colors/font_color = Color(0.82, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBox_Log")

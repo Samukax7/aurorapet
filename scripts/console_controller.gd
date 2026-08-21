@@ -150,10 +150,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			batalha_exploracao.confirm()
 			get_viewport().set_input_as_handled()
 		elif event.is_action_pressed("ui_cancel"):
-			_close_exploration()
+			if batalha_exploracao.is_in_submenu():
+				batalha_exploracao.back()
+			else:
+				_close_exploration()
 			get_viewport().set_input_as_handled()
 		return
 	if jogo_2048 != null and jogo_2048.visible:
+
 		if event.is_action_pressed("ui_left"):
 			jogo_2048.handle_direction(Vector2i.LEFT)
 			get_viewport().set_input_as_handled()
@@ -325,10 +329,14 @@ func _on_pink_pressed() -> void:
 		_close_2048()
 		return
 	if batalha_exploracao != null and batalha_exploracao.visible:
-		_close_exploration()
+		if batalha_exploracao.is_in_submenu():
+			batalha_exploracao.back()
+		else:
+			_close_exploration()
 		return
 	if skill_tree != null and skill_tree.visible:
 		skill_tree.close_tree()
+
 	elif pet_ui != null and pet_ui.submenu_visible:
 		pet_ui.close_submenu()
 	else:
