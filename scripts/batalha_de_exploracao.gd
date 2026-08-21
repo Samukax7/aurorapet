@@ -8,6 +8,7 @@ class_name BatalhaDeExploracao
 signal points_changed(total_points: int)
 signal area_closed
 signal battle_completed(victory: bool, xp_reward: int, point_reward: int, log_text: String)
+signal battle_started(enemy_name: String, enemy_faction: StringName)
 
 const BATTLE_XP_REWARD := 50
 const BATTLE_DEFEAT_XP := 10
@@ -238,6 +239,7 @@ func _start_battle() -> void:
 
 	_add_log("ECO DETECTADO: %s LV%d emergiu do vácuo." % [enemy_name, enemy_level])
 	_add_log("A exploração usa D20, vantagens de facção e guarda tática.")
+	battle_started.emit(enemy_name, enemy_faction)
 	_update_battle_ui()
 
 func _confirm_battle_menu() -> void:

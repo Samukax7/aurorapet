@@ -25,6 +25,8 @@ signal faction_background_changed(faction: StringName)
 }
 @export var platform_path: NodePath = NodePath("Plataforma")
 @export var pet_identity_path: NodePath = NodePath("Paisagem/Pet/PetIdentity")
+@export var battle_stage_path: NodePath = NodePath("BattleStage")
+@export var player_pet_path: NodePath = NodePath("Paisagem/Pet")
 
 var current_faction: StringName = &""
 
@@ -99,6 +101,27 @@ func _show_legacy_background() -> void:
 		legacy.visible = true
 	current_faction = &"legacy"
 	faction_background_changed.emit(current_faction)
+
+func show_battle_stage(enemy_name: String = "ECO", enemy_faction: StringName = &"neutro") -> void:
+	var stage := get_node_or_null(battle_stage_path) as Node2D
+	if stage != null:
+		var player_pet := get_node_or_null(player_pet_path)
+		stage.call("set_enemy_profile", enemy_name, enemy_faction)
+		stage.call("show_battle_stage", player_pet)
+		var normal_pet := get_node_or_null(player_pet_path) as Node2D
+		if normal_pet != null:
+			normal_pet.visible = false
+
+func hide_battle_stage() -> void:
+	var stage := get_node_or_null(battle_stage_path) as Node2D
+	if stage != null:
+		stage.call("hide_battle_stage")
+	var normal_pet := get_node_or_null(player_pet_path) as Node2D
+	if normal_pet != null:
+		normal_pet.visible = true
+
+func get_battle_stage() -> Node2D:
+	return get_node_or_null(battle_stage_path) as Node2D
 
 func get_current_faction() -> StringName:
 	return current_faction

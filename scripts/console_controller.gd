@@ -9,6 +9,7 @@ extends Sprite2D
 @onready var pet_evolution: PetEvolution = $ScreenContent/Deepworld/Paisagem/Pet/PetEvolution
 @onready var pet_randomizer: PetRandomizer = $ScreenContent/Deepworld/Paisagem/Pet
 @onready var pet_identity: PetIdentity = $ScreenContent/Deepworld/Paisagem/Pet/PetIdentity
+@onready var deepworld_controller: DeepworldController = $ScreenContent/Deepworld
 @onready var skill_tree: ArvoreDeHabilidades = $ScreenContent/ArvoreDeHabilidades
 @onready var opening_flow: OpeningFlow = $ScreenContent/OpeningFlow
 @onready var jogo_da_velha: JogoDaVelha = $ScreenContent/JogoDaVelha
@@ -66,6 +67,8 @@ func _ready() -> void:
 		batalha_exploracao.configure(pet_stats, pet_skills, pet_identity)
 		batalha_exploracao.points_changed.connect(_on_exploration_points_changed)
 		batalha_exploracao.battle_completed.connect(_on_exploration_battle_completed)
+		batalha_exploracao.battle_started.connect(_on_exploration_battle_started)
+
 
 	if quarto_cosmico != null:
 		quarto_cosmico.exit_confirmed.connect(_on_quarto_exit_confirmed)
@@ -576,19 +579,22 @@ func _open_exploration() -> void:
 		return
 	if pet_ui != null:
 		pet_ui.visible = false
-	var deepworld := $ScreenContent/Deepworld as Node2D
-	if deepworld != null:
-		deepworld.visible = false
+	if deepworld_controller != null:
+		deepworld_controller.show_battle_stage()
 	batalha_exploracao.open_area()
 
 func _close_exploration() -> void:
 	if batalha_exploracao != null:
 		batalha_exploracao.close_area()
-	var deepworld := $ScreenContent/Deepworld as Node2D
-	if deepworld != null:
-		deepworld.visible = true
+	if deepworld_controller != null:
+		deepworld_controller.hide_battle_stage()
+		deepworld_controller.visible = true
 	if pet_ui != null:
 		pet_ui.visible = true
+
+func _on_exploration_battle_started(enemy_name: String, enemy_faction: StringName) -> void:
+	if deepworld_controller != null:
+		deepworld_controller.show_battle_stage(enemy_name, enemy_faction)
 
 func _on_exploration_points_changed(total_points: int) -> void:
 	if quarto_cosmico != null:

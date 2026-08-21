@@ -1,8 +1,8 @@
 # AuroraPet — Roadmap de Implementação Técnica
 
-**Referência técnica:** protótipo do Google AI Studio  
-**Engine:** Godot 4.7.1  
-**Regra visual:** usar o plugin `at-icons` apenas como placeholder técnico; os ícones definitivos continuarão sendo assets pixel art do AuroraPet.  
+**Referência técnica:** protótipo do Google AI Studio
+**Engine:** Godot 4.7.1
+**Regra visual:** usar o plugin `at-icons` apenas como placeholder técnico; os ícones definitivos continuarão sendo assets pixel art do AuroraPet.
 **Regra de arquitetura:** preservar `main.tscn → console_frame.tscn → deepworld.tscn → pet.tscn` e evitar criação/remoção de peças do pet por código.
 
 ## Lista priorizada de tarefas
@@ -103,3 +103,11 @@ Os nomes exatos serão confirmados na pasta local do addon antes de inserir qual
 Cada bloco deve ser implementado no projeto local, validado com Godot Linux headless, testado com um script determinístico quando houver regras de estado e só então sincronizado com o clone GitHub. Arquivos temporários de teste devem permanecer fora da pasta do projeto.
 
 A implementação deve alterar a menor quantidade possível de cenas. A lógica deverá permanecer nos nós especializados, enquanto o `ConsoleController` apenas encaminha sinais. Ajustes manuais de posição feitos pelo usuário no editor devem ser preservados.
+
+## BattleStage do Deepworld — IMPLEMENTADO
+
+A Batalha de Exploração passou a possuir um palco visual dentro de `deepworld.tscn`. O palco mantém o fundo e a plataforma do Deepworld, reutiliza instâncias de `pet.tscn` para o combatente do jogador e para o Eco visual, e é ativado somente durante a batalha. O `ConsoleController` não oculta mais o Deepworld inteiro ao abrir a exploração; ele oculta o pet da rotina normal, ativa o BattleStage e restaura o pet ao fechar o encontro.
+
+A lógica de batalha continua responsável por turnos, D20, HP, EN, dano, status, guarda, fuga e logs. O palco recebe o nome e a facção do Eco pelo sinal `battle_started`, mantendo a separação entre apresentação visual e regras de combate. A EVA do modo DEV continua sendo um pet de teste; a EVA narrativa permanece reservada para a futura camada `EvaJourneyManager`.
+
+**Validação:** carregamento headless, integração com `main.tscn`, presença dos dois combatentes, início do encontro, sincronização do Eco e retorno ao pet normal foram testados sem erros de script ou parse.
