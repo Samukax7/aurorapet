@@ -733,7 +733,18 @@ func _on_eva_stage_selected(stage_id: StringName) -> void:
 		&"eva_ch2_boss": ["PRISMA GUARD", 3, true],
 		&"eva_ch3_01": ["DADOS PERDIDOS", 4, false],
 		&"eva_ch3_boss": ["CORE OVERLORD", 5, true],
-		&"eva_final_boss": ["O ECO ABSOLUTO", 6, true],
+		&"eva_ch4_01": ["FRAGMENTO ÍGNEO", 6, false],
+		&"eva_ch4_02": ["VETOR ARDENTE", 6, false],
+		&"eva_ch4_03": ["NÚCLEO VULCÂNICO", 7, false],
+		&"eva_ch4_boss": ["IGNIS VECTIS", 8, true],
+		&"eva_ch5_01": ["PÁGINA AUSENTE", 8, false],
+		&"eva_ch5_02": ["MEMÓRIA FRATURADA", 9, false],
+		&"eva_ch5_03": ["SALA SEM NOME", 9, false],
+		&"eva_ch5_boss": ["ARQUITETO DO ESQUECIMENTO", 10, true],
+		&"eva_ch6_01": ["ÚLTIMO SINAL", 10, false],
+		&"eva_ch6_02": ["RESSONÂNCIA", 11, false],
+		&"eva_ch6_03": ["SILÊNCIO ABSOLUTO", 11, false],
+		&"eva_ch6_boss": ["O ECO ABSOLUTO", 12, true],
 	}
 	var encounter: Array = encounters.get(stage_id, [String(stage_id).to_upper(), 0, false])
 	if pet_ui != null:
