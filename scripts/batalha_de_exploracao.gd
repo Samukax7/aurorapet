@@ -79,12 +79,43 @@ var _pet_identity: PetIdentity
 @onready var turn_label: Label = $BattleCard/Turn
 @onready var action_label: Label = $BattleCard/Action
 @onready var command_menu_label: Label = $BattleCard/CommandMenu
+@onready var emotion_strip: TextureRect = $EmotionStrip
+@onready var player_panel: NinePatchRect = $BattleCard/PlayerPanel
+@onready var enemy_panel: NinePatchRect = $BattleCard/EnemyPanel
+@onready var action_button_1: NinePatchRect = $BattleCard/ActionButton1
+@onready var action_button_2: NinePatchRect = $BattleCard/ActionButton2
+@onready var action_button_3: NinePatchRect = $BattleCard/ActionButton3
+@onready var action_button_4: NinePatchRect = $BattleCard/ActionButton4
+@onready var log_frame: NinePatchRect = $BattleCard/LogFrame
+@onready var option_1_label: Label = $BattleCard/ActionButton1/Label
+@onready var option_2_label: Label = $BattleCard/ActionButton2/Label
+@onready var option_3_label: Label = $BattleCard/ActionButton3/Label
+@onready var option_4_label: Label = $BattleCard/ActionButton4/Label
 @onready var log_label: Label = $BattleCard/Log
 
 func _ready() -> void:
 	visible = false
+	_load_battle_visual_assets()
 	_update_points()
 	_show_lobby()
+
+func _load_battle_visual_assets() -> void:
+	if OS.has_feature("headless") or DisplayServer.get_name().to_lower() == "headless":
+		return
+	var button_cyan := load("res://assets/UI/battle/battle_button_cyan.png") as Texture2D
+	var button_blue := load("res://assets/UI/battle/battle_button_blue.png") as Texture2D
+	var log_cyan := load("res://assets/UI/battle/battle_log_cyan.png") as Texture2D
+	var emotions := load("res://assets/UI/battle/battle_emotions_strip.png") as Texture2D
+	if button_cyan != null:
+		for node in [player_panel, action_button_1, action_button_3]:
+			node.texture = button_cyan
+	if button_blue != null:
+		for node in [enemy_panel, action_button_2, action_button_4]:
+			node.texture = button_blue
+	if log_cyan != null:
+		log_frame.texture = log_cyan
+	if emotions != null:
+		emotion_strip.texture = emotions
 
 func configure(pet_stats: PetStats, pet_skills: PetSkills, pet_identity: PetIdentity) -> void:
 	_pet_stats = pet_stats
@@ -447,7 +478,13 @@ func _show_lobby() -> void:
 func _update_result_ui() -> void:
 	lobby_card.visible = false
 	battle_card.visible = true
-	command_menu_label.text = "RESULTADO DO ENCONTRO\nVERDE: NOVA EXPEDIÇÃO\nROSA: VOLTAR"
+	command_menu_label.text = "RESULTADO DO ENCONTRO"
+	option_1_label.text = "◆ NOVA EXPEDIÇÃO"
+	option_2_label.text = ""
+	option_3_label.text = ""
+	option_4_label.text = ""
+	for label in [option_1_label, option_2_label, option_3_label, option_4_label]:
+		label.add_theme_color_override("font_color", Color(0.05, 0.04, 0.13, 1))
 	action_label.text = "VERDE: NOVA EXPEDIÇÃO   •   ROSA: VOLTAR"
 	turn_label.text = "RESULTADO DA EXPEDIÇÃO"
 	log_label.text = _logs_as_text()
@@ -473,21 +510,30 @@ func _update_battle_ui() -> void:
 	var menu_actions := _get_menu_actions()
 	var action := get_selected_action()
 	var action_name := String(ACTION_LABELS.get(action, action)).to_upper()
-	var menu_lines: Array[String] = []
-	for index in range(menu_actions.size()):
-		var option := menu_actions[index]
-		var marker := ">" if index == selected_index else " "
-		var state_text := "" if _is_action_available(option) else " [BLOQUEADA]"
-		menu_lines.append("%s %d. %s%s" % [marker, index + 1, String(ACTION_LABELS.get(option, option)), state_text])
-	command_menu_label.text = "\n".join(menu_lines)
+	command_menu_label.text = "AÇÕES DE BATALHA" if menu_level == &"root" else "SUBMENU DE AÇÕES"
+	_update_action_button(option_1_label, menu_actions, 0)
+	_update_action_button(option_2_label, menu_actions, 1)
+	_update_action_button(option_3_label, menu_actions, 2)
+	_update_action_button(option_4_label, menu_actions, 3)
 	turn_label.text = "TURNO %02d  •  %s" % [battle_turn, "SUA VEZ" if is_player_turn else "TURNO DO ECO"]
 	if menu_level == &"root":
-		action_label.text = "COMANDOS DE BATALHA  •  %s  •  VERDE: ENTRAR" % action_name
+		action_label.text = "SELECIONE UMA AÇÃO  •  %s" % action_name
 	else:
-		action_label.text = "SUBMENU  •  %s  •  VERDE: USAR  •  ROSA: VOLTAR" % action_name
+		action_label.text = "ESCOLHA NO SUBMENU  •  %s" % action_name
 	log_label.text = _logs_as_text()
 	hint_label.text = "D-PAD: NAVEGAR   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR"
 	_update_battle_bars()
+
+func _update_action_button(label: Label, menu_actions: Array[StringName], index: int) -> void:
+	if index >= menu_actions.size():
+		label.text = ""
+		label.add_theme_color_override("font_color", Color(0.42, 0.42, 0.5, 1))
+		return
+	var option := menu_actions[index]
+	var marker := "◆ " if index == selected_index else ""
+	var state_text := "\nBLOQUEADA" if not _is_action_available(option) else ""
+	label.text = "%s%s%s" % [marker, String(ACTION_LABELS.get(option, option)), state_text]
+	label.add_theme_color_override("font_color", Color(0.38, 0.03, 0.2, 1) if index == selected_index else Color(0.05, 0.04, 0.13, 1))
 
 func _update_battle_bars() -> void:
 	player_name_label.text = "PET  •  %s" % _get_pet_name()
@@ -508,8 +554,8 @@ func _update_points() -> void:
 
 func _add_log(message: String) -> void:
 	battle_logs.push_front(message)
-	if battle_logs.size() > 8:
-		battle_logs.resize(8)
+	if battle_logs.size() > 6:
+		battle_logs.resize(6)
 
 func _logs_as_text() -> String:
 	if battle_logs.is_empty():

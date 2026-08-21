@@ -97,3 +97,9 @@ A iniciativa de cada rodada usa D20 + Agilidade, com Guarda recebendo uma priori
 Fugir deixou de encerrar automaticamente o encontro: agora rola D20 + Agilidade contra um alvo baseado na Agilidade do Eco. A fuga pode ser bem-sucedida ou falhar, e uma tentativa falha permite a ação do Eco. A Guarda continua reduzindo o próximo dano recebido e consumindo o turno.
 
 A interface passou a exibir a lista dos quatro comandos e os submenus diretamente na tela da batalha. A hierarquia `main.tscn → console_frame.tscn → deepworld.tscn → pet.tscn` não foi alterada.
+
+## 8. Assets visuais fornecidos e priorização
+
+Os pacotes recebidos foram avaliados como referências de interface para a batalha. A prioridade foi dada às caixas de texto e às molduras de ação, porque elas resolvem diretamente o problema relatado de leitura. Foram preparados recortes pixel art de botões ciano e azul, uma moldura de log ciano e uma faixa de emoções. Esses elementos são carregados em runtime no Windows e na Web; o modo headless usa fallback sem textura para manter a validação técnica estável.
+
+O spritesheet de HP contém exemplos completos com números e rótulos de outro jogo, por isso as barras do AuroraPet continuam sendo `ProgressBar` próprias, com cores verde, vermelho e azul e valores reais de HP/EN. Essa decisão evita misturar textos estranhos à interface e mantém o vínculo com o sistema de batalha. O pacote de ícones de área também não foi inserido nesta primeira versão, pois não melhora a leitura imediata dos comandos. As emoções foram usadas como faixa decorativa e ficam disponíveis para a próxima etapa de feedback visual de crítico, guarda, status e fuga.
