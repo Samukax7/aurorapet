@@ -554,6 +554,6 @@ func _apply_faction_theme() -> void:
 # STATUS DO DOCUMENTO
 O roteiro literário e técnico está aprovado como referência de design. A implementação deve ser acompanhada pelo [`PASSO_A_PASSO_PROJETO.md`](PASSO_A_PASSO_PROJETO.md), que separa funcionalidades concluídas, preparadas e pendentes.
 
-Os assets dos bosses estão disponíveis na área de criação para uma etapa posterior de integração visual. Eles não foram alterados nesta revisão.
+Os assets dos bosses estão disponíveis na área de criação. Eles foram recortados em seis sprites transparentes de 126 × 126 px e possuem integração técnica na cena de batalha EVA; a vistoria visual de escala e posicionamento permanece como acabamento da V0.1.
 
 *AuroraPet: Deepworld — Documento de design e roteiro técnico.*

@@ -318,6 +318,17 @@ theme_override_colors/font_color = Color(0.35, 0.08, 0.25, 1)
 theme_override_font_sizes/font_size = 14
 text = "ECO PROCEDURAL • OPONENTE"
 
+[node name="BossSprite" type="TextureRect" parent="BattleCard"]
+visible = false
+offset_left = 470.0
+offset_top = 138.0
+offset_right = 770.0
+offset_bottom = 370.0
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
 [node name="Turn" type="Label" parent="BattleCard"]
 offset_left = 22.0
 offset_top = 225.0

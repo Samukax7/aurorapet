@@ -110,7 +110,7 @@ A plataforma inicial é apenas um marco visual. A navegação começa na primeir
 
 A campanha contém apenas batalhas contra Deepmons e aumenta o nível dos encontros à medida que o jogador sobe no mapa. Ao derrotar um boss, `EvaJourneyManager` libera um fragmento de memória, avança o capítulo e evolui a forma da EVA. Em caso de derrota em uma batalha de boss, o fluxo retorna ao lobby com a mensagem de que EVA trouxe o jogador de volta; o capítulo permanece disponível para uma nova tentativa.
 
-Os sprites estáticos dos bosses estão disponíveis na área de criação. A integração deles na área visual da batalha ainda é uma pendência de implementação e não foi executada nesta revisão.
+Os sprites estáticos dos bosses foram preparados a partir do material disponível na área de criação. Os seis recortes transparentes de 126 × 126 px estão em `assets/bosses/`, e a cena de batalha possui o contêiner `BossSprite`. Durante uma batalha EVA contra boss, o script carrega automaticamente o recorte correspondente ao nome do encontro. A escala é mantida proporcional e o sprite permanece oculto no lobby, na Sala de Treinos e nos encontros comuns.
 
 ## 8. Persistência e carregamento
 
@@ -159,9 +159,9 @@ A implementação atual foi validada headless e publicada no commit `755005e`. O
 
 ## 12. Próximas etapas da V0.1
 
-A ordem recomendada de trabalho é estabilizar as animações da abertura, corrigir escala e alinhamento das animações do pet, refinar a legibilidade da batalha, integrar os sprites estáticos dos bosses, adicionar reações visuais completas, animar o fundo, inserir áudio, finalizar o Guarda-Roupas Cósmico e executar a vistoria técnica de saves, responsividade, foco de botões e cache web.
+A ordem recomendada de trabalho é estabilizar as animações da abertura, corrigir escala e alinhamento das animações do pet, refinar a legibilidade da batalha, revisar visualmente a escala individual dos bosses dentro do console, adicionar reações visuais completas, animar o fundo, inserir áudio, finalizar o Guarda-Roupas Cósmico e executar a vistoria técnica de saves, responsividade, foco de botões e cache web.
 
-A V0.1 só deve ser publicada depois que a build Web for testada em desktop e celular, o fluxo de primeiro jogo e Continue forem verificados, a campanha puder ser concluída sem bloqueios e os assets dos bosses estiverem conectados à cena de batalha.
+A V0.1 só deve ser publicada depois que a build Web for testada em desktop e celular, o fluxo de primeiro jogo e Continue forem verificados, a campanha puder ser concluída sem bloqueios e a apresentação dos bosses for revisada visualmente dentro do console. A conexão técnica dos assets já está feita; permanecem possíveis ajustes individuais de escala e posição durante a vistoria visual.
 
 ## Referências internas
 

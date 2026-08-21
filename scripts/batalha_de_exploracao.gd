@@ -90,6 +90,7 @@ var _pet_identity: PetIdentity
 @onready var emotion_strip: TextureRect = $EmotionStrip
 @onready var player_panel: NinePatchRect = $BattleCard/PlayerPanel
 @onready var enemy_panel: NinePatchRect = $BattleCard/EnemyPanel
+@onready var boss_sprite: TextureRect = $BattleCard/BossSprite
 @onready var action_button_1: NinePatchRect = $BattleCard/ActionButton1
 @onready var action_button_2: NinePatchRect = $BattleCard/ActionButton2
 @onready var action_button_3: NinePatchRect = $BattleCard/ActionButton3
@@ -263,7 +264,9 @@ func _start_battle() -> void:
 		enemy_name = "ECO %s" % String(_area_encounter_label()).to_upper()
 	else:
 		enemy_name = _make_enemy_name()
+	_update_boss_sprite()
 	var boss_bonus := 4 if encounter_is_boss else 0
+
 	enemy_strength = maxi(5, strength + _rng.randi_range(-2, 2) + boss_bonus)
 	enemy_defense = maxi(5, defense + _rng.randi_range(-2, 2) + boss_bonus)
 	enemy_agility = maxi(5, agility + _rng.randi_range(-2, 2) + (2 if encounter_is_boss else 0))
@@ -486,6 +489,34 @@ func _finish_battle(victory: bool) -> void:
 	battle_completed.emit(victory, xp_reward, point_reward, "Encontro contra %s" % enemy_name)
 	_update_result_ui()
 
+func _update_boss_sprite() -> void:
+	if boss_sprite == null:
+		return
+	boss_sprite.visible = false
+	if mode_context != &"eva" or not encounter_is_boss:
+		return
+	var asset_name := ""
+	var normalized_name := enemy_name.to_lower()
+	if normalized_name.contains("gorgon"):
+		asset_name = "gorgon_glitch"
+	elif normalized_name.contains("prisma"):
+		asset_name = "prisma_guard"
+	elif normalized_name.contains("core"):
+		asset_name = "core_overlord"
+	elif normalized_name.contains("ignis"):
+		asset_name = "ignis_vectis"
+	elif normalized_name.contains("arquiteto"):
+		asset_name = "arquiteto_do_esquecimento"
+	elif normalized_name.contains("absoluto"):
+		asset_name = "eco_absoluto"
+	if asset_name.is_empty():
+		return
+	var texture := load("res://assets/bosses/%s.png" % asset_name) as Texture2D
+	if texture == null:
+		return
+	boss_sprite.texture = texture
+	boss_sprite.visible = true
+
 func _area_encounter_label() -> String:
 	match exploration_area_id:
 		&"crystal_ruins": return "CRISTALINO"
@@ -502,6 +533,8 @@ func _mode_title() -> String:
 
 func _show_lobby() -> void:
 	phase = &"lobby"
+	if boss_sprite != null:
+		boss_sprite.visible = false
 	menu_level = &"root"
 	selected_index = 0
 	pending_player_action = &""
