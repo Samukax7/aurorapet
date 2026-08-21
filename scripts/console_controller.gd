@@ -16,6 +16,9 @@ extends Sprite2D
 @onready var jokenpo: Jokenpo = $ScreenContent/Jokenpo
 @onready var jogo_2048: Jogo2048 = $ScreenContent/Jogo2048
 @onready var batalha_exploracao: BatalhaDeExploracao = $ScreenContent/BatalhaDeExploracao
+@onready var mapa_exploracao: MapaExploracao = $ScreenContent/MapaExploracao
+@onready var mapa_campanha_eva: MapaCampanhaEva = $ScreenContent/MapaCampanhaEva
+@onready var batalhar_menu: BatalharMenu = $ScreenContent/BatalharMenu
 @onready var quarto_cosmico: QuartoCosmico = $ScreenContent/Deepworld/QuartoCosmico
 @onready var aurora_pet_save: AuroraPetSave = $ScreenContent/AuroraPetSave
 @onready var eva_journey_manager: EvaJourneyManager = $ScreenContent/EvaJourneyManager
@@ -73,6 +76,12 @@ func _ready() -> void:
 		batalha_exploracao.points_changed.connect(_on_exploration_points_changed)
 		batalha_exploracao.battle_completed.connect(_on_exploration_battle_completed)
 		batalha_exploracao.battle_started.connect(_on_exploration_battle_started)
+	if batalhar_menu != null:
+		batalhar_menu.mode_selected.connect(_on_battle_mode_selected)
+	if mapa_exploracao != null:
+		mapa_exploracao.area_selected.connect(_on_exploration_area_selected)
+	if mapa_campanha_eva != null:
+		mapa_campanha_eva.stage_selected.connect(_on_eva_stage_selected)
 
 
 	if quarto_cosmico != null:
@@ -139,6 +148,48 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		elif event.is_action_pressed("ui_cancel"):
 			_close_jokenpo()
+			get_viewport().set_input_as_handled()
+		return
+	if batalhar_menu != null and batalhar_menu.visible:
+		if event.is_action_pressed("ui_left") or event.is_action_pressed("ui_up"):
+			batalhar_menu.handle_direction(Vector2i.LEFT)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_right") or event.is_action_pressed("ui_down"):
+			batalhar_menu.handle_direction(Vector2i.RIGHT)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_accept"):
+			batalhar_menu.confirm()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_cancel"):
+			_close_battle_modes()
+			get_viewport().set_input_as_handled()
+		return
+	if mapa_exploracao != null and mapa_exploracao.visible:
+		if event.is_action_pressed("ui_left") or event.is_action_pressed("ui_up"):
+			mapa_exploracao.handle_direction(Vector2i.LEFT)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_right") or event.is_action_pressed("ui_down"):
+			mapa_exploracao.handle_direction(Vector2i.RIGHT)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_accept"):
+			mapa_exploracao.confirm()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_cancel"):
+			_close_exploration_map()
+			get_viewport().set_input_as_handled()
+		return
+	if mapa_campanha_eva != null and mapa_campanha_eva.visible:
+		if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_left"):
+			mapa_campanha_eva.handle_direction(Vector2i.UP)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_down") or event.is_action_pressed("ui_right"):
+			mapa_campanha_eva.handle_direction(Vector2i.DOWN)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_accept"):
+			mapa_campanha_eva.confirm()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_cancel"):
+			_close_eva_campaign_map()
 			get_viewport().set_input_as_handled()
 		return
 	if batalha_exploracao != null and batalha_exploracao.visible:
@@ -296,6 +347,15 @@ func _on_green_pressed() -> void:
 	if jogo_2048 != null and jogo_2048.visible:
 		jogo_2048.confirm()
 		return
+	if batalhar_menu != null and batalhar_menu.visible:
+		batalhar_menu.confirm()
+		return
+	if mapa_exploracao != null and mapa_exploracao.visible:
+		mapa_exploracao.confirm()
+		return
+	if mapa_campanha_eva != null and mapa_campanha_eva.visible:
+		mapa_campanha_eva.confirm()
+		return
 	if batalha_exploracao != null and batalha_exploracao.visible:
 		batalha_exploracao.confirm()
 		return
@@ -336,6 +396,15 @@ func _on_pink_pressed() -> void:
 	if jogo_2048 != null and jogo_2048.visible:
 		_close_2048()
 		return
+	if batalhar_menu != null and batalhar_menu.visible:
+		_close_battle_modes()
+		return
+	if mapa_exploracao != null and mapa_exploracao.visible:
+		_close_exploration_map()
+		return
+	if mapa_campanha_eva != null and mapa_campanha_eva.visible:
+		_close_eva_campaign_map()
+		return
 	if batalha_exploracao != null and batalha_exploracao.visible:
 		if batalha_exploracao.is_in_submenu():
 			batalha_exploracao.back()
@@ -365,6 +434,12 @@ func _move_active_selection(direction: Vector2i) -> void:
 		jokenpo.handle_direction(direction)
 	elif jogo_2048 != null and jogo_2048.visible:
 		jogo_2048.handle_direction(direction)
+	elif batalhar_menu != null and batalhar_menu.visible:
+		batalhar_menu.handle_direction(direction)
+	elif mapa_exploracao != null and mapa_exploracao.visible:
+		mapa_exploracao.handle_direction(direction)
+	elif mapa_campanha_eva != null and mapa_campanha_eva.visible:
+		mapa_campanha_eva.handle_direction(direction)
 	elif batalha_exploracao != null and batalha_exploracao.visible:
 		batalha_exploracao.handle_direction(direction)
 	elif quarto_cosmico != null and quarto_cosmico.visible:
@@ -424,9 +499,11 @@ func _on_action_requested(action: StringName) -> void:
 		_open_skill_tree()
 		return
 	if action == &"batalhar":
-		if pet_ui != null and pet_stats != null:
-			pet_ui.show_progression_message(pet_stats.get_action_feedback(action))
+		if pet_stats != null and not pet_stats.report_action_check(&"batalhar"):
+			return
+		_open_battle_modes()
 		return
+
 	if action == &"jogo_da_velha":
 		_open_tic_tac_toe()
 		return
@@ -437,8 +514,12 @@ func _on_action_requested(action: StringName) -> void:
 		_open_2048()
 		return
 	if action == &"batalha_exploracao":
-		_open_exploration()
+		_open_exploration_map()
 		return
+	if action == &"campanha_eva":
+		_open_eva_campaign_map()
+		return
+
 	if pet_stats != null and not pet_stats.perform_action(action):
 		return
 	if pet_skills != null and pet_stats != null:
@@ -576,6 +657,92 @@ func _close_quarto() -> void:
 
 func _on_quarto_exit_confirmed() -> void:
 	_close_quarto()
+
+func _open_battle_modes() -> void:
+	if batalhar_menu == null:
+		return
+	if pet_ui != null:
+		pet_ui.visible = false
+	if deepworld_controller != null:
+		deepworld_controller.hide_battle_stage()
+	batalhar_menu.open_menu()
+
+func _close_battle_modes() -> void:
+	if batalhar_menu != null:
+		batalhar_menu.close_menu()
+	if pet_ui != null:
+		pet_ui.visible = true
+	if deepworld_controller != null:
+		deepworld_controller.visible = true
+
+func _on_battle_mode_selected(mode_id: StringName) -> void:
+	if batalhar_menu != null:
+		batalhar_menu.close_menu()
+	if mode_id == &"explorar_deepworld":
+		_open_exploration_map()
+	else:
+		_open_eva_campaign_map()
+
+func _open_exploration_map() -> void:
+	if mapa_exploracao == null:
+		return
+	if pet_ui != null:
+		pet_ui.visible = false
+	if deepworld_controller != null:
+		deepworld_controller.hide_battle_stage()
+	mapa_exploracao.open_map()
+
+func _close_exploration_map() -> void:
+	if mapa_exploracao != null:
+		mapa_exploracao.close_map()
+	if pet_ui != null:
+		pet_ui.visible = true
+	if deepworld_controller != null:
+		deepworld_controller.visible = true
+
+func _open_eva_campaign_map() -> void:
+	if mapa_campanha_eva == null:
+		return
+	if pet_ui != null:
+		pet_ui.visible = false
+	if deepworld_controller != null:
+		deepworld_controller.hide_battle_stage()
+	mapa_campanha_eva.open_map()
+
+func _close_eva_campaign_map() -> void:
+	if mapa_campanha_eva != null:
+		mapa_campanha_eva.close_map()
+	if pet_ui != null:
+		pet_ui.visible = true
+	if deepworld_controller != null:
+		deepworld_controller.visible = true
+
+func _on_exploration_area_selected(area_id: StringName) -> void:
+	if pet_ui != null:
+		pet_ui.show_progression_message("ÁREA SELECIONADA: %s" % String(area_id).to_upper())
+	_open_exploration()
+
+func _on_eva_stage_selected(stage_id: StringName) -> void:
+	var encounters: Dictionary = {
+		&"eva_ch1_01": ["ECO INICIAL", 0, false],
+		&"eva_ch1_02": ["FRAGMENTO INSTÁVEL", 1, false],
+		&"eva_ch1_03": ["RUÍDO VIOLETA", 1, false],
+		&"eva_ch1_boss": ["GORGON GLITCH", 2, true],
+		&"eva_ch2_01": ["ECO ESPELHADO", 2, false],
+		&"eva_ch2_02": ["PRISMA VIGILANTE", 3, false],
+		&"eva_ch2_boss": ["PRISMA GUARD", 3, true],
+		&"eva_ch3_01": ["DADOS PERDIDOS", 4, false],
+		&"eva_ch3_boss": ["CORE OVERLORD", 5, true],
+		&"eva_final_boss": ["O ECO ABSOLUTO", 6, true],
+	}
+	var encounter: Array = encounters.get(stage_id, [String(stage_id).to_upper(), 0, false])
+	if pet_ui != null:
+		pet_ui.show_progression_message("FASE DA EVA: %s" % String(stage_id).to_upper())
+	if mapa_campanha_eva != null:
+		mapa_campanha_eva.close_map()
+	if batalha_exploracao != null:
+		batalha_exploracao.configure_encounter(String(encounter[0]), int(encounter[1]), bool(encounter[2]))
+	_open_exploration()
 
 func _open_exploration() -> void:
 	if pet_stats != null and not pet_stats.report_action_check(&"batalha_exploracao"):

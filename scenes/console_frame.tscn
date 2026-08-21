@@ -15,6 +15,9 @@
 [ext_resource type="PackedScene" path="res://scenes/jokenpo.tscn" id="12_rps"]
 [ext_resource type="PackedScene" path="res://scenes/jogo_2048.tscn" id="13_2048"]
 [ext_resource type="PackedScene" path="res://scenes/batalha_de_exploracao.tscn" id="14_exploration"]
+[ext_resource type="PackedScene" path="res://scenes/mapa_exploracao.tscn" id="17_exploration_map"]
+[ext_resource type="PackedScene" path="res://scenes/mapa_campanha_eva.tscn" id="18_eva_map"]
+[ext_resource type="PackedScene" path="res://scenes/batalhar_menu.tscn" id="19_battle_menu"]
 [ext_resource type="Script" path="res://scripts/aurorapet_save.gd" id="15_save"]
 [ext_resource type="Script" path="res://scripts/eva_journey_manager.gd" id="16_eva_journey"]
 
@@ -59,6 +62,15 @@ layout_mode = 1
 layout_mode = 1
 
 [node name="BatalhaDeExploracao" parent="ScreenContent" instance=ExtResource("14_exploration")]
+layout_mode = 1
+
+[node name="MapaExploracao" parent="ScreenContent" instance=ExtResource("17_exploration_map")]
+layout_mode = 1
+
+[node name="MapaCampanhaEva" parent="ScreenContent" instance=ExtResource("18_eva_map")]
+layout_mode = 1
+
+[node name="BatalharMenu" parent="ScreenContent" instance=ExtResource("19_battle_menu")]
 layout_mode = 1
 
 [node name="EvaJourneyManager" type="Node" parent="ScreenContent"]

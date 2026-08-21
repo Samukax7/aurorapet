@@ -1,0 +1,130 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/batalhar_menu.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="CardStyle"]
+bg_color = Color(0.025, 0.025, 0.14, 0.96)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.25, 0.85, 1, 0.95)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="ButtonNormal"]
+bg_color = Color(0.08, 0.1, 0.25, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.5, 0.8, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="ButtonPressed"]
+bg_color = Color(0.2, 0.7, 0.95, 0.35)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.45, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="BatalharMenu" type="Control"]
+visible = false
+z_index = 42
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.015, 0.08, 0.48)
+mouse_filter = 2
+
+[node name="Card" type="Panel" parent="."]
+offset_left = 175.0
+offset_top = 145.0
+offset_right = 905.0
+offset_bottom = 515.0
+theme_override_styles/panel = SubResource("CardStyle")
+
+[node name="Title" type="Label" parent="Card"]
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 705.0
+offset_bottom = 65.0
+theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.1, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 26
+text = "BATALHAR"
+horizontal_alignment = 1
+
+[node name="ExplorationButton" type="Button" parent="Card"]
+offset_left = 55.0
+offset_top = 95.0
+offset_right = 675.0
+offset_bottom = 165.0
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 21
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/pressed = SubResource("ButtonPressed")
+text = "EXPLORAR DEEPWORLD"
+
+[node name="CampaignButton" type="Button" parent="Card"]
+offset_left = 55.0
+offset_top = 185.0
+offset_right = 675.0
+offset_bottom = 255.0
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 21
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/pressed = SubResource("ButtonPressed")
+text = "CAMPANHA DA EVA"
+
+[node name="SelectionLabel" type="Label" parent="Card"]
+offset_left = 35.0
+offset_top = 285.0
+offset_right = 695.0
+offset_bottom = 325.0
+theme_override_colors/font_color = Color(0.55, 1, 0.84, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.1, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "EXPLORAR DEEPWORLD"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 140.0
+offset_top = 550.0
+offset_right = 940.0
+offset_bottom = 580.0
+theme_override_colors/font_color = Color(0.75, 0.92, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.12, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 14
+text = "D-PAD: NAVEGAR   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR"
+horizontal_alignment = 1

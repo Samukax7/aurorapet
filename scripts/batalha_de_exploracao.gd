@@ -55,6 +55,11 @@ var enemy_faction: StringName = &"trevas"
 var enemy_strength := 8
 var enemy_defense := 8
 var enemy_agility := 8
+var encounter_override_name := ""
+var encounter_level_bonus := 0
+var encounter_is_boss := false
+var encounter_xp_reward := BATTLE_XP_REWARD
+var encounter_point_reward := BATTLE_POINT_REWARD
 var battle_turn := 0
 var battle_logs: Array[String] = []
 var _last_d20 := 0
@@ -124,6 +129,13 @@ func configure(pet_stats: PetStats, pet_skills: PetSkills, pet_identity: PetIden
 	_pet_identity = pet_identity
 	var seed_value := pet_identity.identity_seed if pet_identity != null else 777123
 	_rng.seed = abs(seed_value) + 9173
+
+func configure_encounter(encounter_name: String, level_bonus: int = 0, is_boss: bool = false) -> void:
+	encounter_override_name = encounter_name
+	encounter_level_bonus = level_bonus
+	encounter_is_boss = is_boss
+	encounter_xp_reward = BATTLE_XP_REWARD + (50 if is_boss else 0)
+	encounter_point_reward = BATTLE_POINT_REWARD + (15 if is_boss else 0)
 
 func open_area() -> void:
 	visible = true
@@ -228,13 +240,14 @@ func _start_battle() -> void:
 	player_max_en = BASE_ENERGY + resistance * 2
 	player_en = player_max_en
 	var player_level := _pet_skills.level if _pet_skills != null else 1
-	enemy_level = maxi(1, player_level + _rng.randi_range(-1, 1))
+	enemy_level = maxi(1, player_level + encounter_level_bonus + _rng.randi_range(-1, 1))
 	enemy_faction = _opposing_faction()
-	enemy_name = _make_enemy_name()
-	enemy_strength = maxi(5, strength + _rng.randi_range(-2, 2))
-	enemy_defense = maxi(5, defense + _rng.randi_range(-2, 2))
-	enemy_agility = maxi(5, agility + _rng.randi_range(-2, 2))
-	enemy_max_hp = 60 + enemy_level * 18 + resistance * 2
+	enemy_name = encounter_override_name if not encounter_override_name.is_empty() else _make_enemy_name()
+	var boss_bonus := 4 if encounter_is_boss else 0
+	enemy_strength = maxi(5, strength + _rng.randi_range(-2, 2) + boss_bonus)
+	enemy_defense = maxi(5, defense + _rng.randi_range(-2, 2) + boss_bonus)
+	enemy_agility = maxi(5, agility + _rng.randi_range(-2, 2) + (2 if encounter_is_boss else 0))
+	enemy_max_hp = 60 + enemy_level * 18 + resistance * 2 + (80 if encounter_is_boss else 0)
 	enemy_hp = enemy_max_hp
 
 	_add_log("ECO: %s • LV%d" % [enemy_name, enemy_level])
@@ -439,8 +452,8 @@ func _finish_battle(victory: bool) -> void:
 	is_player_turn = false
 	menu_level = &"root"
 	pending_player_action = &""
-	var xp_reward := BATTLE_XP_REWARD if victory else BATTLE_DEFEAT_XP
-	var point_reward := BATTLE_POINT_REWARD if victory else 0
+	var xp_reward := encounter_xp_reward if victory else BATTLE_DEFEAT_XP
+	var point_reward := encounter_point_reward if victory else 0
 	if victory:
 		_add_log("VITÓRIA • +%d XP • +%d PONTOS" % [xp_reward, point_reward])
 		add_exploration_points(point_reward)

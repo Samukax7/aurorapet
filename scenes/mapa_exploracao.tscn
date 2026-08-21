@@ -1,0 +1,224 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/mapa_exploracao.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/maps/exploration_islands_map.png" id="2_map"]
+
+[sub_resource type="StyleBoxFlat" id="TopPanel"]
+bg_color = Color(0.02, 0.025, 0.12, 0.88)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.25, 0.85, 1, 0.9)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="SelectionPanel"]
+bg_color = Color(0.02, 0.02, 0.12, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.42, 1, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="ButtonNormal"]
+bg_color = Color(0.05, 0.1, 0.2, 0.2)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.85, 1, 0.25)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="ButtonPressed"]
+bg_color = Color(0.25, 0.9, 1, 0.32)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.45, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="ButtonHover"]
+bg_color = Color(0.4, 0.25, 0.8, 0.34)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.95, 0.6, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="MapaExploracao" type="Control"]
+visible = false
+z_index = 42
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+texture = ExtResource("2_map")
+expand_mode = 1
+stretch_mode = 6
+mouse_filter = 2
+
+[node name="TopPanel" type="Panel" parent="."]
+offset_left = 22.0
+offset_top = 18.0
+offset_right = 1058.0
+offset_bottom = 78.0
+theme_override_styles/panel = SubResource("TopPanel")
+
+[node name="Title" type="Label" parent="TopPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.03, 0.12, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
+text = "EXPLORAR DEEPWORLD"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AreaButtons" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CrystalRuins" type="Button" parent="AreaButtons"]
+offset_left = 137.0
+offset_top = 100.0
+offset_right = 193.0
+offset_bottom = 156.0
+toggle_mode = true
+focus_mode = 0
+text = "·"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/pressed = SubResource("ButtonPressed")
+theme_override_styles/hover = SubResource("ButtonHover")
+
+[node name="ElectricAbysm" type="Button" parent="AreaButtons"]
+offset_left = 822.0
+offset_top = 100.0
+offset_right = 878.0
+offset_bottom = 156.0
+toggle_mode = true
+focus_mode = 0
+text = "·"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/pressed = SubResource("ButtonPressed")
+theme_override_styles/hover = SubResource("ButtonHover")
+
+[node name="VolcanicCore" type="Button" parent="AreaButtons"]
+offset_left = 507.0
+offset_top = 277.0
+offset_right = 563.0
+offset_bottom = 333.0
+toggle_mode = true
+focus_mode = 0
+text = "·"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/pressed = SubResource("ButtonPressed")
+theme_override_styles/hover = SubResource("ButtonHover")
+
+[node name="CrystalForest" type="Button" parent="AreaButtons"]
+offset_left = 142.0
+offset_top = 492.0
+offset_right = 198.0
+offset_bottom = 548.0
+toggle_mode = true
+focus_mode = 0
+text = "·"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/pressed = SubResource("ButtonPressed")
+theme_override_styles/hover = SubResource("ButtonHover")
+
+[node name="DataCity" type="Button" parent="AreaButtons"]
+offset_left = 822.0
+offset_top = 492.0
+offset_right = 878.0
+offset_bottom = 548.0
+toggle_mode = true
+focus_mode = 0
+text = "·"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/pressed = SubResource("ButtonPressed")
+theme_override_styles/hover = SubResource("ButtonHover")
+
+[node name="SelectionPanel" type="Panel" parent="."]
+offset_left = 245.0
+offset_top = 555.0
+offset_right = 835.0
+offset_bottom = 625.0
+theme_override_styles/panel = SubResource("SelectionPanel")
+
+[node name="SelectionLabel" type="Label" parent="SelectionPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.96, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0.03, 0.02, 0.12, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "RUÍNAS CRISTALINAS\nItens raros e Ecos corrompidos"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 25.0
+offset_top = 630.0
+offset_right = 1055.0
+offset_bottom = 650.0
+theme_override_colors/font_color = Color(0.75, 0.92, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.12, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "D-PAD: NAVEGAR   •   VERDE: EXPLORAR   •   ROSA: VOLTAR"
+horizontal_alignment = 1
