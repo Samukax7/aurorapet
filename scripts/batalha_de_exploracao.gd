@@ -34,6 +34,8 @@ var exploration_points := 0
 var selected_index := 0
 var menu_level: StringName = &"root"
 var phase: StringName = &"lobby"
+var mode_context: StringName = &"training"
+var exploration_area_id: StringName = &"data_city"
 var is_player_turn := true
 var battle_over := false
 var player_guarding := false
@@ -123,6 +125,19 @@ func _load_battle_visual_assets() -> void:
 	if emotions != null:
 		emotion_strip.texture = emotions
 
+func configure_mode(context: StringName) -> void:
+	mode_context = context
+
+func get_mode_context() -> StringName:
+	return mode_context
+
+func configure_exploration_area(area_id: StringName) -> void:
+	exploration_area_id = area_id
+	mode_context = &"exploration"
+
+func is_boss_encounter() -> bool:
+	return encounter_is_boss
+
 func configure(pet_stats: PetStats, pet_skills: PetSkills, pet_identity: PetIdentity) -> void:
 	_pet_stats = pet_stats
 	_pet_skills = pet_skills
@@ -161,7 +176,7 @@ func handle_direction(direction: Vector2i) -> void:
 		_update_result_ui()
 	else:
 		selected_index = wrapi(selected_index + (1 if direction.x > 0 or direction.y > 0 else -1), 0, 2)
-		status_label.text = "EXPLORAÇÃO: %s" % ("PARTIR" if selected_index == 0 else "EQUIPAMENTO")
+		status_label.text = "%s: %s" % [_mode_title(), "PARTIR" if selected_index == 0 else "EQUIPAMENTO"]
 
 func confirm() -> void:
 	if not visible:
@@ -242,7 +257,12 @@ func _start_battle() -> void:
 	var player_level := _pet_skills.level if _pet_skills != null else 1
 	enemy_level = maxi(1, player_level + encounter_level_bonus + _rng.randi_range(-1, 1))
 	enemy_faction = _opposing_faction()
-	enemy_name = encounter_override_name if not encounter_override_name.is_empty() else _make_enemy_name()
+	if not encounter_override_name.is_empty():
+		enemy_name = encounter_override_name
+	elif mode_context == &"exploration":
+		enemy_name = "ECO %s" % String(_area_encounter_label()).to_upper()
+	else:
+		enemy_name = _make_enemy_name()
 	var boss_bonus := 4 if encounter_is_boss else 0
 	enemy_strength = maxi(5, strength + _rng.randi_range(-2, 2) + boss_bonus)
 	enemy_defense = maxi(5, defense + _rng.randi_range(-2, 2) + boss_bonus)
@@ -457,14 +477,28 @@ func _finish_battle(victory: bool) -> void:
 	if victory:
 		_add_log("VITÓRIA • +%d XP • +%d PONTOS" % [xp_reward, point_reward])
 		add_exploration_points(point_reward)
-		status_label.text = "EXPEDIÇÃO CONCLUÍDA"
+		status_label.text = "%s CONCLUÍDA" % _mode_title()
 		result_label.text = "VITÓRIA CONTRA %s" % enemy_name
 	else:
 		_add_log("DERROTA")
-		status_label.text = "EXPEDIÇÃO INTERROMPIDA"
+		status_label.text = "%s INTERROMPIDA" % _mode_title()
 		result_label.text = "DERROTA CONTRA %s" % enemy_name
 	battle_completed.emit(victory, xp_reward, point_reward, "Encontro contra %s" % enemy_name)
 	_update_result_ui()
+
+func _area_encounter_label() -> String:
+	match exploration_area_id:
+		&"crystal_ruins": return "CRISTALINO"
+		&"electric_abysm": return "ELÉTRICO"
+		&"volcanic_core": return "VULCÂNICO"
+		&"crystal_forest": return "FLORAL"
+		_: return "DEEPWORLD"
+
+func _mode_title() -> String:
+	match mode_context:
+		&"exploration": return "EXPLORAÇÃO DEEPWORLD"
+		&"eva": return "AVENTURA COM EVA"
+		_: return "SALA DE TREINOS"
 
 func _show_lobby() -> void:
 	phase = &"lobby"

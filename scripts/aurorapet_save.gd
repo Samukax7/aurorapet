@@ -7,6 +7,8 @@ class_name AuroraPetSave
 signal save_written(path: String)
 signal save_loaded
 signal save_failed(message: String)
+signal world_progression_changed
+signal eva_encounter_ready
 
 @export var save_path := "user://aurorapet_save.json"
 @export_range(1.0, 60.0, 1.0) var autosave_interval := 5.0
@@ -29,6 +31,13 @@ var _loading := false
 var _dirty := false
 var _autosave_elapsed := 0.0
 var development_mode := false
+var exploration_battles_completed := 0
+var eva_encounter_available := false
+var eva_encounter_seen := false
+var eva_adventure_unlocked := false
+var eva_progress_stage_index := 1
+var exploration_islands_unlocked: Array[StringName] = [&"data_city"]
+const EXPLORATION_ISLAND_ORDER: Array[StringName] = [&"data_city", &"crystal_forest", &"volcanic_core", &"crystal_ruins", &"electric_abysm"]
 
 func _process(delta: float) -> void:
 	if not _configured or _loading or not _dirty:
@@ -69,6 +78,45 @@ func is_development_session() -> bool:
 
 func has_save() -> bool:
 	return FileAccess.file_exists(save_path)
+
+func register_exploration_battle(victory: bool) -> void:
+	if not victory or development_mode:
+		return
+	exploration_battles_completed += 1
+	if exploration_battles_completed >= 3 and not eva_encounter_seen and not eva_encounter_available:
+		eva_encounter_available = true
+		eva_encounter_ready.emit()
+	world_progression_changed.emit()
+	mark_dirty()
+
+func mark_eva_encounter_seen() -> void:
+	eva_encounter_seen = true
+	eva_encounter_available = false
+	# O encontro abre a próxima etapa de exploração, independentemente da escolha narrativa.
+	unlock_exploration_island(&"crystal_forest")
+	world_progression_changed.emit()
+	mark_dirty()
+
+func unlock_eva_adventure() -> void:
+	eva_adventure_unlocked = true
+	world_progression_changed.emit()
+	mark_dirty()
+
+func unlock_next_exploration_island() -> void:
+	for area_id in EXPLORATION_ISLAND_ORDER:
+		if not exploration_islands_unlocked.has(area_id):
+			unlock_exploration_island(area_id)
+			return
+
+func unlock_exploration_island(area_id: StringName) -> void:
+	if area_id.is_empty() or exploration_islands_unlocked.has(area_id):
+		return
+	exploration_islands_unlocked.append(area_id)
+	world_progression_changed.emit()
+	mark_dirty()
+
+func is_exploration_island_unlocked(area_id: StringName) -> bool:
+	return exploration_islands_unlocked.has(area_id)
 
 func mark_dirty() -> void:
 	if development_mode or _loading:
@@ -273,8 +321,14 @@ func _build_payload() -> Dictionary:
 		"evolution": _serialize_evolution(),
 		"appearance": _serialize_appearance(),
 		"world": {
-			"exploration_points": points,
-			"eva_journey": eva_journey.to_save_data() if eva_journey != null else {},
+				"exploration_points": points,
+				"exploration_battles_completed": exploration_battles_completed,
+				"eva_encounter_available": eva_encounter_available,
+				"eva_encounter_seen": eva_encounter_seen,
+				"eva_adventure_unlocked": eva_adventure_unlocked,
+				"eva_progress_stage_index": eva_progress_stage_index,
+				"exploration_islands_unlocked": _serialize_island_unlocks(),
+				"eva_journey": eva_journey.to_save_data() if eva_journey != null else {},
 			"shop_total_value": shop_total_value,
 			"owned_items": _serialize_owned_items(),
 			"stellar_coins": stellar_coins,
@@ -282,6 +336,12 @@ func _build_payload() -> Dictionary:
 			"achievements": achievements.duplicate(true),
 		},
 	}
+
+func _serialize_island_unlocks() -> Array[String]:
+	var islands: Array[String] = []
+	for area_id in exploration_islands_unlocked:
+		islands.append(String(area_id))
+	return islands
 
 func _serialize_owned_items() -> Array[String]:
 	var items: Array[String] = []
@@ -492,6 +552,16 @@ func _restore_world(raw_data: Variant) -> void:
 	if typeof(raw_data) != TYPE_DICTIONARY:
 		return
 	var data: Dictionary = raw_data
+	exploration_battles_completed = maxi(0, int(data.get("exploration_battles_completed", exploration_battles_completed)))
+	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3))
+	eva_encounter_seen = bool(data.get("eva_encounter_seen", false))
+	eva_adventure_unlocked = bool(data.get("eva_adventure_unlocked", false))
+	eva_progress_stage_index = clampi(int(data.get("eva_progress_stage_index", eva_progress_stage_index)), 1, 24)
+	exploration_islands_unlocked.clear()
+	for area_id in data.get("exploration_islands_unlocked", ["data_city"]):
+		exploration_islands_unlocked.append(StringName(String(area_id)))
+	if exploration_islands_unlocked.is_empty():
+		exploration_islands_unlocked.append(&"data_city")
 	var points := maxi(0, int(data.get("exploration_points", 0)))
 	if batalha_exploracao != null:
 		batalha_exploracao.exploration_points = points

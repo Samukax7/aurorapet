@@ -33,6 +33,7 @@ const STAGES: Array[Dictionary] = [
 ]
 
 var selected_index := 0
+var unlocked_stage_index := 1
 var time := 0.0
 @onready var map_content: Control = $MapScroll/MapContent
 @onready var selection_label: Label = $SelectionPanel/SelectionLabel
@@ -59,10 +60,24 @@ func _process(delta: float) -> void:
 
 func open_map() -> void:
 	visible = true
-	selected_index = 1
+	selected_index = clampi(unlocked_stage_index, 1, STAGES.size() - 1)
 	time = 0.0
 	_update_selection()
 	grab_focus()
+
+func set_progression(stage_index: int) -> void:
+	unlocked_stage_index = clampi(stage_index, 1, STAGES.size() - 1)
+	_update_selection()
+
+func get_unlocked_stage_index() -> int:
+	return unlocked_stage_index
+
+func advance_to_stage(stage_id: StringName) -> void:
+	for index in range(STAGES.size()):
+		if STAGES[index].id == stage_id:
+			unlocked_stage_index = maxi(unlocked_stage_index, clampi(index + 1, 1, STAGES.size() - 1))
+			_update_selection()
+			return
 
 func close_map() -> void:
 	visible = false
@@ -85,7 +100,7 @@ func confirm() -> void:
 		selected_index = 1
 		_update_selection()
 		return
-	if not bool(stage.unlocked):
+	if selected_index > unlocked_stage_index:
 		selection_label.text = "%s\nFASE BLOQUEADA\nComplete a etapa anterior" % stage.title
 		return
 	selection_label.text = "%s\n%s\n\nFASE PRONTA" % [stage.chapter, stage.title]
@@ -99,12 +114,12 @@ func _update_selection() -> void:
 	if not visible:
 		return
 	var stage: Dictionary = STAGES[selected_index]
-	selection_label.text = "%s\n%s" % [stage.chapter, stage.title]
+	selection_label.text = "%s\n%s%s" % [stage.chapter, stage.title, "\nDISPONÍVEL" if selected_index <= unlocked_stage_index and not bool(stage.base) else ""]
 	hint_label.text = "D-PAD: SUBIR/DESCER   •   VERDE: ENTRAR   •   ROSA: VOLTAR"
 	for i in range(stage_buttons.size()):
 		var button := stage_buttons[i]
 		button.text = "◆" if i == selected_index else ("★" if STAGES[i].boss else "·")
-		button.disabled = not bool(STAGES[i].unlocked)
+		button.disabled = i > unlocked_stage_index or bool(STAGES[i].base)
 
 func _center_on_stage(y: float) -> void:
 	var scroll := $MapScroll

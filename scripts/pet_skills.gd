@@ -44,6 +44,9 @@ const ACTION_UNLOCK_LEVELS: Dictionary = {
 	&"jokenpo": 3,
 	&"jogo_da_velha": 2,
 	&"2048": 5,
+	&"sala_treinos": 6,
+	&"explorar_deepworld": 6,
+	&"aventura_eva": 99,
 	&"batalha_exploracao": 6,
 }
 

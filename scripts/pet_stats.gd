@@ -127,9 +127,11 @@ var _attention_elapsed := 0.0
 var _last_critical_state := false
 var _behavior_event_elapsed := 0.0
 var _behavior_rng := RandomNumberGenerator.new()
+var _pet_skills: PetSkills
 
 func _ready() -> void:
 	_behavior_rng.randomize()
+	_pet_skills = get_parent().get_node_or_null(^"PetSkills") as PetSkills
 	_clamp_values()
 	_last_critical_state = _is_needs_critical()
 	_emit_all_state()
@@ -184,11 +186,11 @@ func is_newborn_tutorial_active() -> bool:
 func get_newborn_tutorial_message() -> String:
 	match newborn_tutorial_step:
 		&"feed":
-			return "OBJETIVO 1/2: FOME EM 100%"
+			return "A fome está baixa. Escolha uma comida."
 		&"sleep":
-			return "OBJETIVO 2/2: CUIDAR > DORMIR"
+			return "A energia caiu. Deixe o pet dormir."
 		&"complete":
-			return "NÍVEL 2: JOGO DA VELHA LIBERADO"
+			return "Novo jogo disponível: Jogo da Velha"
 	return ""
 
 func _set_newborn_tutorial_step(step: StringName) -> void:
@@ -275,10 +277,13 @@ func _update_special_need(delta: float) -> void:
 	if _special_need_elapsed < SPECIAL_NEED_INTERVAL_SECONDS:
 		return
 	_special_need_elapsed = 0.0
-	var wishes: Array[Dictionary] = [
-		{"need": &"brincar", "wish": &"jogo_da_velha"},
-		{"need": &"treinar", "wish": &"forca"},
-	]
+	var wishes: Array[Dictionary] = []
+	if _pet_skills == null or _pet_skills.is_action_unlocked(&"jogo_da_velha"):
+		wishes.append({"need": &"brincar", "wish": &"jogo_da_velha"})
+	if _pet_skills == null or _pet_skills.is_category_unlocked(&"treinar"):
+		wishes.append({"need": &"treinar", "wish": &"forca"})
+	if wishes.is_empty():
+		return
 	var selected: Dictionary = wishes[randi_range(0, wishes.size() - 1)]
 	special_need = selected["need"]
 	special_need_wish = selected["wish"]

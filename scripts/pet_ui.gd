@@ -49,7 +49,9 @@ const SUBMENU_DEFINITIONS: Dictionary = {
 		{"action": &"2048", "label": "2048", "icon": "res://assets/UI/submenus/2048.png"},
 	],
 	&"batalhar": [
-		{"action": &"batalha_exploracao", "label": "Batalha de Exploração", "icon": "res://assets/UI/batalhar.png"},
+		{"action": &"sala_treinos", "label": "Sala de Treinos", "icon": "res://assets/UI/placeholders/icon_battle.svg"},
+		{"action": &"explorar_deepworld", "label": "Explorar Deepworld", "icon": "res://assets/UI/placeholders/icon_exploration.svg"},
+		{"action": &"aventura_eva", "label": "Aventura com EVA", "icon": "res://assets/UI/placeholders/icon_pet.svg"},
 	],
 }
 
@@ -82,6 +84,7 @@ var _selected_bob_slot: Control
 var _selected_bob_base_y := 0.0
 var _selection_frame: Panel
 var _pet_skills: PetSkills
+var _world_progression: AuroraPetSave
 
 func _ready() -> void:
 	_cache_menu_nodes()
@@ -159,6 +162,10 @@ func set_progression_source(skills: PetSkills) -> void:
 	_pet_skills = skills
 	refresh_progression_locks()
 
+func set_world_progression(world: AuroraPetSave) -> void:
+	_world_progression = world
+	refresh_progression_locks()
+
 func refresh_progression_locks() -> void:
 	_refresh_selection()
 	_refresh_submenu()
@@ -167,9 +174,13 @@ func _is_category_unlocked(action: StringName) -> bool:
 	return _pet_skills == null or _pet_skills.is_category_unlocked(action)
 
 func _is_action_unlocked(action: StringName) -> bool:
+	if action == &"aventura_eva":
+		return _world_progression == null or _world_progression.eva_adventure_unlocked
 	return _pet_skills == null or _pet_skills.is_action_unlocked(action)
 
 func _unlock_message(action: StringName) -> String:
+	if action == &"aventura_eva" and _world_progression != null and not _world_progression.eva_adventure_unlocked:
+		return "ENCONTRE EVA E ACEITE AJUDÁ-LA"
 	if _pet_skills == null:
 		return "CONTEÚDO DISPONÍVEL"
 	return _pet_skills.get_unlock_message(action)
