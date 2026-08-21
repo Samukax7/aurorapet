@@ -237,8 +237,7 @@ func _start_battle() -> void:
 	enemy_max_hp = 60 + enemy_level * 18 + resistance * 2
 	enemy_hp = enemy_max_hp
 
-	_add_log("ECO DETECTADO: %s LV%d emergiu do vácuo." % [enemy_name, enemy_level])
-	_add_log("A exploração usa D20, vantagens de facção e guarda tática.")
+	_add_log("ECO: %s • LV%d" % [enemy_name, enemy_level])
 	battle_started.emit(enemy_name, enemy_faction)
 	_update_battle_ui()
 
@@ -266,7 +265,6 @@ func _execute_player_action(action: StringName, resolve_after_enemy: bool = fals
 	if action != &"defesa" and action not in MOVE_ACTIONS and action not in TECHNIQUE_ACTIONS:
 		return
 	if action in MOVE_ACTIONS and _pet_skills != null and not _pet_skills.is_unlocked(action):
-		_add_log("AÇÃO BLOQUEADA: %s ainda não foi desbloqueada." % String(ACTION_LABELS[action]))
 		_update_battle_ui()
 		return
 	if action == &"intuicao_cosmica":
@@ -275,11 +273,10 @@ func _execute_player_action(action: StringName, resolve_after_enemy: bool = fals
 	if not resolve_after_enemy and not _player_wins_initiative(action):
 		pending_player_action = action
 		is_player_turn = false
-		_add_log("O ECO venceu a iniciativa e agirá primeiro.")
 		_enemy_turn()
 		return
 	if _pet_stats != null and _pet_stats.audacity > 65.0 and _pet_stats.obedience < 40.0 and _rng.randf() < 0.20:
-		_add_log("REBELDIA: o pet recusou a ordem de combate neste turno.")
+		_add_log("PET RECUSOU A ORDEM")
 		_begin_next_round()
 		return
 
@@ -288,15 +285,14 @@ func _execute_player_action(action: StringName, resolve_after_enemy: bool = fals
 	if action == &"defesa":
 		en_cost = 5
 	if player_en < en_cost:
-		_add_log("ENERGIA INSUFICIENTE: precisa de %d EN (atual %d)." % [en_cost, player_en])
+		_add_log("EN INSUFICIENTE")
 		_begin_next_round()
 		return
 	is_player_turn = false
 	player_en = maxi(0, player_en - en_cost)
-	_add_log("CUSTO DE EN: -%d" % en_cost)
 	if action == &"defesa":
 		player_guarding = true
-		_add_log("GUARDA ESTELAR ativada: próximo dano recebido reduzido em 60%.")
+		_add_log("GUARDA ATIVA")
 		if resolve_after_enemy:
 			_begin_next_round()
 		else:
@@ -309,14 +305,14 @@ func _execute_player_action(action: StringName, resolve_after_enemy: bool = fals
 	var accuracy := clampf(float(skill.get("accuracy", 0.85)) + float(_get_attribute(&"agilidade", 10) - 10) * 0.005 + player_accuracy_bonus, 0.45, 0.98)
 	player_accuracy_bonus = 0.0
 	if d20 <= 2:
-		_add_log("D20 FALHA TÁTICA (%d): o golpe perdeu força." % d20)
+		_add_log("GOLPE FALHOU")
 		if resolve_after_enemy:
 			_begin_next_round()
 		else:
 			_enemy_turn()
 		return
 	if d20 != 20 and _rng.randf() > accuracy:
-		_add_log("FALHA DE PRECISÃO: %s não encontrou o Eco." % String(ACTION_LABELS[action]))
+		_add_log("GOLPE FALHOU")
 		if resolve_after_enemy:
 			_begin_next_round()
 		else:
@@ -327,18 +323,15 @@ func _execute_player_action(action: StringName, resolve_after_enemy: bool = fals
 	if enemy_guarding:
 		damage = maxi(2, int(float(damage) * 0.40))
 		enemy_guarding = false
-		_add_log("GUARDA DO ECO absorveu parte do impacto.")
+		_add_log("ECO EM GUARDA")
 	if d20 == 20:
 		damage = int(float(damage) * 1.50)
-		_add_log("D20 CRÍTICO PERFEITO (%d): dano massivo." % d20)
-	else:
-		_add_log("D20 %d: %s causou %d HP." % [d20, String(ACTION_LABELS[action]), damage])
 	enemy_hp = maxi(0, enemy_hp - damage)
+	_add_log("CRÍTICO • -%d HP" % damage if d20 == 20 else "%s • -%d HP" % [String(ACTION_LABELS[action]), damage])
 	if action == &"golpe_status":
 		enemy_status = &"enfraquecido"
 		enemy_status_turns = 2 if d20 == 20 else 1
-		_add_log("STATUS: ECO ENFRAQUECIDO por %d turno(s)." % enemy_status_turns)
-	_add_log("%s recebeu -%d HP." % [enemy_name, damage])
+		_add_log("ECO ENFRAQUECIDO")
 	if enemy_hp <= 0:
 		_finish_battle(true)
 		return
@@ -351,17 +344,16 @@ func _execute_technique(resolve_after_enemy: bool = false) -> void:
 	if not resolve_after_enemy and not _player_wins_initiative(&"intuicao_cosmica"):
 		pending_player_action = &"intuicao_cosmica"
 		is_player_turn = false
-		_add_log("O ECO venceu a iniciativa; a técnica será usada depois do ataque.")
 		_enemy_turn()
 		return
 	if player_en < TECHNIQUE_COST:
-		_add_log("ENERGIA INSUFICIENTE: Intuição exige %d EN." % TECHNIQUE_COST)
+		_add_log("EN INSUFICIENTE")
 		_begin_next_round()
 		return
 	is_player_turn = false
 	player_en = maxi(0, player_en - TECHNIQUE_COST)
 	player_accuracy_bonus = minf(0.25, player_accuracy_bonus + 0.15)
-	_add_log("INTUIÇÃO CÓSMICA preparada: +15% de precisão no próximo golpe.")
+	_add_log("INTUIÇÃO ATIVA")
 	if resolve_after_enemy:
 		_begin_next_round()
 	else:
@@ -373,7 +365,6 @@ func _player_wins_initiative(action: StringName) -> bool:
 	var priority := 1 if action == &"defesa" else 0
 	var player_score := player_d20 + _get_attribute(&"agilidade", 10) + priority
 	var enemy_score := enemy_d20 + enemy_agility
-	_add_log("INICIATIVA: PET %d + %d%s / ECO %d + %d." % [player_d20, _get_attribute(&"agilidade", 10), " + prioridade" if priority > 0 else "", enemy_d20, enemy_agility])
 	if player_score == enemy_score:
 		return player_d20 >= enemy_d20
 	return player_score > enemy_score
@@ -399,46 +390,44 @@ func _attempt_escape() -> void:
 	var escape_score := d20 + _get_attribute(&"agilidade", 10)
 	var escape_target := 12 + enemy_agility / 2
 	if d20 == 20 or escape_score >= escape_target:
-		_add_log("FUGA BEM-SUCEDIDA: a expedição foi encerrada.")
+		_add_log("FUGA BEM-SUCEDIDA")
 		close_area()
 		return
-	_add_log("FUGA FALHOU: D20 %d contra alvo %d." % [d20, escape_target])
+	_add_log("FUGA FALHOU")
 	_enemy_turn()
 
 func _enemy_turn() -> void:
 	if phase != &"battle" or battle_over:
 		return
 	player_en = mini(player_max_en, player_en + EN_RECOVERY_PER_TURN)
-	_add_log("RECUPERAÇÃO DE EN: +%d (atual %d/%d)." % [EN_RECOVERY_PER_TURN, player_en, player_max_en])
+
 	if _rng.randf() < 0.20 and not enemy_guarding:
 		enemy_guarding = true
-		_add_log("%s ativou postura defensiva." % enemy_name)
+		_add_log("ECO EM GUARDA")
 		_begin_next_round()
 		return
 
 	var enemy_d20 := _roll_d20()
 	var multiplier := _faction_multiplier(enemy_faction, _player_faction())
 	if enemy_d20 <= 2:
-		_add_log("D20 DO ECO FALHOU (%d): o ataque não conectou." % enemy_d20)
+		_add_log("ECO ERROU")
 		_begin_next_round()
 		return
 	if enemy_d20 == 20:
 		multiplier *= 1.40
-		_add_log("D20 CRÍTICO DO ECO (%d)." % enemy_d20)
 	var power := 18
 	var damage := maxi(5, int(float(enemy_strength * power) / float(_get_attribute(&"defesa", 10) * 0.7 + 10.0) * multiplier))
 	if enemy_status == &"enfraquecido" and enemy_status_turns > 0:
 		damage = maxi(2, int(float(damage) * 0.70))
 		enemy_status_turns -= 1
-		_add_log("STATUS ENFRAQUECIDO reduziu o dano do Eco.")
 		if enemy_status_turns <= 0:
 			enemy_status = &""
 	if player_guarding:
 		damage = maxi(2, int(float(damage) * 0.40))
 		player_guarding = false
-		_add_log("GUARDA ESTELAR absorveu 60% do dano.")
+		_add_log("GUARDA REDUZIU DANO")
 	player_hp = maxi(0, player_hp - damage)
-	_add_log("%s atacou e causou -%d HP." % [enemy_name, damage])
+	_add_log("ECO CRÍTICO • -%d HP" % damage if enemy_d20 == 20 else "ECO • -%d HP" % damage)
 	if player_hp <= 0:
 		_finish_battle(false)
 		return
@@ -453,12 +442,12 @@ func _finish_battle(victory: bool) -> void:
 	var xp_reward := BATTLE_XP_REWARD if victory else BATTLE_DEFEAT_XP
 	var point_reward := BATTLE_POINT_REWARD if victory else 0
 	if victory:
-		_add_log("VITÓRIA: o Eco foi dissipado. +%d XP | +%d PONTOS." % [xp_reward, point_reward])
+		_add_log("VITÓRIA • +%d XP • +%d PONTOS" % [xp_reward, point_reward])
 		add_exploration_points(point_reward)
 		status_label.text = "EXPEDIÇÃO CONCLUÍDA"
 		result_label.text = "VITÓRIA CONTRA %s" % enemy_name
 	else:
-		_add_log("DERROTA: o pet ficou sem HP. A expedição terminou.")
+		_add_log("DERROTA")
 		status_label.text = "EXPEDIÇÃO INTERROMPIDA"
 		result_label.text = "DERROTA CONTRA %s" % enemy_name
 	battle_completed.emit(victory, xp_reward, point_reward, "Encontro contra %s" % enemy_name)
@@ -472,9 +461,9 @@ func _show_lobby() -> void:
 	battle_over = false
 	lobby_card.visible = true
 	battle_card.visible = false
-	status_label.text = "ÁREA PRONTA PARA EXPLORAÇÃO"
-	result_label.text = "ENCONTROS GERAM PONTOS PARA O QUARTO CÓSMICO"
-	hint_label.text = "D-PAD: PARTIR/EQUIPAMENTO   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR"
+	status_label.text = ""
+	result_label.text = ""
+	hint_label.text = ""
 	_update_points()
 
 func _update_result_ui() -> void:
@@ -488,9 +477,9 @@ func _update_result_ui() -> void:
 	for label in [option_1_label, option_2_label, option_3_label, option_4_label]:
 		label.add_theme_color_override("font_color", Color(0.05, 0.04, 0.13, 1))
 	action_label.text = "VERDE: NOVA EXPEDIÇÃO   •   ROSA: VOLTAR"
-	turn_label.text = "RESULTADO DA EXPEDIÇÃO"
+	turn_label.text = "RESULTADO"
 	log_label.text = _logs_as_text()
-	hint_label.text = "VERDE: NOVA EXPEDIÇÃO   •   ROSA: VOLTAR"
+	hint_label.text = ""
 	_update_battle_bars()
 
 func _get_menu_actions() -> Array[StringName]:
@@ -517,13 +506,13 @@ func _update_battle_ui() -> void:
 	_update_action_button(option_2_label, menu_actions, 1)
 	_update_action_button(option_3_label, menu_actions, 2)
 	_update_action_button(option_4_label, menu_actions, 3)
-	turn_label.text = "TURNO %02d  •  %s" % [battle_turn, "SUA VEZ" if is_player_turn else "TURNO DO ECO"]
+	turn_label.text = "T%02d • %s" % [battle_turn, "SUA VEZ" if is_player_turn else "ECO"]
 	if menu_level == &"root":
-		action_label.text = "SELECIONE UMA AÇÃO  •  %s" % action_name
+		action_label.text = action_name
 	else:
-		action_label.text = "ESCOLHA NO SUBMENU  •  %s" % action_name
+		action_label.text = action_name
 	log_label.text = _logs_as_text()
-	hint_label.text = "D-PAD: NAVEGAR   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR"
+	hint_label.text = ""
 	_update_battle_bars()
 
 func _update_action_button(label: Label, menu_actions: Array[StringName], index: int) -> void:
@@ -552,16 +541,16 @@ func _update_battle_bars() -> void:
 
 func _update_points() -> void:
 	if points_label != null:
-		points_label.text = "PONTOS DE EXPLORAÇÃO: %05d" % exploration_points
+		points_label.text = "PONTOS %05d" % exploration_points
 
 func _add_log(message: String) -> void:
 	battle_logs.push_front(message)
-	if battle_logs.size() > 6:
-		battle_logs.resize(6)
+	if battle_logs.size() > 3:
+		battle_logs.resize(3)
 
 func _logs_as_text() -> String:
 	if battle_logs.is_empty():
-		return "AGUARDANDO REGISTROS..."
+		return ""
 	return "\n".join(battle_logs)
 
 func _roll_d20() -> int:

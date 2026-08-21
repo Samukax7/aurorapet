@@ -28,6 +28,7 @@ randomize_in_editor = false
 randomize_palette_in_editor = false
 
 [node name="PlayerCaption" type="Label" parent="."]
+visible = false
 offset_left = -625.0
 offset_top = 418.0
 offset_right = -205.0
@@ -40,6 +41,7 @@ text = "PET"
 horizontal_alignment = 1
 
 [node name="EcoCaption" type="Label" parent="."]
+visible = false
 offset_left = 205.0
 offset_top = 393.0
 offset_right = 625.0
@@ -52,6 +54,7 @@ text = "ECO"
 horizontal_alignment = 1
 
 [node name="StageBanner" type="Label" parent="."]
+visible = false
 offset_left = -300.0
 offset_top = 85.0
 offset_right = 300.0

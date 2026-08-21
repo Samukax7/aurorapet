@@ -131,6 +131,7 @@ text = "BATALHA DE EXPLORAÇÃO"
 horizontal_alignment = 1
 
 [node name="Status" type="Label" parent="."]
+visible = false
 offset_left = 115.0
 offset_top = 58.0
 offset_right = 780.0
@@ -151,7 +152,7 @@ theme_override_colors/font_color = Color(0.42, 1, 0.8, 1)
 theme_override_colors/font_outline_color = Color(0.18, 0.05, 0.35, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 16
-text = "PONTOS DE EXPLORAÇÃO: 00000"
+text = "PONTOS 00000"
 horizontal_alignment = 1
 
 [node name="LobbyCard" type="Panel" parent="."]
@@ -169,8 +170,8 @@ offset_bottom = 250.0
 theme_override_colors/font_color = Color(0.96, 0.95, 1, 1)
 theme_override_colors/font_outline_color = Color(0.15, 0.03, 0.3, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 22
-text = "ENCONTRO COM UM ECO\n\nVERDE: PARTIR\n\nD-PAD: ALTERNAR OPÇÃO\nROSA: VOLTAR\n\nD20, ATRIBUTOS E FACÇÃO\ninfluenciam o combate."
+theme_override_font_sizes/font_size = 30
+text = "ECO DETECTADO"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -254,6 +255,7 @@ value = 100.0
 show_percentage = false
 
 [node name="PlayerRole" type="Label" parent="BattleCard"]
+visible = false
 offset_left = 53.0
 offset_top = 84.0
 offset_right = 250.0
@@ -306,6 +308,7 @@ value = 100.0
 show_percentage = false
 
 [node name="EnemyRole" type="Label" parent="BattleCard"]
+visible = false
 offset_left = 450.0
 offset_top = 91.0
 offset_right = 785.0
@@ -327,6 +330,7 @@ text = "TURNO 01 • SUA VEZ"
 horizontal_alignment = 1
 
 [node name="Action" type="Label" parent="BattleCard"]
+visible = false
 offset_left = 22.0
 offset_top = 259.0
 offset_right = 803.0
@@ -339,6 +343,7 @@ text = "SELECIONE UMA AÇÃO"
 horizontal_alignment = 1
 
 [node name="CommandMenu" type="Label" parent="BattleCard"]
+visible = false
 offset_left = 22.0
 offset_top = 291.0
 offset_right = 803.0
@@ -480,12 +485,13 @@ offset_bottom = 618.0
 theme_override_colors/font_color = Color(0.03, 0.02, 0.1, 1)
 theme_override_colors/font_outline_color = Color(0.8, 0.95, 1, 0.35)
 theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 15
-text = "AGUARDANDO REGISTROS..."
+theme_override_font_sizes/font_size = 18
+text = "—"
 autowrap_mode = 2
 vertical_alignment = 1
 
 [node name="Result" type="Label" parent="."]
+visible = false
 offset_left = 75.0
 offset_top = 720.0
 offset_right = 820.0
@@ -498,6 +504,7 @@ text = "ENCONTROS GERAM PONTOS PARA O QUARTO CÓSMICO"
 horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="."]
+visible = false
 offset_left = 40.0
 offset_top = 756.0
 offset_right = 855.0
