@@ -39,6 +39,7 @@ var pet_save: AuroraPetSave
 var egg_base_position := Vector2(317, 405)
 var egg_shake_tween: Tween
 var intro_anim_time := 0.0
+var intro_transition_frames := 72
 
 @onready var background: ColorRect = $Background
 @onready var logo: Label = $Logo
@@ -90,13 +91,38 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not active:
 		return
-	intro_anim_time = fmod(intro_anim_time + delta, 10.0)
-	if state == &"story" or state == &"faction":
-		presenter_sprite.frame = int(intro_anim_time / 0.16) % 12
-	elif state == &"controls" or state == &"egg":
-		guide_sprite.frame = int(intro_anim_time / 0.20) % 6
-	elif state == &"status":
-		status_sprite.frame = int(intro_anim_time / 0.24) % 6
+	intro_anim_time += delta
+	var frame_tick := int(intro_anim_time * 24.0)
+	match state:
+		&"story":
+			# Abertura completa: voo de entrada e idle final em loop.
+			presenter_sprite.frame = frame_tick % 240 if frame_tick < 240 else 192 + ((frame_tick - 240) % 48)
+			presenter_sprite.flip_h = false
+			presenter_sprite.position.x = lerpf(760.0, 185.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+		&"controls":
+			# Voo espelhado da direita para a esquerda.
+			guide_sprite.frame = 120 + (frame_tick % 72)
+			guide_sprite.flip_h = true
+			guide_sprite.position.x = lerpf(790.0, 145.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+		&"faction":
+			# Giro e partículas, chegando pelo lado direito.
+			presenter_sprite.frame = 72 + (frame_tick % 48)
+			presenter_sprite.flip_h = false
+			presenter_sprite.position.x = lerpf(145.0, 700.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+		&"egg_select":
+			# Novo movimento espelhado, retornando para o lado esquerdo.
+			presenter_sprite.frame = 72 + (frame_tick % 48)
+			presenter_sprite.flip_h = true
+			presenter_sprite.position.x = lerpf(790.0, 185.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+		&"egg":
+			# EVA chega pelo lado direito e permanece junto da orientação do ovo.
+			guide_sprite.frame = 120 + (frame_tick % 72)
+			guide_sprite.flip_h = false
+			guide_sprite.position.x = lerpf(145.0, 720.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+		&"status":
+			# Close final no canto inferior direito, usando a parte final do voo.
+			status_sprite.frame = 216 + (frame_tick % 24)
+			status_sprite.flip_h = true
 
 func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node, save_manager: AuroraPetSave = null) -> void:
 	pet_identity = identity
@@ -327,6 +353,9 @@ func _start_development_pet() -> void:
 
 func _show_story(page: int) -> void:
 	story_page = clampi(page, 0, 1)
+	intro_anim_time = 0.0
+	presenter_sprite.position.x = 760.0
+	guide_sprite.position.x = 790.0
 	background.color = Color("#071332")
 	_hide_all_panels()
 	intro_backdrop.visible = true
@@ -361,6 +390,8 @@ func _back_story() -> void:
 
 func _show_faction() -> void:
 	state = &"faction"
+	intro_anim_time = 0.0
+	presenter_sprite.position.x = 145.0
 	background.color = Color("#071332")
 	_hide_all_panels()
 	intro_backdrop.visible = true
@@ -391,6 +422,8 @@ func _confirm_faction() -> void:
 
 func _show_egg_selection() -> void:
 	state = &"egg_select"
+	intro_anim_time = 0.0
+	presenter_sprite.position.x = 790.0
 	background.color = Color("#071332")
 	_hide_all_panels()
 	intro_backdrop.visible = true
@@ -424,6 +457,8 @@ func _confirm_egg_selection() -> void:
 
 func _show_egg() -> void:
 	state = &"egg"
+	intro_anim_time = 0.0
+	guide_sprite.position.x = 145.0
 	background.color = Color(0, 0, 0, 0)
 	_hide_all_panels()
 	if deepworld != null:
@@ -472,6 +507,7 @@ func _shake_egg() -> void:
 
 func _show_pet_status() -> void:
 	state = &"status"
+	intro_anim_time = 0.0
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
 	status_panel.visible = true

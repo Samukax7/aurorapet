@@ -6,9 +6,9 @@
 [ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_trevas.png" id="4_egg_trevas"]
 [ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_neutro.png" id="5_egg_neutro"]
 [ext_resource type="Texture2D" path="res://assets/fundo/aurorapet-deepworld-intro-no-platform.png" id="6_intro_bg"]
-[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_idle_12frames_64px_padded.png" id="7_presenter_idle"]
-[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_pointing_6frames_64px_padded.png" id="8_presenter_pointing"]
-[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_close_6frames_64px_padded.png" id="9_presenter_close"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_gif_full_240frames_160px.png" id="7_presenter_idle"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_gif_full_240frames_160px.png" id="8_presenter_pointing"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_gif_full_240frames_160px.png" id="9_presenter_close"]
 [ext_resource type="Texture2D" path="res://assets/console/controles/dpad.png" id="10_dpad"]
 [ext_resource type="Texture2D" path="res://assets/console/controles/button_green.png" id="11_green"]
 [ext_resource type="Texture2D" path="res://assets/console/controles/button_pink.png" id="12_pink"]
@@ -675,33 +675,33 @@ text = "PRÓXIMA"
 visible = false
 z_index = 5
 position = Vector2(185, 645)
-scale = Vector2(6.0, 6.0)
+scale = Vector2(2.4, 2.4)
 texture_filter = 1
 texture = ExtResource("7_presenter_idle")
-hframes = 3
-vframes = 4
+hframes = 16
+vframes = 15
 frame = 0
 
 [node name="GuideSprite" type="Sprite2D" parent="."]
 visible = false
 z_index = 5
 position = Vector2(145, 355)
-scale = Vector2(5.2, 5.2)
+scale = Vector2(2.2, 2.2)
 texture_filter = 1
 texture = ExtResource("8_presenter_pointing")
-hframes = 3
-vframes = 2
+hframes = 16
+vframes = 15
 frame = 0
 
 [node name="StatusSprite" type="Sprite2D" parent="."]
 visible = false
 z_index = 5
 position = Vector2(680, 555)
-scale = Vector2(4.5, 4.5)
+scale = Vector2(2.2, 2.2)
 texture_filter = 1
 texture = ExtResource("9_presenter_close")
-hframes = 3
-vframes = 2
+hframes = 16
+vframes = 15
 frame = 0
 
 
