@@ -37,6 +37,7 @@ var skill_tree: Node
 var pet_save: AuroraPetSave
 var egg_base_position := Vector2(317, 405)
 var egg_shake_tween: Tween
+var intro_anim_time := 0.0
 
 @onready var background: ColorRect = $Background
 @onready var logo: Label = $Logo
@@ -66,11 +67,30 @@ var egg_shake_tween: Tween
 @onready var status_identity: Label = $PetStatusPanel/Identity
 @onready var status_attributes: Label = $PetStatusPanel/Attributes
 @onready var status_hint: Label = $PetStatusPanel/Hint
+@onready var intro_backdrop: TextureRect = $IntroBackdrop
+@onready var controls_panel: Panel = $ControlsPanel
+@onready var controls_back: Button = $ControlsPanel/Back
+@onready var controls_next: Button = $ControlsPanel/Next
+@onready var presenter_sprite: Sprite2D = $PresenterSprite
+@onready var guide_sprite: Sprite2D = $GuideSprite
+@onready var status_sprite: Sprite2D = $StatusSprite
 
 func _ready() -> void:
 	_connect_buttons()
 	_hide_all_panels()
 	_show_logo()
+	set_process(true)
+
+func _process(delta: float) -> void:
+	if not active:
+		return
+	intro_anim_time = fmod(intro_anim_time + delta, 10.0)
+	if state == &"story" or state == &"faction":
+		presenter_sprite.frame = int(intro_anim_time / 0.16) % 12
+	elif state == &"controls" or state == &"egg":
+		guide_sprite.frame = int(intro_anim_time / 0.20) % 6
+	elif state == &"status":
+		status_sprite.frame = int(intro_anim_time / 0.24) % 6
 
 func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node, save_manager: AuroraPetSave = null) -> void:
 	pet_identity = identity
@@ -100,6 +120,8 @@ func _connect_buttons() -> void:
 	story_next.pressed.connect(_on_story_next_pressed)
 	$EggPanel/HitButton.pressed.connect(_on_egg_button_pressed)
 	$PetStatusPanel/ExitButton.pressed.connect(_on_status_exit_pressed)
+	controls_back.pressed.connect(_on_controls_back_pressed)
+	controls_next.pressed.connect(_on_controls_next_pressed)
 	$AccessCodePanel/Load.pressed.connect(_on_access_load_pressed)
 	$AccessCodePanel/Cancel.pressed.connect(_on_access_cancel_pressed)
 
@@ -116,6 +138,11 @@ func handle_direction(direction: Vector2i) -> void:
 				_back_story()
 			elif direction.x > 0 or direction.y > 0:
 				_next_story()
+		&"controls":
+			if direction.x < 0 or direction.y < 0:
+				_show_story(0)
+			elif direction.x > 0 or direction.y > 0:
+				_show_faction()
 		&"faction":
 			if direction.x != 0 or direction.y != 0:
 				var step := 1 if direction.x > 0 or direction.y > 0 else -1
@@ -132,6 +159,8 @@ func confirm() -> void:
 			_confirm_menu()
 		&"story":
 			_next_story()
+		&"controls":
+			_show_faction()
 		&"faction":
 			_confirm_faction()
 		&"access_code":
@@ -149,6 +178,8 @@ func back() -> void:
 			_show_menu()
 		&"story":
 			_back_story()
+		&"controls":
+			_show_story(0)
 		&"faction":
 			_show_story(1)
 		&"access_code":
@@ -278,22 +309,27 @@ func _start_development_pet() -> void:
 		pet_ui.show_system_message("MODO DEV ATIVO • EVA • NÍVEL 100 • TUDO DESBLOQUEADO")
 
 func _show_story(page: int) -> void:
-	state = &"story"
 	story_page = clampi(page, 0, 1)
-	background.color = Color("#FFFFFF")
+	background.color = Color("#071332")
 	_hide_all_panels()
+	intro_backdrop.visible = true
+	if story_page == 1:
+		state = &"controls"
+		controls_panel.visible = true
+		guide_sprite.visible = true
+		controls_next.text = "PRÓXIMA"
+		return
+	state = &"story"
 	story_panel.visible = true
-	story_page_label.text = "DEEPWORLD  %d / 2" % (story_page + 1)
-	if story_page == 0:
-		story_body.text = "HISTÓRIA AQUI\n\nOs Deepmons nasceram entre estrelas, sonhos e forças antigas.\n\nEste espaço receberá a introdução oficial do universo."
-	else:
-		story_body.text = "HISTÓRIA AQUI\n\nA Deepworld é formada por caminhos de Luz, Trevas e equilíbrio Neutro.\n\nEste espaço receberá a explicação detalhada das facções."
-	story_back.visible = story_page > 0
-	story_next.text = "ESCOLHER FACÇÃO" if story_page == 1 else "PRÓXIMA"
+	presenter_sprite.visible = true
+	story_page_label.text = "DEEPWORLD"
+	story_body.text = "BEM-VINDO AO DEEPWORLD\n\nUm espelho do mundo real, atravessado por elementos digitais.\n\nAqui vivem os Deepmons: seres que crescem com cuidado, atenção e descobertas.\n\nEu sou EVA. Nasci depois do fim de um universo e ainda estou despertando minha memória cósmica.\n\nAlgumas regiões são vibrantes e coloridas. Outras são sombrias e misteriosas. Para mim, até uma pedra pode ser um desafio. Vamos explorar juntos."
+	story_next.text = "PRÓXIMA"
+	story_back.visible = false
 
 func _next_story() -> void:
-	if story_page < 1:
-		_show_story(story_page + 1)
+	if state == &"story":
+		_show_story(1)
 	else:
 		_show_faction()
 
@@ -307,19 +343,26 @@ func _show_faction() -> void:
 	state = &"faction"
 	background.color = Color("#071332")
 	_hide_all_panels()
+	intro_backdrop.visible = true
 	faction_panel.visible = true
+	presenter_sprite.visible = true
 	faction_selected_index = 0
 	_refresh_faction()
 
 func _refresh_faction() -> void:
 	var labels := ["LUZ", "TREVAS", "NEUTRO"]
 	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
+	var descriptions := [
+		"Harmonia, cura e defesa. Uma origem ligada à proteção.",
+		"Caos, poder e dano bruto. Uma origem ligada à intensidade.",
+		"Equilíbrio, adaptação e versatilidade. Uma origem flexível."
+	]
 	for index in faction_buttons.size():
 		faction_buttons[index].text = labels[index]
 		faction_buttons[index].modulate = Color.WHITE if index == faction_selected_index else Color(0.5, 0.58, 0.75, 1.0)
 		faction_buttons[index].scale = Vector2(1.08, 1.08) if index == faction_selected_index else Vector2.ONE
 	selected_faction = factions[faction_selected_index]
-	faction_hint.text = "FACÇÃO: %s   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR" % labels[faction_selected_index]
+	faction_hint.text = "%s\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR" % descriptions[faction_selected_index]
 
 func _confirm_faction() -> void:
 	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
@@ -343,13 +386,15 @@ func _show_egg() -> void:
 	if pet_node != null:
 		pet_node.visible = false
 	egg_panel.visible = true
+	guide_sprite.visible = true
+	guide_sprite.frame = 2
 	egg_image.visible = true
 	egg_image.position = egg_base_position
 	egg_image.texture = load(String(EGG_TEXTURES.get(selected_faction, EGG_TEXTURES[&"neutro"]))) as Texture2D
 	hatch_hits = 0
 	egg_label.text = ""
 	egg_progress.value = 0.0
-	egg_hint.text = "APERTE VERDE PARA AJUDAR O OVO A CHOCAR\n0 / %d" % HATCH_HITS_REQUIRED
+	egg_hint.text = "AJUDE O OVO A CHOCAR\nPRESSIONE VERDE  •  0 / %d" % HATCH_HITS_REQUIRED
 
 func _hatch_step() -> void:
 	if hatch_hits >= HATCH_HITS_REQUIRED:
@@ -383,6 +428,8 @@ func _show_pet_status() -> void:
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
 	status_panel.visible = true
+	status_sprite.visible = true
+	status_sprite.frame = 0
 	if pet_identity == null or pet_skills == null:
 		status_identity.text = "IDENTIDADE AINDA NÃO DISPONÍVEL"
 		status_attributes.text = "FORÇA --   DEFESA --\nAGILIDADE --   INTELIGÊNCIA --"
@@ -466,10 +513,15 @@ func _hide_all_panels() -> void:
 	menu_panel.visible = false
 	story_panel.visible = false
 	faction_panel.visible = false
+	controls_panel.visible = false
 	egg_panel.visible = false
 	egg_image.visible = false
 	status_panel.visible = false
 	access_panel.visible = false
+	intro_backdrop.visible = false
+	presenter_sprite.visible = false
+	guide_sprite.visible = false
+	status_sprite.visible = false
 
 func _on_access_load_pressed() -> void:
 	_load_access_code()
@@ -497,3 +549,10 @@ func _on_egg_button_pressed() -> void:
 
 func _on_status_exit_pressed() -> void:
 	_finish_flow()
+
+
+func _on_controls_back_pressed() -> void:
+	_show_story(0)
+
+func _on_controls_next_pressed() -> void:
+	_show_faction()

@@ -5,6 +5,10 @@
 [ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_Luz.png" id="3_egg_luz"]
 [ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_trevas.png" id="4_egg_trevas"]
 [ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_neutro.png" id="5_egg_neutro"]
+[ext_resource type="Texture2D" path="res://assets/fundo/aurorapet-deepworld-intro-no-platform.png" id="6_intro_bg"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_idle_12frames_64px.png" id="7_presenter_idle"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_pointing_6frames_64px.png" id="8_presenter_pointing"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_close_6frames_64px.png" id="9_presenter_close"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_MenuPanel"]
 bg_color = Color(0.97, 0.98, 1, 0.98)
@@ -40,6 +44,20 @@ border_width_left = 4
 border_width_top = 4
 border_width_right = 4
 border_width_bottom = 4
+border_color = Color(0.42, 0.88, 0.98, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_TextCard"]
+bg_color = Color(0.035, 0.075, 0.19, 0.94)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
 border_color = Color(0.42, 0.88, 0.98, 1)
 corner_radius_top_left = 18
 corner_radius_top_right = 18
@@ -139,6 +157,20 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(1, 1, 1, 1)
+
+[node name="IntroBackdrop" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+texture = ExtResource("6_intro_bg")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
 
 [node name="Logo" type="Label" parent="."]
 visible = false
@@ -316,59 +348,62 @@ horizontal_alignment = 1
 
 [node name="StoryPanel" type="Panel" parent="."]
 visible = false
-offset_left = 80.0
-offset_top = 125.0
-offset_right = 435.0
-offset_bottom = 330.0
-theme_override_styles/panel = SubResource("StyleBox_StoryPanel")
+offset_left = 300.0
+offset_top = 105.0
+offset_right = 865.0
+offset_bottom = 705.0
+theme_override_styles/panel = SubResource("StyleBox_TextCard")
 
 [node name="Page" type="Label" parent="StoryPanel"]
-offset_left = 35.0
-offset_top = 26.0
-offset_right = 700.0
-offset_bottom = 62.0
-theme_override_colors/font_color = Color(0.18, 0.35, 0.72, 1)
-theme_override_font_sizes/font_size = 30
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 533.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.75, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 25
 text = "DEEPWORLD 1 / 2"
 horizontal_alignment = 1
 
 [node name="Body" type="Label" parent="StoryPanel"]
-offset_left = 55.0
+offset_left = 38.0
 offset_top = 105.0
-offset_right = 680.0
-offset_bottom = 330.0
-theme_override_colors/font_color = Color(0.12, 0.16, 0.27, 1)
-theme_override_font_sizes/font_size = 25
+offset_right = 527.0
+offset_bottom = 485.0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 22
 text = "HISTÓRIA AQUI"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Back" type="Button" parent="StoryPanel"]
-offset_left = 35.0
-offset_top = 430.0
-offset_right = 220.0
-offset_bottom = 480.0
-theme_override_font_sizes/font_size = 24
+offset_left = 38.0
+offset_top = 520.0
+offset_right = 245.0
+offset_bottom = 575.0
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "VOLTAR"
 
 [node name="Next" type="Button" parent="StoryPanel"]
-offset_left = 515.0
-offset_top = 430.0
-offset_right = 700.0
-offset_bottom = 480.0
-theme_override_font_sizes/font_size = 24
+offset_left = 320.0
+offset_top = 520.0
+offset_right = 527.0
+offset_bottom = 575.0
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "PRÓXIMA"
 
 [node name="FactionPanel" type="Panel" parent="."]
 visible = false
-offset_left = 90.0
-offset_top = 150.0
-offset_right = 805.0
-offset_bottom = 635.0
+offset_left = 255.0
+offset_top = 95.0
+offset_right = 870.0
+offset_bottom = 705.0
 theme_override_styles/panel = SubResource("StyleBox_FactionPanel")
 
 [node name="Title" type="Label" parent="FactionPanel"]
@@ -382,12 +417,12 @@ text = "ESCOLHA SUA AURORA"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="FactionPanel"]
-offset_left = 35.0
+offset_left = 32.0
 offset_top = 82.0
-offset_right = 680.0
-offset_bottom = 120.0
+offset_right = 583.0
+offset_bottom = 145.0
 theme_override_colors/font_color = Color(0.62, 0.8, 0.93, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 18
 text = "A facção influencia a identidade e a aparência inicial do Deepmon."
 horizontal_alignment = 1
 
@@ -400,11 +435,11 @@ theme_override_constants/separation = 10
 alignment = 1
 
 [node name="Luz" type="Button" parent="FactionPanel/Options"]
-custom_minimum_size = Vector2(205, 85)
+custom_minimum_size = Vector2(175, 85)
 layout_mode = 2
 icon = ExtResource("3_egg_luz")
 expand_icon = true
-icon_max_width = 54
+icon_max_width = 46
 theme_override_colors/font_color = Color(0.98, 0.91, 0.54, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -412,11 +447,11 @@ theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "LUZ"
 
 [node name="Trevas" type="Button" parent="FactionPanel/Options"]
-custom_minimum_size = Vector2(205, 85)
+custom_minimum_size = Vector2(175, 85)
 layout_mode = 2
 icon = ExtResource("4_egg_trevas")
 expand_icon = true
-icon_max_width = 54
+icon_max_width = 46
 theme_override_colors/font_color = Color(0.86, 0.6, 1, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -424,11 +459,11 @@ theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "TREVAS"
 
 [node name="Neutro" type="Button" parent="FactionPanel/Options"]
-custom_minimum_size = Vector2(205, 85)
+custom_minimum_size = Vector2(175, 85)
 layout_mode = 2
 icon = ExtResource("5_egg_neutro")
 expand_icon = true
-icon_max_width = 54
+icon_max_width = 46
 theme_override_colors/font_color = Color(0.52, 0.92, 0.86, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -436,12 +471,12 @@ theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "NEUTRO"
 
 [node name="Hint" type="Label" parent="FactionPanel"]
-offset_left = 35.0
-offset_top = 390.0
-offset_right = 680.0
-offset_bottom = 430.0
+offset_left = 32.0
+offset_top = 405.0
+offset_right = 583.0
+offset_bottom = 455.0
 theme_override_colors/font_color = Color(0.63, 0.84, 0.93, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 text = "FACÇÃO: LUZ   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR"
 horizontal_alignment = 1
 
@@ -577,3 +612,88 @@ offset_right = 515.0
 offset_bottom = 545.0
 mouse_default_cursor_shape = 2
 flat = true
+
+
+[node name="ControlsPanel" type="Panel" parent="."]
+visible = false
+offset_left = 300.0
+offset_top = 105.0
+offset_right = 865.0
+offset_bottom = 705.0
+theme_override_styles/panel = SubResource("StyleBox_TextCard")
+
+[node name="Title" type="Label" parent="ControlsPanel"]
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 533.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.75, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "COMO JOGAR"
+horizontal_alignment = 1
+
+[node name="Body" type="Label" parent="ControlsPanel"]
+offset_left = 42.0
+offset_top = 100.0
+offset_right = 523.0
+offset_bottom = 425.0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 22
+text = "D-PAD\nNavegar pelos menus e escolher uma opção.\n\nVERDE\nConfirmar, abrir e realizar uma ação.\n\nROSA\nVoltar ou cancelar.\n\nAMARELO\nVoltar em áreas compatíveis."
+vertical_alignment = 1
+
+[node name="Back" type="Button" parent="ControlsPanel"]
+offset_left = 38.0
+offset_top = 520.0
+offset_right = 245.0
+offset_bottom = 575.0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBox_Button")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
+text = "VOLTAR"
+
+[node name="Next" type="Button" parent="ControlsPanel"]
+offset_left = 320.0
+offset_top = 520.0
+offset_right = 527.0
+offset_bottom = 575.0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBox_Button")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
+text = "PRÓXIMA"
+
+[node name="PresenterSprite" type="Sprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(145, 645)
+scale = Vector2(3.5, 3.5)
+texture_filter = 1
+texture = ExtResource("7_presenter_idle")
+hframes = 3
+vframes = 4
+frame = 0
+
+[node name="GuideSprite" type="Sprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(125, 225)
+scale = Vector2(2.7, 2.7)
+texture_filter = 1
+texture = ExtResource("8_presenter_pointing")
+hframes = 3
+vframes = 2
+frame = 0
+
+[node name="StatusSprite" type="Sprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(135, 250)
+scale = Vector2(2.7, 2.7)
+texture_filter = 1
+texture = ExtResource("9_presenter_close")
+hframes = 3
+vframes = 2
+frame = 0
