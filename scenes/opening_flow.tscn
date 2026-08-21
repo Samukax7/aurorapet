@@ -806,3 +806,87 @@ theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "AMARELO\nVoltar em áreas compatíveis"
 vertical_alignment = 1
+
+
+[node name="EggSelectionPanel" type="Panel" parent="."]
+visible = false
+offset_left = 255.0
+offset_top = 95.0
+offset_right = 870.0
+offset_bottom = 705.0
+theme_override_styles/panel = SubResource("StyleBox_FactionPanel")
+
+[node name="Title" type="Label" parent="EggSelectionPanel"]
+offset_left = 32.0
+offset_top = 28.0
+offset_right = 583.0
+offset_bottom = 78.0
+theme_override_colors/font_color = Color(0.75, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 27
+text = "ESCOLHA SEU OVO"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="EggSelectionPanel"]
+offset_left = 32.0
+offset_top = 88.0
+offset_right = 583.0
+offset_bottom = 145.0
+theme_override_colors/font_color = Color(0.62, 0.8, 0.93, 1)
+theme_override_font_sizes/font_size = 18
+text = "Cada ovo carrega a energia de uma Aurora."
+horizontal_alignment = 1
+
+[node name="Options" type="HBoxContainer" parent="EggSelectionPanel"]
+offset_left = 32.0
+offset_top = 175.0
+offset_right = 583.0
+offset_bottom = 340.0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Luz" type="Button" parent="EggSelectionPanel/Options"]
+custom_minimum_size = Vector2(175, 145)
+layout_mode = 2
+icon = ExtResource("3_egg_luz")
+expand_icon = true
+icon_max_width = 72
+theme_override_colors/font_color = Color(0.98, 0.91, 0.54, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBox_Button")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
+text = "LUZ"
+
+[node name="Trevas" type="Button" parent="EggSelectionPanel/Options"]
+custom_minimum_size = Vector2(175, 145)
+layout_mode = 2
+icon = ExtResource("4_egg_trevas")
+expand_icon = true
+icon_max_width = 72
+theme_override_colors/font_color = Color(0.86, 0.6, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBox_Button")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
+text = "TREVAS"
+
+[node name="Neutro" type="Button" parent="EggSelectionPanel/Options"]
+custom_minimum_size = Vector2(175, 145)
+layout_mode = 2
+icon = ExtResource("5_egg_neutro")
+expand_icon = true
+icon_max_width = 72
+theme_override_colors/font_color = Color(0.52, 0.92, 0.86, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBox_Button")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
+text = "NEUTRO"
+
+[node name="Hint" type="Label" parent="EggSelectionPanel"]
+offset_left = 32.0
+offset_top = 400.0
+offset_right = 583.0
+offset_bottom = 480.0
+theme_override_colors/font_color = Color(0.63, 0.84, 0.93, 1)
+theme_override_font_sizes/font_size = 19
+text = "OVO LUZ\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR"
+horizontal_alignment = 1
+vertical_alignment = 1

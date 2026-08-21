@@ -22,6 +22,7 @@ var menu_options: Array[StringName] = []
 var menu_selected_index := 0
 var story_page := 0
 var faction_selected_index := 0
+var egg_selection_index := 0
 var selected_faction: StringName = &"neutro"
 var development_mode_active := false
 var hatch_hits := 0
@@ -58,6 +59,9 @@ var intro_anim_time := 0.0
 @onready var faction_panel: Panel = $FactionPanel
 @onready var faction_buttons: Array[Button] = [$FactionPanel/Options/Luz, $FactionPanel/Options/Trevas, $FactionPanel/Options/Neutro]
 @onready var faction_hint: Label = $FactionPanel/Hint
+@onready var egg_selection_panel: Panel = $EggSelectionPanel
+@onready var egg_selection_buttons: Array[Button] = [$EggSelectionPanel/Options/Luz, $EggSelectionPanel/Options/Trevas, $EggSelectionPanel/Options/Neutro]
+@onready var egg_selection_hint: Label = $EggSelectionPanel/Hint
 @onready var egg_panel: Panel = $EggPanel
 @onready var egg_label: Label = $EggPanel/Egg
 @onready var egg_image: TextureRect = $EggImage
@@ -72,6 +76,7 @@ var intro_anim_time := 0.0
 @onready var controls_back: Button = $ControlsPanel/Back
 @onready var controls_next: Button = $ControlsPanel/Next
 @onready var controls_speech_bubble: Panel = $ControlsSpeechBubble
+@onready var controls_speech_body: Label = $ControlsSpeechBubble/Body
 @onready var presenter_sprite: Sprite2D = $PresenterSprite
 @onready var guide_sprite: Sprite2D = $GuideSprite
 @onready var status_sprite: Sprite2D = $StatusSprite
@@ -117,6 +122,8 @@ func _connect_buttons() -> void:
 		menu_buttons[index].pressed.connect(_on_menu_button_pressed.bind(index))
 	for index in faction_buttons.size():
 		faction_buttons[index].pressed.connect(_on_faction_button_pressed.bind(index))
+	for index in egg_selection_buttons.size():
+		egg_selection_buttons[index].pressed.connect(_on_egg_selection_button_pressed.bind(index))
 	story_back.pressed.connect(_on_story_back_pressed)
 	story_next.pressed.connect(_on_story_next_pressed)
 	$EggPanel/HitButton.pressed.connect(_on_egg_button_pressed)
@@ -146,9 +153,14 @@ func handle_direction(direction: Vector2i) -> void:
 				_show_faction()
 		&"faction":
 			if direction.x != 0 or direction.y != 0:
-				var step := 1 if direction.x > 0 or direction.y > 0 else -1
-				faction_selected_index = wrapi(faction_selected_index + step, 0, faction_buttons.size())
+				var faction_step := 1 if direction.x > 0 or direction.y > 0 else -1
+				faction_selected_index = wrapi(faction_selected_index + faction_step, 0, faction_buttons.size())
 				_refresh_faction()
+		&"egg_select":
+			if direction.x != 0 or direction.y != 0:
+				var egg_step := 1 if direction.x > 0 or direction.y > 0 else -1
+				egg_selection_index = wrapi(egg_selection_index + egg_step, 0, egg_selection_buttons.size())
+				_refresh_egg_selection()
 
 func confirm() -> void:
 	if not active:
@@ -164,6 +176,8 @@ func confirm() -> void:
 			_show_faction()
 		&"faction":
 			_confirm_faction()
+		&"egg_select":
+			_confirm_egg_selection()
 		&"access_code":
 			_load_access_code()
 		&"egg":
@@ -183,10 +197,12 @@ func back() -> void:
 			_show_story(0)
 		&"faction":
 			_show_story(1)
+		&"egg_select":
+			_show_faction()
 		&"access_code":
 			_show_menu()
 		&"egg":
-			_show_faction()
+			_show_egg_selection()
 		&"status":
 			_finish_flow()
 
@@ -318,6 +334,7 @@ func _show_story(page: int) -> void:
 		state = &"controls"
 		controls_panel.visible = true
 		controls_speech_bubble.visible = true
+		controls_speech_body.text = "Olá!\n\nUse os controles para explorar o Deepworld.\n\nEscolha uma opção e confirme quando estiver pronto."
 		guide_sprite.visible = true
 		guide_sprite.frame = 1
 		controls_next.text = "PRÓXIMA"
@@ -370,6 +387,31 @@ func _refresh_faction() -> void:
 func _confirm_faction() -> void:
 	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
 	selected_faction = factions[faction_selected_index]
+	_show_egg_selection()
+
+func _show_egg_selection() -> void:
+	state = &"egg_select"
+	background.color = Color("#071332")
+	_hide_all_panels()
+	intro_backdrop.visible = true
+	egg_selection_panel.visible = true
+	presenter_sprite.visible = true
+	egg_selection_index = faction_selected_index
+	_refresh_egg_selection()
+
+func _refresh_egg_selection() -> void:
+	var labels := ["LUZ", "TREVAS", "NEUTRO"]
+	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
+	for index in egg_selection_buttons.size():
+		egg_selection_buttons[index].modulate = Color.WHITE if index == egg_selection_index else Color(0.5, 0.58, 0.75, 1.0)
+		egg_selection_buttons[index].scale = Vector2(1.08, 1.08) if index == egg_selection_index else Vector2.ONE
+	selected_faction = factions[egg_selection_index]
+	egg_selection_hint.text = "OVO %s\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR" % labels[egg_selection_index]
+
+func _confirm_egg_selection() -> void:
+	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
+	selected_faction = factions[egg_selection_index]
+	faction_selected_index = egg_selection_index
 	if pet_skills != null:
 		pet_skills.reset_for_new_pet()
 	if pet_stats != null:
@@ -389,6 +431,8 @@ func _show_egg() -> void:
 	if pet_node != null:
 		pet_node.visible = false
 	egg_panel.visible = true
+	controls_speech_bubble.visible = true
+	controls_speech_body.text = "Agora é sua vez!\n\nPressione o botão verde para ajudar o ovo a chocar.\n\nCada toque aproxima o nascimento do seu Deepmon."
 	guide_sprite.visible = true
 	guide_sprite.frame = 2
 	egg_image.visible = true
@@ -516,6 +560,7 @@ func _hide_all_panels() -> void:
 	menu_panel.visible = false
 	story_panel.visible = false
 	faction_panel.visible = false
+	egg_selection_panel.visible = false
 	controls_panel.visible = false
 	controls_speech_bubble.visible = false
 	egg_panel.visible = false
@@ -541,6 +586,10 @@ func _on_menu_button_pressed(index: int) -> void:
 func _on_faction_button_pressed(index: int) -> void:
 	faction_selected_index = clampi(index, 0, faction_buttons.size() - 1)
 	_refresh_faction()
+
+func _on_egg_selection_button_pressed(index: int) -> void:
+	egg_selection_index = clampi(index, 0, egg_selection_buttons.size() - 1)
+	_refresh_egg_selection()
 
 func _on_story_back_pressed() -> void:
 	_back_story()
