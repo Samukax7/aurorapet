@@ -281,6 +281,24 @@ func reset_for_new_pet() -> void:
 	_emit_skill_state()
 	progression_changed.emit(level, xp)
 
+## Prepara uma progressão completa para testes internos sem criar uma árvore paralela.
+func prepare_development_state() -> void:
+	level = 100
+	xp = 0
+	total_xp = 0
+	for requirement_level in range(1, 100):
+		total_xp += requirement_level * 100
+	strength = 100
+	defense = 100
+	agility = 100
+	intelligence = 100
+	resistance = 100
+	unlocked_skills = get_all_skills()
+	if evolution != null:
+		evolution.sync_with_level(level)
+	_emit_skill_state()
+	progression_changed.emit(level, xp)
+
 func get_attribute(attribute: StringName) -> int:
 	match attribute:
 		&"forca": return strength

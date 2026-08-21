@@ -9,6 +9,7 @@ signal flow_completed
 
 const SAVE_PATH := "user://aurorapet_save.json"
 const HATCH_HITS_REQUIRED := 8
+const DEVELOPMENT_CODE := "DEV"
 const EGG_TEXTURES := {
 	&"luz": "res://assets/UI/minigames/ovos/ovo_cosmico_Luz.png",
 	&"trevas": "res://assets/UI/minigames/ovos/ovo_cosmico_trevas.png",
@@ -22,6 +23,7 @@ var menu_selected_index := 0
 var story_page := 0
 var faction_selected_index := 0
 var selected_faction: StringName = &"neutro"
+var development_mode_active := false
 var hatch_hits := 0
 
 var pet_identity: PetIdentity
@@ -227,7 +229,7 @@ func _show_access_code() -> void:
 	_hide_all_panels()
 	access_panel.visible = true
 	access_edit.text = ""
-	access_message.text = "DIGITE 3 CARACTERES PARA GERAR O PET"
+	access_message.text = "DIGITE 3 CARACTERES PARA GERAR O PET • DEV: EVA DE TESTE"
 	access_edit.grab_focus()
 
 func _load_access_code() -> void:
@@ -238,6 +240,12 @@ func _load_access_code() -> void:
 	if pet_identity == null:
 		access_message.text = "ERRO: IDENTIDADE INDISPONÍVEL"
 		return
+	if code == DEVELOPMENT_CODE:
+		_start_development_pet()
+		return
+	development_mode_active = false
+	if pet_save != null:
+		pet_save.set_development_session(false)
 	var seed := pet_identity.access_code_to_seed(code)
 	pet_identity.generate_new_identity(seed)
 	selected_faction = pet_identity.faction_id
@@ -248,6 +256,26 @@ func _load_access_code() -> void:
 	if pet_randomizer != null:
 		pet_randomizer.reroll()
 	_show_egg()
+
+func _start_development_pet() -> void:
+	development_mode_active = true
+	if pet_save != null:
+		pet_save.set_development_session(true)
+	if pet_identity != null:
+		var dev_seed := pet_identity.access_code_to_seed(DEVELOPMENT_CODE)
+		pet_identity.generate_new_identity_for_faction(&"neutro", dev_seed)
+		pet_identity.pet_name = "EVA"
+		pet_identity.identity_generated.emit(pet_identity.get_identity_snapshot())
+	selected_faction = &"neutro"
+	if pet_skills != null:
+		pet_skills.prepare_development_state()
+	if pet_stats != null:
+		pet_stats.prepare_development_state()
+	if pet_randomizer != null:
+		pet_randomizer.prepare_development_appearance()
+	_finish_flow()
+	if pet_ui != null:
+		pet_ui.show_system_message("MODO DEV ATIVO • EVA • NÍVEL 100 • TUDO DESBLOQUEADO")
 
 func _show_story(page: int) -> void:
 	state = &"story"
@@ -364,6 +392,9 @@ func _show_pet_status() -> void:
 	status_hint.text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
 
 func _continue_saved_pet() -> void:
+	development_mode_active = false
+	if pet_save != null:
+		pet_save.set_development_session(false)
 	if pet_save != null and pet_save.load_now():
 		_finish_flow()
 		return
@@ -408,8 +439,11 @@ func _save_new_pet() -> void:
 func _finish_flow() -> void:
 	active = false
 	visible = false
-	if deepworld != null and pet_identity != null and deepworld.has_method("activate_faction_background"):
-		deepworld.call("activate_faction_background", pet_identity.faction_id)
+	if deepworld != null:
+		if development_mode_active and deepworld.has_method("activate_default_background"):
+			deepworld.call("activate_default_background")
+		elif pet_identity != null and deepworld.has_method("activate_faction_background"):
+			deepworld.call("activate_faction_background", pet_identity.faction_id)
 	if deepworld != null:
 		deepworld.visible = true
 	if pet_node != null:

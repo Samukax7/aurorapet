@@ -27,6 +27,7 @@ var _configured := false
 var _loading := false
 var _dirty := false
 var _autosave_elapsed := 0.0
+var development_mode := false
 
 func _process(delta: float) -> void:
 	if not _configured or _loading or not _dirty:
@@ -54,16 +55,27 @@ func configure(
 	_configured = true
 	_connect_state_signals()
 
+func set_development_session(active: bool) -> void:
+	development_mode = active
+	if active:
+		_dirty = false
+		_autosave_elapsed = 0.0
+
+func is_development_session() -> bool:
+	return development_mode
+
 func has_save() -> bool:
 	return FileAccess.file_exists(save_path)
 
 func mark_dirty() -> void:
-	if _loading:
+	if development_mode or _loading:
 		return
 	_dirty = true
 	_autosave_elapsed = 0.0
 
 func save_now() -> bool:
+	if development_mode:
+		return false
 	if not _configured:
 		save_failed.emit("SAVE NÃO CONFIGURADO")
 		return false

@@ -257,7 +257,7 @@ offset_right = 650.0
 offset_bottom = 180.0
 theme_override_colors/font_color = Color(0.82, 0.92, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "Digite a chave de 3 caracteres do protótipo.\nA chave gera uma identidade procedural a partir da seed."
+text = "Digite a chave de 3 caracteres do protótipo.\nA chave gera uma identidade procedural a partir da seed.\nDEV inicia EVA em modo de teste, sem história ou ovo."
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -280,7 +280,7 @@ offset_right = 650.0
 offset_bottom = 350.0
 theme_override_colors/font_color = Color(0.63, 0.84, 0.93, 1)
 theme_override_font_sizes/font_size = 16
-text = "DIGITE 3 CARACTERES PARA GERAR O PET"
+text = "DIGITE 3 CARACTERES • DEV: EVA DE TESTE"
 horizontal_alignment = 1
 vertical_alignment = 1
 

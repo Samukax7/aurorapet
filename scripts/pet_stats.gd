@@ -134,6 +134,40 @@ func _ready() -> void:
 	_last_critical_state = _is_needs_critical()
 	_emit_all_state()
 
+## Estado técnico do modo DEV: jogável imediatamente e sem alterar a estrutura do pet.
+func prepare_development_state() -> void:
+	newborn_tutorial_active = false
+	newborn_tutorial_step = &"inactive"
+	newborn_tutorial_fed = false
+	current_reaction = &"idle"
+	special_need = &""
+	special_need_wish = &""
+	poop_visible = false
+	hunger = 80.0
+	energy = 100.0
+	mood = 100.0
+	health = 100.0
+	hygiene = 100.0
+	discipline = 100.0
+	obedience = 100.0
+	audacity = 0.0
+	weight = 18.0
+	is_sick = false
+	is_sleeping = false
+	attention_reason = &""
+	missed_calls = 0
+	care_mistakes = 0
+	discipline_mistakes = 0
+	excessive_meals = 0
+	meals_served = 0
+	games_played = 0
+	_clamp_values()
+	_emit_all_state()
+	sleep_state_changed.emit(false)
+	illness_changed.emit(false)
+	attention_changed.emit(false, &"")
+	poop_state_changed.emit(false)
+
 func begin_newborn_tutorial() -> void:
 	newborn_tutorial_active = true
 	newborn_tutorial_step = &"feed"

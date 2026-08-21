@@ -65,6 +65,8 @@ Definir a relação entre Moedas Estelares do protótipo e Pontos de Exploraçã
 
 Criar uma superfície de debug apenas local para adicionar XP, simular tempo, forçar doença, restaurar status, gerar facções e exportar/importar JSON, inspirada no `DebugPanel` do protótipo. Não incluir essa ferramenta no fluxo normal do jogador.
 
+**Bloco DEV implementado:** em `OPTIONS`, o código `DEV` inicia diretamente o console normal com o pet procedural neutro nomeado **EVA**, nível 100, atributos máximos, habilidades liberadas, tutorial/história/ovo ignorados e fundo padrão. A sessão DEV não sobrescreve o save real do usuário. O conjunto visual especial da EVA continua reservado para uma recompensa futura; o modo atual usa as peças modulares normais sorteadas.
+
 **Critério de conclusão:** testar limites e recusas sem editar manualmente dezenas de propriedades no inspetor.
 
 ### 11. Pensamentos cósmicos dinâmicos — prioridade posterior

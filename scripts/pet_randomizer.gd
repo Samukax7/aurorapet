@@ -159,6 +159,16 @@ func apply_palette_index(index: int) -> void:
 	_apply_palette_colors()
 	palette_changed.emit(palette_pair_index, palette_name, base_color, complementary_color)
 
+## Sorteia um modelo normal e mantém as texturas sem tintura de paleta.
+func prepare_development_appearance() -> void:
+	randomize_pet()
+	palette_pair_index = -1
+	palette_name = &"neutro_dev"
+	base_color = Color.WHITE
+	complementary_color = Color.WHITE
+	_apply_palette_colors()
+	palette_changed.emit(palette_pair_index, palette_name, base_color, complementary_color)
+
 ## Permite testar a próxima paleta sem depender de um novo sorteio.
 func cycle_palette(step: int = 1) -> void:
 	var next_index := 0 if palette_pair_index < 0 else palette_pair_index + step
