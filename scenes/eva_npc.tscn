@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/eva_npc.gd" id="1_eva_npc"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_gif_full_240frames_160px.png" id="2_eva_atlas"]
+
+[node name="EvaNPC" type="Node2D"]
+z_index = 4
+script = ExtResource("1_eva_npc")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_eva_atlas")
+hframes = 16
+vframes = 15
+frame = 192
+scale = Vector2(2.0, 2.0)
+
+[node name="DialogueAnchor" type="Marker2D" parent="."]
+position = Vector2(0, -190)
+
+[node name="ReactionAnchor" type="Marker2D" parent="."]
+position = Vector2(0, -230)

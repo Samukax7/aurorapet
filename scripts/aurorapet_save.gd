@@ -18,6 +18,7 @@ var pet_evolution: PetEvolution
 var pet_randomizer: PetRandomizer
 var quarto_cosmico: QuartoCosmico
 var batalha_exploracao: BatalhaDeExploracao
+var eva_journey: EvaJourneyManager
 
 var stellar_coins := 0
 var cosmic_diary: Array[String] = []
@@ -43,7 +44,8 @@ func configure(
 	evolution: PetEvolution,
 	randomizer: PetRandomizer,
 	quarto: QuartoCosmico,
-	batalha: BatalhaDeExploracao
+	batalha: BatalhaDeExploracao,
+	eva: EvaJourneyManager = null
 ) -> void:
 	pet_identity = identity
 	pet_stats = stats
@@ -52,6 +54,7 @@ func configure(
 	pet_randomizer = randomizer
 	quarto_cosmico = quarto
 	batalha_exploracao = batalha
+	eva_journey = eva
 	_configured = true
 	_connect_state_signals()
 
@@ -160,6 +163,15 @@ func _connect_state_signals() -> void:
 			batalha_exploracao.points_changed.connect(_on_points_signal)
 		if not batalha_exploracao.battle_completed.is_connected(_on_battle_completed_signal):
 			batalha_exploracao.battle_completed.connect(_on_battle_completed_signal)
+	if eva_journey != null:
+		if not eva_journey.eva_stage_changed.is_connected(_on_eva_state_signal):
+			eva_journey.eva_stage_changed.connect(_on_eva_state_signal)
+		if not eva_journey.memory_unlocked.is_connected(_on_eva_memory_signal):
+			eva_journey.memory_unlocked.connect(_on_eva_memory_signal)
+		if not eva_journey.journey_choice_made.is_connected(_on_eva_choice_signal):
+			eva_journey.journey_choice_made.connect(_on_eva_choice_signal)
+		if not eva_journey.affection_changed.is_connected(_on_eva_affection_signal):
+			eva_journey.affection_changed.connect(_on_eva_affection_signal)
 
 func _on_stats_signal(_hunger: float, _energy: float, _mood: float, _health: float) -> void:
 	mark_dirty()
@@ -209,6 +221,18 @@ func _on_battle_completed_signal(victory: bool, _xp_reward: int, _point_reward: 
 		unlock_achievement("EXPLORADOR_DEEPWORLD")
 	mark_dirty()
 
+func _on_eva_state_signal(_stage: StringName) -> void:
+	mark_dirty()
+
+func _on_eva_memory_signal(_fragment_id: int, _text: String) -> void:
+	mark_dirty()
+
+func _on_eva_choice_signal(_helped: bool) -> void:
+	mark_dirty()
+
+func _on_eva_affection_signal(_value: int) -> void:
+	mark_dirty()
+
 func _on_purchase_completed_signal(item_id: StringName, _price: int, _remaining_points: int, _accumulated_value: int) -> void:
 	record_diary("COMPRA_" + String(item_id).to_upper())
 	unlock_achievement("PRIMEIRA_COMPRA")
@@ -250,6 +274,7 @@ func _build_payload() -> Dictionary:
 		"appearance": _serialize_appearance(),
 		"world": {
 			"exploration_points": points,
+			"eva_journey": eva_journey.to_save_data() if eva_journey != null else {},
 			"shop_total_value": shop_total_value,
 			"owned_items": _serialize_owned_items(),
 			"stellar_coins": stellar_coins,
@@ -475,6 +500,8 @@ func _restore_world(raw_data: Variant) -> void:
 			quarto_cosmico.shop_total_value = maxi(0, int(data.get("shop_total_value", 0)))
 			quarto_cosmico.set_owned_items(data.get("owned_items", []))
 			quarto_cosmico.set_exploration_points(points)
+	if eva_journey != null:
+		eva_journey.restore_save_data(data.get("eva_journey", {}))
 	stellar_coins = maxi(0, int(data.get("stellar_coins", stellar_coins)))
 	cosmic_diary.clear()
 	for entry in data.get("cosmic_diary", []):

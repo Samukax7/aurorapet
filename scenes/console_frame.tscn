@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" path="res://scenes/jogo_2048.tscn" id="13_2048"]
 [ext_resource type="PackedScene" path="res://scenes/batalha_de_exploracao.tscn" id="14_exploration"]
 [ext_resource type="Script" path="res://scripts/aurorapet_save.gd" id="15_save"]
+[ext_resource type="Script" path="res://scripts/eva_journey_manager.gd" id="16_eva_journey"]
 
 [node name="Console Base" type="Sprite2D" unique_id=1879046692]
 texture = ExtResource("1_5l2bk")
@@ -59,6 +60,9 @@ layout_mode = 1
 
 [node name="BatalhaDeExploracao" parent="ScreenContent" instance=ExtResource("14_exploration")]
 layout_mode = 1
+
+[node name="EvaJourneyManager" type="Node" parent="ScreenContent"]
+script = ExtResource("16_eva_journey")
 
 [node name="AuroraPetSave" type="Node" parent="ScreenContent"]
 script = ExtResource("15_save")

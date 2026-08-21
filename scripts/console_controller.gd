@@ -18,13 +18,18 @@ extends Sprite2D
 @onready var batalha_exploracao: BatalhaDeExploracao = $ScreenContent/BatalhaDeExploracao
 @onready var quarto_cosmico: QuartoCosmico = $ScreenContent/Deepworld/QuartoCosmico
 @onready var aurora_pet_save: AuroraPetSave = $ScreenContent/AuroraPetSave
+@onready var eva_journey_manager: EvaJourneyManager = $ScreenContent/EvaJourneyManager
 
 var quarto_entry_pending := false
 
 func _ready() -> void:
 	_connect_console_buttons()
 	if aurora_pet_save != null:
-		aurora_pet_save.configure(pet_identity, pet_stats, pet_skills, pet_evolution, pet_randomizer, quarto_cosmico, batalha_exploracao)
+		aurora_pet_save.configure(pet_identity, pet_stats, pet_skills, pet_evolution, pet_randomizer, quarto_cosmico, batalha_exploracao, eva_journey_manager)
+	if eva_journey_manager != null:
+		eva_journey_manager.eva_stage_changed.connect(_on_eva_stage_changed)
+		eva_journey_manager.memory_unlocked.connect(_on_eva_memory_unlocked)
+		eva_journey_manager.journey_choice_made.connect(_on_eva_journey_choice)
 	if opening_flow != null:
 		opening_flow.configure(pet_identity, pet_stats, pet_skills, pet_randomizer, pet_ui, $ScreenContent/Deepworld, skill_tree, aurora_pet_save)
 	if pet_ui != null:
@@ -634,6 +639,18 @@ func _on_newborn_tutorial_completed() -> void:
 	if pet_ui != null:
 		pet_ui.refresh_progression_locks()
 		pet_ui.show_progression_message("TUTORIAL CONCLUÍDO! NÍVEL 2 • JOGO DA VELHA LIBERADO")
+
+func _on_eva_stage_changed(stage_name: StringName) -> void:
+	if pet_ui != null:
+		pet_ui.show_progression_message("EVA DESPERTOU: " + String(stage_name).to_upper())
+
+func _on_eva_memory_unlocked(fragment_id: int, text: String) -> void:
+	if pet_ui != null:
+		pet_ui.show_pet_message("MEMÓRIA %d: %s" % [fragment_id, text])
+
+func _on_eva_journey_choice(helped: bool) -> void:
+	if pet_ui != null:
+		pet_ui.show_pet_message("EVA: Obrigada por aceitar a jornada." if helped else "EVA: Tudo bem. Estarei aqui quando você estiver pronto.")
 
 func _on_evolution_completed(new_stage: int, stage_name: StringName, visual_scale: float) -> void:
 	if aurora_pet_save != null:
