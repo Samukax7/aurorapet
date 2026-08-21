@@ -2,7 +2,9 @@
 **Engine:** Godot Engine 4.7.1
 **Projeto:** AuroraPet — Módulo Deepworld (A Jornada de Eva)
 **Resolução Lógica Interna:** 895 × 815 px (Tela do Console V-Pet)
-**Versão do Documento:** 1.0.0
+**Versão do Documento:** 1.1.0
+**Guia operacional:** [`PASSO_A_PASSO_PROJETO.md`](PASSO_A_PASSO_PROJETO.md)
+**Estado de implementação:** V0.0 jogável; V0.1 em preparação
 
 ---
 
@@ -145,6 +147,8 @@ Onde:
 ---
 
 ## 5. MINIGAME RECREATIVO DE COMBINAR CORES (ROTA ALTERNATIVA)
+
+> **Nota de implementação:** a rota atualmente implementada e validada é composta por Sala de Treinos, Explorar Deepworld e Aventura com EVA. A antiga ideia de um minigame recreativo de combinar cores permanece como conceito narrativo/design e não deve ser tratada como funcionalidade concluída até ser implementada e validada no projeto.
 Quando o jogador opta por **NÃO AJUDAR** Eva no prólogo, o acesso ao Deepworld carrega um puzzle casual em `scenes/minigame_cores.tscn`.
 
 - **Mecânica:** Grade 6x6 de gemas de energia coloridas (Vermelho, Azul, Verde, Amarelo, Roxo).
@@ -547,6 +551,9 @@ func _apply_faction_theme() -> void:
 
 ---
 
-# CONCLUÍDO
-*Documento aprovado para implementação no Godot Engine 4.7.1.*
-*AuroraPet: Deepworld — Todos os direitos reservados.*
+# STATUS DO DOCUMENTO
+O roteiro literário e técnico está aprovado como referência de design. A implementação deve ser acompanhada pelo [`PASSO_A_PASSO_PROJETO.md`](PASSO_A_PASSO_PROJETO.md), que separa funcionalidades concluídas, preparadas e pendentes.
+
+Os assets dos bosses estão disponíveis na área de criação para uma etapa posterior de integração visual. Eles não foram alterados nesta revisão.
+
+*AuroraPet: Deepworld — Documento de design e roteiro técnico.*
