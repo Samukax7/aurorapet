@@ -37,7 +37,7 @@ offset_left = -447.5
 offset_top = -407.5
 offset_right = 447.5
 offset_bottom = 407.5
-scale = Vector2(3.174856, 2.857143)
+scale = Vector2(2.8, 2.5)
 mouse_filter = 1
 script = ExtResource("1_shop")
 
