@@ -71,6 +71,7 @@ var intro_anim_time := 0.0
 @onready var controls_panel: Panel = $ControlsPanel
 @onready var controls_back: Button = $ControlsPanel/Back
 @onready var controls_next: Button = $ControlsPanel/Next
+@onready var controls_speech_bubble: Panel = $ControlsSpeechBubble
 @onready var presenter_sprite: Sprite2D = $PresenterSprite
 @onready var guide_sprite: Sprite2D = $GuideSprite
 @onready var status_sprite: Sprite2D = $StatusSprite
@@ -316,7 +317,9 @@ func _show_story(page: int) -> void:
 	if story_page == 1:
 		state = &"controls"
 		controls_panel.visible = true
+		controls_speech_bubble.visible = true
 		guide_sprite.visible = true
+		guide_sprite.frame = 1
 		controls_next.text = "PRÓXIMA"
 		return
 	state = &"story"
@@ -514,6 +517,7 @@ func _hide_all_panels() -> void:
 	story_panel.visible = false
 	faction_panel.visible = false
 	controls_panel.visible = false
+	controls_speech_bubble.visible = false
 	egg_panel.visible = false
 	egg_image.visible = false
 	status_panel.visible = false

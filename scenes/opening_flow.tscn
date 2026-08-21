@@ -9,6 +9,10 @@
 [ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_idle_12frames_64px.png" id="7_presenter_idle"]
 [ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_pointing_6frames_64px.png" id="8_presenter_pointing"]
 [ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_close_6frames_64px.png" id="9_presenter_close"]
+[ext_resource type="Texture2D" path="res://assets/console/controles/dpad.png" id="10_dpad"]
+[ext_resource type="Texture2D" path="res://assets/console/controles/button_green.png" id="11_green"]
+[ext_resource type="Texture2D" path="res://assets/console/controles/button_pink.png" id="12_pink"]
+[ext_resource type="Texture2D" path="res://assets/console/controles/button_yellow.png" id="13_yellow"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_MenuPanel"]
 bg_color = Color(0.97, 0.98, 1, 0.98)
@@ -633,6 +637,7 @@ text = "COMO JOGAR"
 horizontal_alignment = 1
 
 [node name="Body" type="Label" parent="ControlsPanel"]
+visible = false
 offset_left = 42.0
 offset_top = 100.0
 offset_right = 523.0
@@ -697,3 +702,107 @@ texture = ExtResource("9_presenter_close")
 hframes = 3
 vframes = 2
 frame = 0
+
+
+[node name="ControlsSpeechBubble" type="Panel" parent="."]
+visible = false
+z_index = 6
+offset_left = 25.0
+offset_top = 55.0
+offset_right = 290.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBox_TextCard")
+
+[node name="Body" type="Label" parent="ControlsSpeechBubble"]
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 247.0
+offset_bottom = 174.0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Olá!\n\nUse os controles para explorar o Deepworld.\n\nEscolha uma opção e confirme quando estiver pronto."
+autowrap_mode = 2
+vertical_alignment = 1
+
+[node name="DPadIcon" type="TextureRect" parent="ControlsPanel"]
+offset_left = 42.0
+offset_top = 105.0
+offset_right = 122.0
+offset_bottom = 185.0
+texture_filter = 1
+texture = ExtResource("10_dpad")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DPadLabel" type="Label" parent="ControlsPanel"]
+offset_left = 135.0
+offset_top = 115.0
+offset_right = 510.0
+offset_bottom = 180.0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 19
+text = "D-PAD\nNavegar e escolher"
+vertical_alignment = 1
+
+[node name="GreenIcon" type="TextureRect" parent="ControlsPanel"]
+offset_left = 42.0
+offset_top = 205.0
+offset_right = 92.0
+offset_bottom = 255.0
+texture_filter = 1
+texture = ExtResource("11_green")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GreenLabel" type="Label" parent="ControlsPanel"]
+offset_left = 105.0
+offset_top = 205.0
+offset_right = 275.0
+offset_bottom = 255.0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "VERDE\nConfirmar"
+vertical_alignment = 1
+
+[node name="PinkIcon" type="TextureRect" parent="ControlsPanel"]
+offset_left = 292.0
+offset_top = 205.0
+offset_right = 342.0
+offset_bottom = 255.0
+texture_filter = 1
+texture = ExtResource("12_pink")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PinkLabel" type="Label" parent="ControlsPanel"]
+offset_left = 355.0
+offset_top = 205.0
+offset_right = 527.0
+offset_bottom = 255.0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "ROSA\nVoltar"
+vertical_alignment = 1
+
+[node name="YellowIcon" type="TextureRect" parent="ControlsPanel"]
+offset_left = 42.0
+offset_top = 285.0
+offset_right = 92.0
+offset_bottom = 335.0
+texture_filter = 1
+texture = ExtResource("13_yellow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="YellowLabel" type="Label" parent="ControlsPanel"]
+offset_left = 105.0
+offset_top = 285.0
+offset_right = 510.0
+offset_bottom = 335.0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "AMARELO\nVoltar em áreas compatíveis"
+vertical_alignment = 1
