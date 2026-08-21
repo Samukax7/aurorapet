@@ -8,10 +8,11 @@ A introdução do AuroraPet seguirá esta ordem:
 2. Menu inicial.
 3. Boas-vindas e explicação sobre o Deepworld.
 4. Explicação dos botões.
-5. Explicação das facções.
-6. Seleção dos ovos.
-7. Eclosão do ovo.
-8. Tela de status do pet.
+5. Seleção dos ovos, com a descrição dinâmica da aura escolhida abaixo das opções.
+6. Eclosão do ovo.
+7. Tela de status do pet.
+
+A antiga tela separada de explicação das facções foi removida. A escolha da aura agora acontece no mesmo momento visual da escolha do ovo, reduzindo uma etapa redundante e permitindo que o jogador compare Luz, Trevas e Neutro diretamente antes de confirmar.
 
 ## Conteúdo narrativo de Deepworld e EVA
 
@@ -21,7 +22,7 @@ EVA é um ser cósmico que nasceu depois do fim de um universo. Ela carrega a sa
 
 Na apresentação inicial, a linguagem deve ser curta e legível. O texto completo pode ser dividido em páginas com poucos parágrafos, usando a EVA como guia visual no canto inferior esquerdo e uma caixa ampla para leitura.
 
-## Conteúdo das facções
+## Conteúdo das auras e facções
 
 As facções são forças cósmicas que influenciam o destino do pet:
 
@@ -31,7 +32,7 @@ As facções são forças cósmicas que influenciam o destino do pet:
 | Aurora das Trevas | Caos, poder e dano bruto | Uma origem ligada à força e à intensidade |
 | Aurora Neutra | Equilíbrio, adaptação e versatilidade | Uma origem flexível, capaz de se adaptar |
 
-Cada pet nasce dentro de uma facção, recebe uma raça única, bônus iniciais e estética própria. Exemplos de raças são anjinhos, serafins e fadas estelares na Luz; demônios, sombras e corvos espectrais nas Trevas; e espíritos, animais cósmicos e guardiões elementais na facção Neutra.
+Cada pet nasce dentro de uma aura/facção, recebe uma raça única, bônus iniciais e estética própria. Na seleção do ovo, a descrição deve permanecer curta e contextual, apresentando a característica principal da aura selecionada sem interromper o fluxo. Exemplos de raças são anjinhos, serafins e fadas estelares na Luz; demônios, sombras e corvos espectrais nas Trevas; e espíritos, animais cósmicos e guardiões elementais na facção Neutra.
 
 ## Tela de controles
 

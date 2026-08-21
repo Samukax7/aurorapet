@@ -23,13 +23,12 @@ A entrada do jogo deve ser percorrida nesta ordem:
 | 2 | Menu inicial com Start, Continue e Options | Implementado |
 | 3 | Boas-vindas e introdução ao Deepworld | Implementado |
 | 4 | Explicação dos controles | Implementado |
-| 5 | Escolha das facções Luz, Trevas e Neutro | Implementado |
-| 6 | Seleção do ovo correspondente | Implementado |
-| 7 | Eclosão com confirmação pelo botão verde e shake do ovo | Implementado |
-| 8 | Página de status do pet | Implementado |
-| 9 | Entrada no gameplay de cuidados | Implementado |
+| 5 | Seleção dos ovos com descrição dinâmica das auras Luz, Trevas e Neutro | Implementado |
+| 6 | Eclosão com confirmação pelo botão verde e shake do ovo | Implementado |
+| 7 | Página de status do pet | Implementado |
+| 8 | Entrada no gameplay de cuidados | Implementado |
 
-A `OpeningFlow` controla esse pipeline. O modo DEV continua separado da experiência narrativa: o código `DEV` cria EVA como pet de teste, usa fundo padrão, pula história, facção, ovo e eclosão e entrega o jogador diretamente ao gameplay com progressão máxima.
+A `OpeningFlow` controla esse pipeline. A antiga tela separada de explicação das facções foi removida; agora a descrição da aura aparece abaixo dos ovos e muda conforme a seleção. O modo DEV continua separado da experiência narrativa: o código `DEV` cria EVA como pet de teste, usa fundo padrão, pula história, aura, ovo e eclosão e entrega o jogador diretamente ao gameplay com progressão máxima.
 
 ## 3. Gameplay inicial e tutorial disfarçado
 
@@ -159,7 +158,7 @@ A implementação atual foi validada headless e publicada no commit `755005e`. O
 
 ## 12. Próximas etapas da V0.1
 
-A ordem recomendada de trabalho é estabilizar as animações da abertura, corrigir escala e alinhamento das animações do pet, refinar a legibilidade da batalha, revisar visualmente a escala individual dos bosses dentro do console, adicionar reações visuais completas, animar o fundo, inserir áudio, finalizar o Guarda-Roupas Cósmico e executar a vistoria técnica de saves, responsividade, foco de botões e cache web.
+A ordem recomendada de trabalho é estabilizar as animações da abertura, agora organizada em blocos de ciclo completo, voo/pouso/idle e voo de saída, corrigir escala e alinhamento das animações do pet, refinar a legibilidade da batalha, revisar visualmente a escala individual dos bosses dentro do console, adicionar reações visuais completas, animar o fundo, inserir áudio, finalizar o Guarda-Roupas Cósmico e executar a vistoria técnica de saves, responsividade, foco de botões e cache web.
 
 A V0.1 só deve ser publicada depois que a build Web for testada em desktop e celular, o fluxo de primeiro jogo e Continue forem verificados, a campanha puder ser concluída sem bloqueios e a apresentação dos bosses for revisada visualmente dentro do console. A conexão técnica dos assets já está feita; permanecem possíveis ajustes individuais de escala e posição durante a vistoria visual.
 

@@ -1,7 +1,7 @@
 extends Control
 class_name OpeningFlow
 
-## Fluxo inicial do AuroraPet: logo, menu, história, facção, ovo e ficha RPG.
+## Fluxo inicial do AuroraPet: logo, menu, história, controles, escolha do ovo e ficha RPG.
 ## O fluxo vive dentro do console e entrega o controle ao ConsoleController
 ## somente depois que o pet nasce ou um save é continuado.
 
@@ -21,7 +21,6 @@ var state: StringName = &"logo"
 var menu_options: Array[StringName] = []
 var menu_selected_index := 0
 var story_page := 0
-var faction_selected_index := 0
 var egg_selection_index := 0
 var selected_faction: StringName = &"neutro"
 var development_mode_active := false
@@ -57,9 +56,6 @@ var intro_transition_frames := 72
 @onready var story_body: Label = $StoryPanel/Body
 @onready var story_back: Button = $StoryPanel/Back
 @onready var story_next: Button = $StoryPanel/Next
-@onready var faction_panel: Panel = $FactionPanel
-@onready var faction_buttons: Array[Button] = [$FactionPanel/Options/Luz, $FactionPanel/Options/Trevas, $FactionPanel/Options/Neutro]
-@onready var faction_hint: Label = $FactionPanel/Hint
 @onready var egg_selection_panel: Panel = $EggSelectionPanel
 @onready var egg_selection_buttons: Array[Button] = [$EggSelectionPanel/Options/Luz, $EggSelectionPanel/Options/Trevas, $EggSelectionPanel/Options/Neutro]
 @onready var egg_selection_hint: Label = $EggSelectionPanel/Hint
@@ -93,38 +89,48 @@ func _process(delta: float) -> void:
 		return
 	intro_anim_time += delta
 	var frame_tick := int(intro_anim_time * 24.0)
+	var transition_progress := clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0)
 	match state:
 		&"story":
-			# Abertura completa: voo de entrada e idle final em loop.
-			presenter_sprite.frame = frame_tick % 240 if frame_tick < 240 else 192 + ((frame_tick - 240) % 48)
+			# Bloco 1: ciclo completo uma vez, depois idle contínuo.
 			presenter_sprite.flip_h = false
-			presenter_sprite.position.x = lerpf(760.0, 185.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+			if frame_tick < 240:
+				presenter_sprite.frame = frame_tick
+				presenter_sprite.scale = Vector2.ONE * (2.4 + sin(float(frame_tick) * 0.08) * 0.10)
+			else:
+				presenter_sprite.frame = 192 + ((frame_tick - 240) % 48)
+				presenter_sprite.scale = Vector2.ONE * 2.4
+			presenter_sprite.position.x = lerpf(760.0, 185.0, transition_progress)
 		&"controls":
-			# Voo espelhado da direita para a esquerda.
-			guide_sprite.frame = 120 + (frame_tick % 72)
+			# Bloco 2: voo, pouso e idle espelhados durante a entrada.
 			guide_sprite.flip_h = true
-			guide_sprite.position.x = lerpf(790.0, 145.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
-		&"faction":
-			# Giro e partículas, chegando pelo lado direito.
-			presenter_sprite.frame = 72 + (frame_tick % 48)
-			presenter_sprite.flip_h = false
-			presenter_sprite.position.x = lerpf(145.0, 700.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+			guide_sprite.frame = 120 + (frame_tick % 72) if frame_tick < 72 else 192 + ((frame_tick - 72) % 48)
+			guide_sprite.position.x = lerpf(790.0, 145.0, transition_progress)
 		&"egg_select":
-			# Novo movimento espelhado, retornando para o lado esquerdo.
-			presenter_sprite.frame = 72 + (frame_tick % 48)
+			# A EVA permanece espelhada ao lado da descrição da aura.
 			presenter_sprite.flip_h = true
-			presenter_sprite.position.x = lerpf(790.0, 185.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+			presenter_sprite.frame = 192 + ((frame_tick - 72) % 48) if frame_tick >= 72 else 120 + frame_tick
+			presenter_sprite.position.x = lerpf(790.0, 185.0, transition_progress)
 		&"egg":
-			# EVA chega pelo lado direito e permanece junto da orientação do ovo.
-			guide_sprite.frame = 120 + (frame_tick % 72)
+			# Entrada lateral, pouso e idle ao lado do ovo.
 			guide_sprite.flip_h = false
-			guide_sprite.position.x = lerpf(145.0, 720.0, clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0))
+			guide_sprite.frame = 120 + (frame_tick % 72) if frame_tick < 72 else 192 + ((frame_tick - 72) % 48)
+			guide_sprite.position.x = lerpf(145.0, 430.0, transition_progress)
 		&"status":
-			# Close final no canto inferior direito, usando a parte final do voo.
-			status_sprite.frame = 216 + (frame_tick % 24)
+			# Bloco 3: ciclo completo espelhado; termina com voo para fora da tela.
 			status_sprite.flip_h = true
+			if frame_tick < 240:
+				status_sprite.frame = frame_tick
+				status_sprite.scale = Vector2.ONE * (2.2 + sin(float(frame_tick) * 0.08) * 0.10)
+				status_sprite.position.x = 680.0
+			else:
+				var exit_tick := frame_tick - 240
+				status_sprite.frame = 120 + (exit_tick % 72)
+				status_sprite.scale = Vector2.ONE * 2.2
+				status_sprite.position.x = lerpf(680.0, 1030.0, clampf(float(exit_tick) / 72.0, 0.0, 1.0))
 
 func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node, save_manager: AuroraPetSave = null) -> void:
+
 	pet_identity = identity
 	pet_stats = stats
 	pet_skills = skills
@@ -146,8 +152,6 @@ func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, random
 func _connect_buttons() -> void:
 	for index in menu_buttons.size():
 		menu_buttons[index].pressed.connect(_on_menu_button_pressed.bind(index))
-	for index in faction_buttons.size():
-		faction_buttons[index].pressed.connect(_on_faction_button_pressed.bind(index))
 	for index in egg_selection_buttons.size():
 		egg_selection_buttons[index].pressed.connect(_on_egg_selection_button_pressed.bind(index))
 	story_back.pressed.connect(_on_story_back_pressed)
@@ -176,12 +180,7 @@ func handle_direction(direction: Vector2i) -> void:
 			if direction.x < 0 or direction.y < 0:
 				_show_story(0)
 			elif direction.x > 0 or direction.y > 0:
-				_show_faction()
-		&"faction":
-			if direction.x != 0 or direction.y != 0:
-				var faction_step := 1 if direction.x > 0 or direction.y > 0 else -1
-				faction_selected_index = wrapi(faction_selected_index + faction_step, 0, faction_buttons.size())
-				_refresh_faction()
+				_show_egg_selection()
 		&"egg_select":
 			if direction.x != 0 or direction.y != 0:
 				var egg_step := 1 if direction.x > 0 or direction.y > 0 else -1
@@ -199,9 +198,7 @@ func confirm() -> void:
 		&"story":
 			_next_story()
 		&"controls":
-			_show_faction()
-		&"faction":
-			_confirm_faction()
+			_show_egg_selection()
 		&"egg_select":
 			_confirm_egg_selection()
 		&"access_code":
@@ -221,10 +218,8 @@ func back() -> void:
 			_back_story()
 		&"controls":
 			_show_story(0)
-		&"faction":
-			_show_story(1)
 		&"egg_select":
-			_show_faction()
+			_show_story(1)
 		&"access_code":
 			_show_menu()
 		&"egg":
@@ -380,45 +375,13 @@ func _next_story() -> void:
 	if state == &"story":
 		_show_story(1)
 	else:
-		_show_faction()
+		_show_egg_selection()
 
 func _back_story() -> void:
 	if story_page > 0:
 		_show_story(story_page - 1)
 	else:
 		_show_menu()
-
-func _show_faction() -> void:
-	state = &"faction"
-	intro_anim_time = 0.0
-	presenter_sprite.position.x = 145.0
-	background.color = Color("#071332")
-	_hide_all_panels()
-	intro_backdrop.visible = true
-	faction_panel.visible = true
-	presenter_sprite.visible = true
-	faction_selected_index = 0
-	_refresh_faction()
-
-func _refresh_faction() -> void:
-	var labels := ["LUZ", "TREVAS", "NEUTRO"]
-	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
-	var descriptions := [
-		"Harmonia, cura e defesa. Uma origem ligada à proteção.",
-		"Caos, poder e dano bruto. Uma origem ligada à intensidade.",
-		"Equilíbrio, adaptação e versatilidade. Uma origem flexível."
-	]
-	for index in faction_buttons.size():
-		faction_buttons[index].text = labels[index]
-		faction_buttons[index].modulate = Color.WHITE if index == faction_selected_index else Color(0.5, 0.58, 0.75, 1.0)
-		faction_buttons[index].scale = Vector2(1.08, 1.08) if index == faction_selected_index else Vector2.ONE
-	selected_faction = factions[faction_selected_index]
-	faction_hint.text = "%s\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR" % descriptions[faction_selected_index]
-
-func _confirm_faction() -> void:
-	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
-	selected_faction = factions[faction_selected_index]
-	_show_egg_selection()
 
 func _show_egg_selection() -> void:
 	state = &"egg_select"
@@ -429,22 +392,26 @@ func _show_egg_selection() -> void:
 	intro_backdrop.visible = true
 	egg_selection_panel.visible = true
 	presenter_sprite.visible = true
-	egg_selection_index = faction_selected_index
+	egg_selection_index = 0
 	_refresh_egg_selection()
 
 func _refresh_egg_selection() -> void:
 	var labels := ["LUZ", "TREVAS", "NEUTRO"]
 	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
+	var aura_descriptions := [
+		"Harmonia, cura e defesa. Uma aura ligada à proteção.",
+		"Caos, força e dano bruto. Uma aura ligada à intensidade.",
+		"Equilíbrio, adaptação e versatilidade. Uma aura flexível."
+	]
 	for index in egg_selection_buttons.size():
 		egg_selection_buttons[index].modulate = Color.WHITE if index == egg_selection_index else Color(0.5, 0.58, 0.75, 1.0)
 		egg_selection_buttons[index].scale = Vector2(1.08, 1.08) if index == egg_selection_index else Vector2.ONE
 	selected_faction = factions[egg_selection_index]
-	egg_selection_hint.text = "OVO %s\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR" % labels[egg_selection_index]
+	egg_selection_hint.text = "AURA %s\n%s\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR" % [labels[egg_selection_index], aura_descriptions[egg_selection_index]]
 
 func _confirm_egg_selection() -> void:
 	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
 	selected_faction = factions[egg_selection_index]
-	faction_selected_index = egg_selection_index
 	if pet_skills != null:
 		pet_skills.reset_for_new_pet()
 	if pet_stats != null:
@@ -595,7 +562,7 @@ func _hide_all_panels() -> void:
 	logo_subtitle.visible = false
 	menu_panel.visible = false
 	story_panel.visible = false
-	faction_panel.visible = false
+	
 	egg_selection_panel.visible = false
 	controls_panel.visible = false
 	controls_speech_bubble.visible = false
@@ -619,10 +586,6 @@ func _on_menu_button_pressed(index: int) -> void:
 		menu_selected_index = index
 		_confirm_menu()
 
-func _on_faction_button_pressed(index: int) -> void:
-	faction_selected_index = clampi(index, 0, faction_buttons.size() - 1)
-	_refresh_faction()
-
 func _on_egg_selection_button_pressed(index: int) -> void:
 	egg_selection_index = clampi(index, 0, egg_selection_buttons.size() - 1)
 	_refresh_egg_selection()
@@ -644,4 +607,4 @@ func _on_controls_back_pressed() -> void:
 	_show_story(0)
 
 func _on_controls_next_pressed() -> void:
-	_show_faction()
+	_show_egg_selection()
