@@ -90,6 +90,8 @@ const STATUS_EVA_EXIT_X := 1242.905
 @onready var presenter_sprite: Sprite2D = $PresenterSprite
 @onready var guide_sprite: Sprite2D = $GuideSprite
 @onready var status_sprite: Sprite2D = $StatusSprite
+@onready var welcome_audio: AudioStreamPlayer = $WelcomeAudio
+@onready var intro_eva_audio: AudioStreamPlayer = $IntroEvaAudio
 
 func _ready() -> void:
 	_connect_buttons()
@@ -260,6 +262,8 @@ func back() -> void:
 
 func _show_logo() -> void:
 	state = &"logo"
+	if welcome_audio != null:
+		welcome_audio.play()
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
 	logo.visible = false
@@ -378,6 +382,7 @@ func _start_development_pet() -> void:
 		pet_ui.show_system_message("MODO DEV ATIVO • EVA • NÍVEL 100 • TUDO DESBLOQUEADO")
 
 func _show_story(page: int) -> void:
+	_play_intro_eva_sound()
 	story_page = clampi(page, 0, 1)
 	intro_anim_time = 0.0
 	presenter_sprite.position.x = 917.095
@@ -418,6 +423,7 @@ func _back_story() -> void:
 		_show_menu()
 
 func _show_egg_selection() -> void:
+	_play_intro_eva_sound()
 	state = &"egg_select"
 	intro_anim_time = 0.0
 	presenter_sprite.position.x = 953.296
@@ -457,6 +463,7 @@ func _confirm_egg_selection() -> void:
 	_show_egg()
 
 func _show_egg() -> void:
+	_play_intro_eva_sound()
 	state = &"egg"
 	intro_anim_time = 0.0
 	guide_sprite.position = Vector2(953.296, EGG_EVA_Y)
@@ -507,6 +514,7 @@ func _shake_egg() -> void:
 	egg_shake_tween.tween_property(egg_image, "position", egg_base_position, 0.06)
 
 func _show_pet_status() -> void:
+	_play_intro_eva_sound()
 	state = &"status"
 	intro_anim_time = 0.0
 	background.color = Color("#FFFFFF")
@@ -522,6 +530,10 @@ func _show_pet_status() -> void:
 		status_identity.text = "%s\nCHAVE: %s\nFACÇÃO: %s\nLINHAGEM: %s\nELEMENTO: %s" % [pet_identity.pet_name.to_upper(), pet_identity.get_access_code(), pet_identity.faction_label.to_upper(), pet_identity.lineage_label.to_upper(), String(pet_identity.element).to_upper()]
 		status_attributes.text = "NÍVEL %d   XP %d\nFORÇA %d   DEFESA %d\nAGILIDADE %d   INTELIGÊNCIA %d" % [pet_skills.level, pet_skills.total_xp, pet_skills.strength, pet_skills.defense, pet_skills.agility, pet_skills.intelligence]
 	status_hint.text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
+
+func _play_intro_eva_sound() -> void:
+	if intro_eva_audio != null:
+		intro_eva_audio.play()
 
 func _continue_saved_pet() -> void:
 	development_mode_active = false

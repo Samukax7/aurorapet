@@ -8,6 +8,7 @@ extends Control
 signal action_requested(action: StringName)
 signal selection_changed(action: StringName)
 signal status_visibility_changed(visible: bool)
+signal menu_visibility_changed(visible: bool)
 signal submenu_visibility_changed(visible: bool, category: StringName)
 
 @export_category("Menu principal")
@@ -265,7 +266,6 @@ func _confirm_submenu_selected() -> void:
 	action_requested.emit(action)
 	if _hint_label != null:
 		_hint_label.text = String(entries[index]["label"]).to_upper()
-	submenu_visibility_changed.emit(false, category)
 
 func toggle_menu() -> void:
 	menu_visible = not menu_visible
@@ -521,6 +521,7 @@ func _set_menu_visibility(value: bool) -> void:
 	var menu := get_node_or_null(^"ActionBar") as Control
 	if menu != null:
 		menu.visible = value
+	menu_visibility_changed.emit(value)
 
 func _set_status_visibility(value: bool) -> void:
 	var status_bar := get_node_or_null(^"StatusBar") as Control

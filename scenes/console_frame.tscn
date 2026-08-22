@@ -23,6 +23,12 @@
 [ext_resource type="Script" path="res://scripts/screen_content.gd" id="20_screen_content"]
 [ext_resource type="AudioStream" path="res://assets/audio/aurorapet_lobby_theme.wav" id="21_audio_theme"]
 [ext_resource type="AudioStream" path="res://assets/audio/aurorapet_confirm_beep.wav" id="22_audio_confirm"]
+[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_green_button.wav" id="23_sfx_green"]
+[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_positive.wav" id="24_sfx_positive"]
+[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_refusal.wav" id="25_sfx_refusal"]
+[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_open.wav" id="26_sfx_open"]
+[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_levelup.wav" id="27_sfx_levelup"]
+[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_poop.wav" id="28_sfx_poop"]
 
 [node name="Console Base" type="Sprite2D" unique_id=1879046692]
 texture = ExtResource("1_5l2bk")
@@ -173,8 +179,32 @@ autoplay = false
 volume_db = -12.0
 
 [node name="ConfirmAudio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("22_audio_confirm")
+stream = ExtResource("23_sfx_green")
 volume_db = -8.0
+
+[node name="DPadAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("22_audio_confirm")
+volume_db = -17.0
+
+[node name="PositiveAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("24_sfx_positive")
+volume_db = -9.0
+
+[node name="RefusalAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("25_sfx_refusal")
+volume_db = -9.0
+
+[node name="OpenOptionsAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("26_sfx_open")
+volume_db = -9.0
+
+[node name="LevelUpAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("27_sfx_levelup")
+volume_db = -8.0
+
+[node name="PoopAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("28_sfx_poop")
+volume_db = -9.0
 
 [node name="DPadLeft" type="Button" parent="." unique_id=1991005093]
 modulate = Color(1, 1, 1, 0)

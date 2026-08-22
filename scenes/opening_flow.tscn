@@ -13,6 +13,8 @@
 [ext_resource type="Texture2D" path="res://assets/console/controles/button_green.png" id="11_green"]
 [ext_resource type="Texture2D" path="res://assets/console/controles/button_pink.png" id="12_pink"]
 [ext_resource type="Texture2D" path="res://assets/console/controles/button_yellow.png" id="13_yellow"]
+[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_welcome.wav" id="14_sfx_welcome"]
+[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_intro_eva.wav" id="15_sfx_intro_eva"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_MenuPanel"]
 bg_color = Color(0.97, 0.98, 1, 0.98)
@@ -816,3 +818,11 @@ theme_override_font_sizes/font_size = 17
 text = "AURA LUZ\nHarmonia, cura e defesa.\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="WelcomeAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_sfx_welcome")
+volume_db = -8.0
+
+[node name="IntroEvaAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("15_sfx_intro_eva")
+volume_db = -9.0

@@ -24,6 +24,12 @@ extends Sprite2D
 @onready var eva_journey_manager: EvaJourneyManager = $ScreenContent/EvaJourneyManager
 @onready var confirm_audio: AudioStreamPlayer = get_node_or_null(^"ConfirmAudio") as AudioStreamPlayer
 @onready var lobby_music: AudioStreamPlayer = get_node_or_null(^"LobbyMusic") as AudioStreamPlayer
+@onready var dpad_audio: AudioStreamPlayer = get_node_or_null(^"DPadAudio") as AudioStreamPlayer
+@onready var positive_audio: AudioStreamPlayer = get_node_or_null(^"PositiveAudio") as AudioStreamPlayer
+@onready var refusal_audio: AudioStreamPlayer = get_node_or_null(^"RefusalAudio") as AudioStreamPlayer
+@onready var open_options_audio: AudioStreamPlayer = get_node_or_null(^"OpenOptionsAudio") as AudioStreamPlayer
+@onready var level_up_audio: AudioStreamPlayer = get_node_or_null(^"LevelUpAudio") as AudioStreamPlayer
+@onready var poop_audio: AudioStreamPlayer = get_node_or_null(^"PoopAudio") as AudioStreamPlayer
 
 var quarto_entry_pending := false
 var eva_encounter_pending := false
@@ -54,12 +60,19 @@ func _ready() -> void:
 		pet_ui.set_progression_source(pet_skills)
 		pet_ui.set_world_progression(aurora_pet_save)
 		pet_ui.action_requested.connect(_on_action_requested)
+		if not pet_ui.menu_visibility_changed.is_connected(_on_menu_visibility_changed):
+			pet_ui.menu_visibility_changed.connect(_on_menu_visibility_changed)
+		if not pet_ui.submenu_visibility_changed.is_connected(_on_submenu_visibility_changed):
+			pet_ui.submenu_visibility_changed.connect(_on_submenu_visibility_changed)
+		if not pet_ui.status_visibility_changed.is_connected(_on_status_visibility_changed):
+			pet_ui.status_visibility_changed.connect(_on_status_visibility_changed)
 	if pet_stats != null:
 		pet_stats.stats_changed.connect(_on_stats_changed)
 		pet_stats.needs_changed.connect(_on_needs_changed)
 		pet_stats.attention_changed.connect(_on_attention_changed)
 		pet_stats.illness_changed.connect(_on_illness_changed)
 		pet_stats.reaction_requested.connect(_on_reaction_requested)
+		pet_stats.action_performed.connect(_on_action_performed)
 		pet_stats.action_blocked.connect(_on_action_blocked)
 		pet_stats.action_refused.connect(_on_action_refused)
 		pet_stats.action_info.connect(_on_action_info)
@@ -121,6 +134,8 @@ func _process(_delta: float) -> void:
 		lobby_music.stop()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down"):
+		_play_dpad_sound()
 	if event.is_action_pressed("ui_accept"):
 		_play_confirm_sound()
 	if opening_flow != null and opening_flow.active:
@@ -414,6 +429,30 @@ func _play_confirm_sound() -> void:
 	if confirm_audio != null:
 		confirm_audio.play()
 
+func _play_dpad_sound() -> void:
+	if dpad_audio != null:
+		dpad_audio.play()
+
+func _play_positive_sound() -> void:
+	if positive_audio != null:
+		positive_audio.play()
+
+func _play_refusal_sound() -> void:
+	if refusal_audio != null:
+		refusal_audio.play()
+
+func _play_open_options_sound() -> void:
+	if open_options_audio != null:
+		open_options_audio.play()
+
+func _play_level_up_sound() -> void:
+	if level_up_audio != null:
+		level_up_audio.play()
+
+func _play_poop_sound() -> void:
+	if poop_audio != null:
+		poop_audio.play()
+
 func _on_yellow_pressed() -> void:
 	if opening_flow != null and opening_flow.active:
 		return
@@ -480,6 +519,7 @@ func _on_pink_pressed() -> void:
 func _move_active_selection(direction: Vector2i) -> void:
 	if quarto_entry_pending:
 		return
+	_play_dpad_sound()
 	if direction == Vector2i.UP and _is_quarto_global_access_available():
 		_request_quarto_global_access()
 		return
@@ -966,6 +1006,7 @@ func _on_world_progression_changed() -> void:
 		mapa_exploracao.set_world_progression(aurora_pet_save)
 
 func _on_level_up(new_level: int) -> void:
+	_play_level_up_sound()
 	print("Nível aumentado: ", new_level)
 	if quarto_cosmico != null and pet_skills != null:
 		quarto_cosmico.configure_progression(pet_skills.level, pet_skills.xp, pet_skills.total_xp)
@@ -1048,11 +1089,15 @@ func _on_reaction_requested(action: StringName, reaction_id: StringName) -> void
 	if pet_ui != null:
 		pet_ui.show_pet_message(pet_ui.get_pet_reaction_message(reaction_id))
 
+func _on_action_performed(_action: StringName) -> void:
+	_play_positive_sound()
+
 func _on_action_blocked(_action: StringName, message: String) -> void:
 	if pet_ui != null:
 		pet_ui.show_system_message(message)
 
 func _on_action_refused(_action: StringName, system_message: String, pet_message: String) -> void:
+	_play_refusal_sound()
 	if pet_ui == null:
 		return
 	pet_ui.show_system_message(system_message)
@@ -1074,10 +1119,21 @@ func _on_behavior_event(_event_id: StringName, system_message: String, pet_messa
 		pet_ui.show_pet_message(pet_message)
 
 func _on_poop_state_changed(visible: bool) -> void:
+	if visible:
+		_play_poop_sound()
 	if pet_ui != null:
 		pet_ui.set_poop_visible(visible)
 		if visible:
 			pet_ui.show_system_message("O PET FEZ COCÔ • LIMPE A SUJEIRA")
+
+func _on_menu_visibility_changed(visible: bool) -> void:
+	_play_open_options_sound()
+
+func _on_submenu_visibility_changed(visible: bool, _category: StringName) -> void:
+	_play_open_options_sound()
+
+func _on_status_visibility_changed(_visible: bool) -> void:
+	_play_open_options_sound()
 
 func _on_special_need_changed(need: StringName, wish: StringName, active: bool) -> void:
 	if pet_ui != null:
