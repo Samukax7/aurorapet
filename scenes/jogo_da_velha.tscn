@@ -22,6 +22,19 @@ shadow_size = 14
 [sub_resource type="StyleBoxFlat" id="StyleBox_Cell"]
 bg_color = Color(0, 0, 0, 0)
 
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_Guide"]
+bg_color = Color(0.18, 0.52, 0.72, 0.06)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.45, 0.9, 1, 0.24)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [sub_resource type="StyleBoxFlat" id="StyleBox_Info"]
 bg_color = Color(0.05, 0.14, 0.26, 0.98)
 border_width_left = 2
@@ -99,16 +112,94 @@ expand_mode = 1
 stretch_mode = 5
 mouse_filter = 2
 
+
+[node name="Guides" type="Control" parent="."]
+layout_mode = 0
+z_index = 1
+mouse_filter = 2
+
+[node name="Guide0" type="Panel" parent="Guides"]
+offset_left = 355.6426
+offset_top = 137.3840
+offset_right = 465.2152
+offset_bottom = 247.6598
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
+[node name="Guide1" type="Panel" parent="Guides"]
+offset_left = 481.2152
+offset_top = 137.3840
+offset_right = 598.3524
+offset_bottom = 247.6598
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
+[node name="Guide2" type="Panel" parent="Guides"]
+offset_left = 614.3525
+offset_top = 137.3840
+offset_right = 724.3574
+offset_bottom = 247.6598
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
+[node name="Guide3" type="Panel" parent="Guides"]
+offset_left = 355.6426
+offset_top = 261.6598
+offset_right = 465.2152
+offset_bottom = 380.3647
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
+[node name="Guide4" type="Panel" parent="Guides"]
+offset_left = 481.2152
+offset_top = 261.6598
+offset_right = 598.3524
+offset_bottom = 380.3647
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
+[node name="Guide5" type="Panel" parent="Guides"]
+offset_left = 614.3525
+offset_top = 261.6598
+offset_right = 724.3574
+offset_bottom = 380.3647
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
+[node name="Guide6" type="Panel" parent="Guides"]
+offset_left = 355.6426
+offset_top = 394.3647
+offset_right = 465.2152
+offset_bottom = 508.5309
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
+[node name="Guide7" type="Panel" parent="Guides"]
+offset_left = 481.2152
+offset_top = 394.3647
+offset_right = 598.3524
+offset_bottom = 508.5309
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
+[node name="Guide8" type="Panel" parent="Guides"]
+offset_left = 614.3525
+offset_top = 394.3647
+offset_right = 724.3574
+offset_bottom = 508.5309
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_Guide")
+
 [node name="Marks" type="Control" parent="."]
 layout_mode = 0
 mouse_filter = 2
 
 [node name="Mark0" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 211.173184
-offset_top = 103.680982
-offset_right = 422.346369
-offset_bottom = 243.251534
+offset_left = 357.6885
+offset_top = 140.3260
+offset_right = 463.1695
+offset_bottom = 244.7177
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -117,10 +208,10 @@ mouse_filter = 2
 
 [node name="Mark1" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 434.413408
-offset_top = 103.680982
-offset_right = 645.586592
-offset_bottom = 243.251534
+offset_left = 483.8662
+offset_top = 140.3260
+offset_right = 595.7015
+offset_bottom = 244.7177
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -129,10 +220,10 @@ mouse_filter = 2
 
 [node name="Mark2" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 657.653631
-offset_top = 103.680982
-offset_right = 868.826816
-offset_bottom = 243.251534
+offset_left = 616.4329
+offset_top = 140.3260
+offset_right = 722.2770
+offset_bottom = 244.7177
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -141,10 +232,10 @@ mouse_filter = 2
 
 [node name="Mark3" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 211.173184
-offset_top = 251.226994
-offset_right = 422.346369
-offset_bottom = 390.797546
+offset_left = 357.6885
+offset_top = 268.2718
+offset_right = 463.1695
+offset_bottom = 373.7528
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -153,10 +244,10 @@ mouse_filter = 2
 
 [node name="Mark4" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 434.413408
-offset_top = 251.226994
-offset_right = 645.586592
-offset_bottom = 390.797546
+offset_left = 483.8662
+offset_top = 265.2762
+offset_right = 595.7015
+offset_bottom = 376.7483
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -165,10 +256,10 @@ mouse_filter = 2
 
 [node name="Mark5" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 657.653631
-offset_top = 251.226994
-offset_right = 868.826816
-offset_bottom = 390.797546
+offset_left = 616.4329
+offset_top = 268.0902
+offset_right = 722.2770
+offset_bottom = 373.9343
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -177,10 +268,10 @@ mouse_filter = 2
 
 [node name="Mark6" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 211.173184
-offset_top = 398.773006
-offset_right = 422.346369
-offset_bottom = 538.343558
+offset_left = 357.6885
+offset_top = 398.7073
+offset_right = 463.1695
+offset_bottom = 504.1883
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -189,10 +280,10 @@ mouse_filter = 2
 
 [node name="Mark7" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 434.413408
-offset_top = 398.773006
-offset_right = 645.586592
-offset_bottom = 538.343558
+offset_left = 483.8662
+offset_top = 397.6180
+offset_right = 595.7015
+offset_bottom = 505.2776
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -201,10 +292,10 @@ mouse_filter = 2
 
 [node name="Mark8" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 657.653631
-offset_top = 398.773006
-offset_right = 868.826816
-offset_bottom = 538.343558
+offset_left = 616.4329
+offset_top = 398.5258
+offset_right = 722.2770
+offset_bottom = 504.3699
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -215,82 +306,82 @@ mouse_filter = 2
 layout_mode = 0
 
 [node name="Cell0" type="Button" parent="Cells"]
-offset_left = 211.173184
-offset_top = 103.680982
-offset_right = 422.346369
-offset_bottom = 243.251534
+offset_left = 347.6426
+offset_top = 130.3840
+offset_right = 473.2152
+offset_bottom = 254.6598
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell1" type="Button" parent="Cells"]
-offset_left = 434.413408
-offset_top = 103.680982
-offset_right = 645.586592
-offset_bottom = 243.251534
+offset_left = 473.2152
+offset_top = 130.3840
+offset_right = 606.3524
+offset_bottom = 254.6598
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell2" type="Button" parent="Cells"]
-offset_left = 657.653631
-offset_top = 103.680982
-offset_right = 868.826816
-offset_bottom = 243.251534
+offset_left = 606.3525
+offset_top = 130.3840
+offset_right = 732.3574
+offset_bottom = 254.6598
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell3" type="Button" parent="Cells"]
-offset_left = 211.173184
-offset_top = 251.226994
-offset_right = 422.346369
-offset_bottom = 390.797546
+offset_left = 347.6426
+offset_top = 254.6598
+offset_right = 473.2152
+offset_bottom = 387.3647
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell4" type="Button" parent="Cells"]
-offset_left = 434.413408
-offset_top = 251.226994
-offset_right = 645.586592
-offset_bottom = 390.797546
+offset_left = 473.2152
+offset_top = 254.6598
+offset_right = 606.3524
+offset_bottom = 387.3647
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell5" type="Button" parent="Cells"]
-offset_left = 657.653631
-offset_top = 251.226994
-offset_right = 868.826816
-offset_bottom = 390.797546
+offset_left = 606.3525
+offset_top = 254.6598
+offset_right = 732.3574
+offset_bottom = 387.3647
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell6" type="Button" parent="Cells"]
-offset_left = 211.173184
-offset_top = 398.773006
-offset_right = 422.346369
-offset_bottom = 538.343558
+offset_left = 347.6426
+offset_top = 387.3647
+offset_right = 473.2152
+offset_bottom = 515.5309
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell7" type="Button" parent="Cells"]
-offset_left = 434.413408
-offset_top = 398.773006
-offset_right = 645.586592
-offset_bottom = 538.343558
+offset_left = 473.2152
+offset_top = 387.3647
+offset_right = 606.3524
+offset_bottom = 515.5309
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell8" type="Button" parent="Cells"]
-offset_left = 657.653631
-offset_top = 398.773006
-offset_right = 868.826816
-offset_bottom = 538.343558
+offset_left = 606.3525
+offset_top = 387.3647
+offset_right = 732.3574
+offset_bottom = 515.5309
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
