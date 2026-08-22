@@ -46,6 +46,7 @@ var _guides: Control
 	$Cells/Cell3, $Cells/Cell4, $Cells/Cell5,
 	$Cells/Cell6, $Cells/Cell7, $Cells/Cell8,
 ]
+@onready var selection_frame: Panel = $SelectionFrame
 
 func _ready() -> void:
 	_rng.randomize()
@@ -225,9 +226,19 @@ func _update_board() -> void:
 func _update_selection() -> void:
 	for index in cell_buttons.size():
 		var selected := index == selected_index and not game_over
-		cell_buttons[index].add_theme_stylebox_override("normal", _selected_cell_style if selected else _normal_cell_style)
-		cell_buttons[index].add_theme_stylebox_override("hover", _selected_cell_style if selected else _normal_cell_style)
-		cell_buttons[index].add_theme_stylebox_override("focus", _selected_cell_style if selected else _normal_cell_style)
+		cell_buttons[index].add_theme_stylebox_override("normal", _normal_cell_style)
+		cell_buttons[index].add_theme_stylebox_override("hover", _normal_cell_style)
+		cell_buttons[index].add_theme_stylebox_override("focus", _normal_cell_style)
+	if selection_frame == null or cell_buttons.is_empty():
+		return
+	if game_over:
+		selection_frame.visible = false
+		return
+	var selected_cell := cell_buttons[clampi(selected_index, 0, cell_buttons.size() - 1)]
+	var inset := Vector2(6.0, 6.0)
+	selection_frame.position = selected_cell.position + inset
+	selection_frame.size = selected_cell.size - inset * 2.0
+	selection_frame.visible = true
 
 func _build_cell_styles() -> void:
 	_normal_cell_style = StyleBoxFlat.new()
