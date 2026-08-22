@@ -66,4 +66,4 @@ A primeira frente deve ser a estabilização visual da introdução e das anima�
 
 ## Registro de decisões
 
-As animações atuais da EVA estão funcionais, porém ainda apresentam desalinhamentos e variações de escala entre quadros. Esse comportamento foi aceito temporariamente para manter o fluxo jogável e será tratado como a prioridade visual número 1 da V0.1. A integração futura deve continuar usando o `ScreenContent` e as medidas registradas em `CONSOLE_SCREEN_REFERENCE.md`.
+As animações atuais da EVA estão funcionais, porém ainda apresentam desalinhamentos e variações de escala entre quadros. Esse comportamento foi aceito temporariamente para manter o fluxo jogável e será tratado como a prioridade visual número 1 da V0.1. A integração futura deve continuar usando o `ScreenContent` lógico de 1080 × 650 px e as medidas registradas em `CONSOLE_SCREEN_REFERENCE.md`. A migração estrutural do canvas já foi aplicada; permanecem pendentes os ajustes finos de animação, composição e leitura dentro desse contrato comum.

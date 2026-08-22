@@ -33,11 +33,11 @@ visible = false
 z_index = 30
 layout_mode = 3
 anchors_preset = 0
-offset_left = -447.5
-offset_top = -407.5
-offset_right = 447.5
-offset_bottom = 407.5
-scale = Vector2(2.8, 2.5)
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1080.0
+offset_bottom = 650.0
+scale = Vector2(3.174855, 2.857143)
 mouse_filter = 1
 script = ExtResource("1_shop")
 
@@ -86,9 +86,9 @@ vertical_alignment = 1
 
 [node name="Categories" type="HBoxContainer" parent="Panel"]
 offset_left = 35.0
-offset_top = 185.0
-offset_right = 860.0
-offset_bottom = 255.0
+offset_top = 150.0
+offset_right = 1045.0
+offset_bottom = 215.0
 theme_override_constants/separation = 12
 alignment = 1
 
@@ -115,9 +115,9 @@ text = "ESPECIAIS"
 
 [node name="Page" type="Label" parent="Panel"]
 offset_left = 30.0
-offset_top = 260.0
-offset_right = 865.0
-offset_bottom = 305.0
+offset_top = 220.0
+offset_right = 1050.0
+offset_bottom = 260.0
 theme_override_colors/font_color = Color(0.55, 0.95, 0.88, 1)
 theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
 theme_override_constants/outline_size = 3
@@ -127,74 +127,74 @@ horizontal_alignment = 1
 
 [node name="Items" type="GridContainer" parent="Panel"]
 offset_left = 30.0
-offset_top = 315.0
-offset_right = 865.0
-offset_bottom = 650.0
+offset_top = 270.0
+offset_right = 1050.0
+offset_bottom = 505.0
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 10
 columns = 1
 
 [node name="Item01" type="Button" parent="Panel/Items"]
-custom_minimum_size = Vector2(800, 100)
+custom_minimum_size = Vector2(960, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBox_Button")
 text = "OFERTA 01"
 
 [node name="Item02" type="Button" parent="Panel/Items"]
-custom_minimum_size = Vector2(800, 100)
+custom_minimum_size = Vector2(960, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBox_Button")
 text = "OFERTA 02"
 
 [node name="Item03" type="Button" parent="Panel/Items"]
-custom_minimum_size = Vector2(800, 100)
+custom_minimum_size = Vector2(960, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBox_Button")
 text = "OFERTA 03"
 
 [node name="Item04" type="Button" parent="Panel/Items"]
-custom_minimum_size = Vector2(800, 100)
+custom_minimum_size = Vector2(960, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBox_Button")
 text = "OFERTA 04"
 
 [node name="Item05" type="Button" parent="Panel/Items"]
-custom_minimum_size = Vector2(800, 100)
+custom_minimum_size = Vector2(960, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBox_Button")
 text = "OFERTA 05"
 
 [node name="Item06" type="Button" parent="Panel/Items"]
-custom_minimum_size = Vector2(800, 100)
+custom_minimum_size = Vector2(960, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBox_Button")
 text = "OFERTA 06"
 
 [node name="Item07" type="Button" parent="Panel/Items"]
-custom_minimum_size = Vector2(800, 100)
+custom_minimum_size = Vector2(960, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBox_Button")
 text = "OFERTA 07"
 
 [node name="Item08" type="Button" parent="Panel/Items"]
-custom_minimum_size = Vector2(800, 100)
+custom_minimum_size = Vector2(960, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBox_Button")
 text = "OFERTA 08"
 
 [node name="Result" type="Label" parent="Panel"]
 offset_left = 30.0
-offset_top = 670.0
-offset_right = 865.0
-offset_bottom = 735.0
+offset_top = 515.0
+offset_right = 1050.0
+offset_bottom = 560.0
 theme_override_colors/font_color = Color(1, 0.83, 0.4, 1)
 theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
 theme_override_constants/outline_size = 4
@@ -204,9 +204,9 @@ horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="Panel"]
 offset_left = 30.0
-offset_top = 755.0
-offset_right = 865.0
-offset_bottom = 805.0
+offset_top = 575.0
+offset_right = 1050.0
+offset_bottom = 640.0
 theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
 theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
 theme_override_constants/outline_size = 4

@@ -57,20 +57,20 @@ theme_override_styles/panel = SubResource("StyleBox_Back")
 mouse_filter = 2
 
 [node name="Title" type="Label" parent="."]
-offset_left = 140.0
-offset_top = 22.0
-offset_right = 755.0
-offset_bottom = 62.0
+offset_left = 168.938547
+offset_top = 17.546012
+offset_right = 911.061453
+offset_bottom = 49.447853
 theme_override_colors/font_color = Color(0.7, 0.96, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "JOGO DA VELHA CÓSMICO"
 horizontal_alignment = 1
 
 [node name="Objective" type="Label" parent="."]
-offset_left = 170.0
-offset_top = 68.0
-offset_right = 725.0
-offset_bottom = 98.0
+offset_left = 205.139665
+offset_top = 54.233129
+offset_right = 874.860335
+offset_bottom = 78.159509
 theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBox_Info")
@@ -79,20 +79,20 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Status" type="Label" parent="."]
-offset_left = 100.0
-offset_top = 99.0
-offset_right = 795.0
-offset_bottom = 124.0
+offset_left = 120.670391
+offset_top = 78.957055
+offset_right = 959.329609
+offset_bottom = 98.895706
 theme_override_colors/font_color = Color(1, 0.86, 0.42, 1)
 theme_override_font_sizes/font_size = 22
 text = "SUA VEZ — MOVER E PRESSIONAR VERDE"
 horizontal_alignment = 1
 
 [node name="Board" type="TextureRect" parent="."]
-offset_left = 170.0
-offset_top = 125.0
-offset_right = 725.0
-offset_bottom = 680.0
+offset_left = 205.139665
+offset_top = 99.693252
+offset_right = 874.860335
+offset_bottom = 542.331288
 texture_filter = 1
 texture = ExtResource("2_grid")
 expand_mode = 1
@@ -105,10 +105,10 @@ mouse_filter = 2
 
 [node name="Mark0" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 175.0
-offset_top = 130.0
-offset_right = 350.0
-offset_bottom = 305.0
+offset_left = 211.173184
+offset_top = 103.680982
+offset_right = 422.346369
+offset_bottom = 243.251534
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -117,10 +117,10 @@ mouse_filter = 2
 
 [node name="Mark1" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 360.0
-offset_top = 130.0
-offset_right = 535.0
-offset_bottom = 305.0
+offset_left = 434.413408
+offset_top = 103.680982
+offset_right = 645.586592
+offset_bottom = 243.251534
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -129,10 +129,10 @@ mouse_filter = 2
 
 [node name="Mark2" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 545.0
-offset_top = 130.0
-offset_right = 720.0
-offset_bottom = 305.0
+offset_left = 657.653631
+offset_top = 103.680982
+offset_right = 868.826816
+offset_bottom = 243.251534
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -141,10 +141,10 @@ mouse_filter = 2
 
 [node name="Mark3" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 175.0
-offset_top = 315.0
-offset_right = 350.0
-offset_bottom = 490.0
+offset_left = 211.173184
+offset_top = 251.226994
+offset_right = 422.346369
+offset_bottom = 390.797546
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -153,10 +153,10 @@ mouse_filter = 2
 
 [node name="Mark4" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 360.0
-offset_top = 315.0
-offset_right = 535.0
-offset_bottom = 490.0
+offset_left = 434.413408
+offset_top = 251.226994
+offset_right = 645.586592
+offset_bottom = 390.797546
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -165,10 +165,10 @@ mouse_filter = 2
 
 [node name="Mark5" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 545.0
-offset_top = 315.0
-offset_right = 720.0
-offset_bottom = 490.0
+offset_left = 657.653631
+offset_top = 251.226994
+offset_right = 868.826816
+offset_bottom = 390.797546
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -177,10 +177,10 @@ mouse_filter = 2
 
 [node name="Mark6" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 175.0
-offset_top = 500.0
-offset_right = 350.0
-offset_bottom = 675.0
+offset_left = 211.173184
+offset_top = 398.773006
+offset_right = 422.346369
+offset_bottom = 538.343558
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -189,10 +189,10 @@ mouse_filter = 2
 
 [node name="Mark7" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 360.0
-offset_top = 500.0
-offset_right = 535.0
-offset_bottom = 675.0
+offset_left = 434.413408
+offset_top = 398.773006
+offset_right = 645.586592
+offset_bottom = 538.343558
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -201,10 +201,10 @@ mouse_filter = 2
 
 [node name="Mark8" type="TextureRect" parent="Marks"]
 visible = false
-offset_left = 545.0
-offset_top = 500.0
-offset_right = 720.0
-offset_bottom = 675.0
+offset_left = 657.653631
+offset_top = 398.773006
+offset_right = 868.826816
+offset_bottom = 538.343558
 texture_filter = 1
 texture = ExtResource("3_o")
 expand_mode = 1
@@ -215,101 +215,101 @@ mouse_filter = 2
 layout_mode = 0
 
 [node name="Cell0" type="Button" parent="Cells"]
-offset_left = 175.0
-offset_top = 130.0
-offset_right = 350.0
-offset_bottom = 305.0
+offset_left = 211.173184
+offset_top = 103.680982
+offset_right = 422.346369
+offset_bottom = 243.251534
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell1" type="Button" parent="Cells"]
-offset_left = 360.0
-offset_top = 130.0
-offset_right = 535.0
-offset_bottom = 305.0
+offset_left = 434.413408
+offset_top = 103.680982
+offset_right = 645.586592
+offset_bottom = 243.251534
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell2" type="Button" parent="Cells"]
-offset_left = 545.0
-offset_top = 130.0
-offset_right = 720.0
-offset_bottom = 305.0
+offset_left = 657.653631
+offset_top = 103.680982
+offset_right = 868.826816
+offset_bottom = 243.251534
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell3" type="Button" parent="Cells"]
-offset_left = 175.0
-offset_top = 315.0
-offset_right = 350.0
-offset_bottom = 490.0
+offset_left = 211.173184
+offset_top = 251.226994
+offset_right = 422.346369
+offset_bottom = 390.797546
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell4" type="Button" parent="Cells"]
-offset_left = 360.0
-offset_top = 315.0
-offset_right = 535.0
-offset_bottom = 490.0
+offset_left = 434.413408
+offset_top = 251.226994
+offset_right = 645.586592
+offset_bottom = 390.797546
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell5" type="Button" parent="Cells"]
-offset_left = 545.0
-offset_top = 315.0
-offset_right = 720.0
-offset_bottom = 490.0
+offset_left = 657.653631
+offset_top = 251.226994
+offset_right = 868.826816
+offset_bottom = 390.797546
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell6" type="Button" parent="Cells"]
-offset_left = 175.0
-offset_top = 500.0
-offset_right = 350.0
-offset_bottom = 675.0
+offset_left = 211.173184
+offset_top = 398.773006
+offset_right = 422.346369
+offset_bottom = 538.343558
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell7" type="Button" parent="Cells"]
-offset_left = 360.0
-offset_top = 500.0
-offset_right = 535.0
-offset_bottom = 675.0
+offset_left = 434.413408
+offset_top = 398.773006
+offset_right = 645.586592
+offset_bottom = 538.343558
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Cell8" type="Button" parent="Cells"]
-offset_left = 545.0
-offset_top = 500.0
-offset_right = 720.0
-offset_bottom = 675.0
+offset_left = 657.653631
+offset_top = 398.773006
+offset_right = 868.826816
+offset_bottom = 538.343558
 flat = true
 theme_override_styles/normal = SubResource("StyleBox_Cell")
 text = ""
 
 [node name="Result" type="Label" parent="."]
-offset_left = 100.0
-offset_top = 690.0
-offset_right = 795.0
-offset_bottom = 730.0
+offset_left = 120.670391
+offset_top = 550.306748
+offset_right = 959.329609
+offset_bottom = 582.208589
 theme_override_colors/font_color = Color(0.72, 1, 0.9, 1)
 theme_override_font_sizes/font_size = 24
 text = ""
 horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="."]
-offset_left = 85.0
-offset_top = 740.0
-offset_right = 810.0
-offset_bottom = 792.0
+offset_left = 102.569832
+offset_top = 590.184049
+offset_right = 977.430168
+offset_bottom = 631.656442
 theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBox_Info")

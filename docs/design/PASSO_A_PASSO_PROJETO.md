@@ -131,7 +131,8 @@ Saves anteriores continuam sendo lidos com valores padrão compatíveis, incluin
 | Arquivo | Responsabilidade |
 |---|---|
 | `scenes/main.tscn` | Raiz da aplicação e composição geral |
-| `scenes/console_frame.tscn` | Console físico, viewport e controles |
+| `scenes/console_frame.tscn` | Console físico, ScreenContent lógico 1080×650 e controles |
+| `scripts/screen_content.gd` | Contrato comum de tamanho, centro e coordenadas das telas |
 | `scenes/deepworld.tscn` | Fundo, plataforma, pet e palco do Deepworld |
 | `scripts/opening_flow.gd` | BIOS, menu, narrativa inicial, facções, ovo e status |
 | `scripts/console_controller.gd` | Roteamento dos controles e abertura dos modos |
@@ -154,7 +155,7 @@ Depois da validação, a exportação Web deve ser gerada pelo preset `Web V 0.0
 
 A V0.0 é um protótipo jogável com a introdução, criação procedural do pet, necessidades, jogos, treino, Quarto Cósmico, batalha D20, Sala de Treinos, exploração horizontal, campanha vertical e persistência básica já estruturados.
 
-A implementação atual foi validada headless e publicada no commit `755005e`. O mapa horizontal foi preservado. O documento de arquitetura do loop está em `CORE_LOOP_V0.1.md`, enquanto este arquivo funciona como guia operacional passo a passo.
+A implementação atual foi validada headless e publicada no commit `755005e`. O mapa horizontal foi preservado. O documento de arquitetura do loop está em `CORE_LOOP_V0.1.md`, enquanto este arquivo funciona como guia operacional passo a passo. A referência comum de tela foi migrada para `ScreenContent` lógico de 1080×650, centralizado no console; as cenas legadas de UI foram convertidas para esse espaço.
 
 ## 12. Próximas etapas da V0.1
 

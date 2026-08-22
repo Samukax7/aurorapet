@@ -104,10 +104,10 @@ color = Color(0.008, 0.016, 0.055, 0.78)
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 42.0
-offset_top = 48.0
-offset_right = 853.0
-offset_bottom = 767.0
+offset_left = 50.681564
+offset_top = 38.282209
+offset_right = 1029.318436
+offset_bottom = 611.717791
 theme_override_styles/panel = SubResource("StyleBox_Panel")
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
@@ -115,10 +115,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 18.0
-offset_top = 16.0
-offset_right = -18.0
-offset_bottom = -16.0
+offset_left = 21.72067
+offset_top = 12.760736
+offset_right = -21.72067
+offset_bottom = -12.760736
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -133,10 +133,10 @@ theme_override_styles/panel = SubResource("StyleBox_Header")
 
 [node name="HeaderPlaceholderIcon" type="ColorRect" parent="Panel/Margin/Content/Header"]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 11.0
-offset_right = 44.0
-offset_bottom = 45.0
+offset_left = 12.067039
+offset_top = 8.773006
+offset_right = 53.094972
+offset_bottom = 35.889571
 color = Color(1, 0.82, 0.4, 0.9)
 mouse_filter = 2
 
@@ -171,10 +171,10 @@ text = "TREINO\n+25 XP  •  +1 FORÇA"
 
 [node name="TrainingPlaceholderIcon" type="ColorRect" parent="Panel/Margin/Content/TrainingOption"]
 layout_mode = 0
-offset_left = 14.0
-offset_top = 17.0
-offset_right = 48.0
-offset_bottom = 51.0
+offset_left = 16.893855
+offset_top = 13.558282
+offset_right = 57.921788
+offset_bottom = 40.674847
 color = Color(0.45, 0.95, 1, 0.9)
 mouse_filter = 2
 
@@ -212,10 +212,10 @@ theme_override_constants/separation = 7
 
 [node name="AttributesPlaceholderIcon" type="ColorRect" parent="Panel/Margin/Content/SkillColumns/AttributesPanel"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 38.0
-offset_bottom = 38.0
+offset_left = 9.653631
+offset_top = 6.380368
+offset_right = 45.854749
+offset_bottom = 30.306748
 color = Color(0.72, 0.95, 1, 0.85)
 mouse_filter = 2
 

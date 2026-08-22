@@ -52,10 +52,10 @@ theme_override_styles/panel = SubResource("StyleBox_Back")
 
 [node name="Title" type="Label" parent="." unique_id=2096346657]
 layout_mode = 0
-offset_left = 110.0
-offset_top = 18.0
-offset_right = 790.0
-offset_bottom = 56.0
+offset_left = 132.73743
+offset_top = 14.355828
+offset_right = 953.296089
+offset_bottom = 44.662577
 theme_override_colors/font_color = Color(0.72, 0.94, 1, 1)
 theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
 theme_override_constants/outline_size = 5
@@ -65,10 +65,10 @@ horizontal_alignment = 1
 
 [node name="Objective" type="Panel" parent="." unique_id=12457556]
 layout_mode = 0
-offset_left = 145.0
-offset_top = 62.0
-offset_right = 755.0
-offset_bottom = 104.0
+offset_left = 174.972067
+offset_top = 49.447853
+offset_right = 911.061453
+offset_bottom = 82.944785
 theme_override_styles/panel = SubResource("StyleBox_Objective")
 
 [node name="Label" type="Label" parent="Objective" unique_id=2060765914]
@@ -86,10 +86,10 @@ vertical_alignment = 1
 
 [node name="Status" type="Label" parent="." unique_id=1912481763]
 layout_mode = 0
-offset_left = 100.0
-offset_top = 115.0
-offset_right = 600.0
-offset_bottom = 150.0
+offset_left = 120.670391
+offset_top = 91.717791
+offset_right = 724.022346
+offset_bottom = 119.631902
 theme_override_colors/font_color = Color(1, 0.83, 0.4, 1)
 theme_override_font_sizes/font_size = 17
 text = "FORME O BLOCO 2048"
@@ -97,10 +97,10 @@ horizontal_alignment = 1
 
 [node name="Score" type="Label" parent="." unique_id=586196471]
 layout_mode = 0
-offset_left = 600.0
-offset_top = 115.0
-offset_right = 805.0
-offset_bottom = 150.0
+offset_left = 724.022346
+offset_top = 91.717791
+offset_right = 971.396648
+offset_bottom = 119.631902
 theme_override_colors/font_color = Color(0.55, 0.95, 0.88, 1)
 theme_override_font_sizes/font_size = 16
 text = "PONTOS 000000"
@@ -108,10 +108,10 @@ horizontal_alignment = 1
 
 [node name="Best" type="Label" parent="." unique_id=1642905687]
 layout_mode = 0
-offset_left = 600.0
-offset_top = 145.0
-offset_right = 805.0
-offset_bottom = 177.0
+offset_left = 724.022346
+offset_top = 115.644172
+offset_right = 971.396648
+offset_bottom = 141.165644
 theme_override_colors/font_color = Color(0.6, 0.8, 0.98, 1)
 theme_override_font_sizes/font_size = 15
 text = "MELHOR 0"
@@ -119,10 +119,10 @@ horizontal_alignment = 1
 
 [node name="Board" type="GridContainer" parent="." unique_id=1171904374]
 layout_mode = 0
-offset_left = 135.0
-offset_top = 184.0
-offset_right = 765.0
-offset_bottom = 814.0
+offset_left = 162.905028
+offset_top = 146.748466
+offset_right = 923.128492
+offset_bottom = 649.202454
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 4
@@ -209,10 +209,10 @@ focus_mode = 0
 
 [node name="Result" type="Label" parent="." unique_id=1664446212]
 layout_mode = 0
-offset_left = 100.0
-offset_top = 675.0
-offset_right = 795.0
-offset_bottom = 718.0
+offset_left = 120.670391
+offset_top = 538.343558
+offset_right = 959.329609
+offset_bottom = 572.638037
 theme_override_colors/font_color = Color(0.45, 0.96, 0.84, 1)
 theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
 theme_override_constants/outline_size = 4
@@ -221,10 +221,10 @@ horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="." unique_id=1749626926]
 layout_mode = 0
-offset_left = 75.0
-offset_top = 735.0
-offset_right = 820.0
-offset_bottom = 780.0
+offset_left = 90.502793
+offset_top = 586.196319
+offset_right = 989.497207
+offset_bottom = 622.08589
 theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
 theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
 theme_override_constants/outline_size = 4

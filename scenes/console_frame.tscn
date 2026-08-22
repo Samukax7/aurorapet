@@ -20,6 +20,7 @@
 [ext_resource type="PackedScene" path="res://scenes/batalhar_menu.tscn" id="19_battle_menu"]
 [ext_resource type="Script" path="res://scripts/aurorapet_save.gd" id="15_save"]
 [ext_resource type="Script" path="res://scripts/eva_journey_manager.gd" id="16_eva_journey"]
+[ext_resource type="Script" path="res://scripts/screen_content.gd" id="20_screen_content"]
 
 [node name="Console Base" type="Sprite2D" unique_id=1879046692]
 texture = ExtResource("1_5l2bk")
@@ -27,18 +28,18 @@ script = ExtResource("3_controller")
 
 [node name="ScreenContent" type="Control" parent="." unique_id=1811743874]
 clip_contents = true
-layout_mode = 3
+layout_mode = 0
 anchors_preset = 0
-offset_left = -557.0
-offset_top = -662.0
-offset_right = 338.0
-offset_bottom = 153.0
-scale = Vector2(1.231249, 1.218436)
-offset_transform_enabled = true
+offset_left = -540.0
+offset_top = -325.0
+offset_right = 540.0
+offset_bottom = 325.0
+mouse_filter = 2
+script = ExtResource("20_screen_content")
 
 [node name="Deepworld" parent="ScreenContent" unique_id=152526842 instance=ExtResource("2_jiilt")]
 editable_children = true
-position = Vector2(447, 407)
+position = Vector2(540, 325)
 scale = Vector2(0.31497505, 0.35)
 
 [node name="PetUI" parent="ScreenContent" unique_id=656930601 instance=ExtResource("4_pet_ui")]

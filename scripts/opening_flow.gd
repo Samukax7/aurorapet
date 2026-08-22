@@ -35,7 +35,7 @@ var deepworld: Node
 var pet_node: Node2D
 var skill_tree: Node
 var pet_save: AuroraPetSave
-var egg_base_position := Vector2(317, 405)
+var egg_base_position := Vector2(382.525, 323.006)
 var egg_shake_tween: Tween
 var intro_anim_time := 0.0
 var intro_transition_frames := 72
@@ -100,34 +100,34 @@ func _process(delta: float) -> void:
 			else:
 				presenter_sprite.frame = 192 + ((frame_tick - 240) % 48)
 				presenter_sprite.scale = Vector2.ONE * 2.4
-			presenter_sprite.position.x = lerpf(760.0, 185.0, transition_progress)
+			presenter_sprite.position.x = lerpf(917.095, 223.240, transition_progress)
 		&"controls":
 			# Bloco 2: voo, pouso e idle espelhados durante a entrada.
 			guide_sprite.flip_h = true
 			guide_sprite.frame = 120 + (frame_tick % 72) if frame_tick < 72 else 192 + ((frame_tick - 72) % 48)
-			guide_sprite.position.x = lerpf(790.0, 145.0, transition_progress)
+			guide_sprite.position.x = lerpf(953.296, 174.972, transition_progress)
 		&"egg_select":
 			# A EVA permanece espelhada ao lado da descrição da aura.
 			presenter_sprite.flip_h = true
 			presenter_sprite.frame = 192 + ((frame_tick - 72) % 48) if frame_tick >= 72 else 120 + frame_tick
-			presenter_sprite.position.x = lerpf(790.0, 185.0, transition_progress)
+			presenter_sprite.position.x = lerpf(953.296, 223.240, transition_progress)
 		&"egg":
 			# Entrada lateral, pouso e idle ao lado do ovo.
 			guide_sprite.flip_h = false
 			guide_sprite.frame = 120 + (frame_tick % 72) if frame_tick < 72 else 192 + ((frame_tick - 72) % 48)
-			guide_sprite.position.x = lerpf(145.0, 430.0, transition_progress)
+			guide_sprite.position.x = lerpf(174.972, 518.883, transition_progress)
 		&"status":
 			# Bloco 3: ciclo completo espelhado; termina com voo para fora da tela.
 			status_sprite.flip_h = true
 			if frame_tick < 240:
 				status_sprite.frame = frame_tick
 				status_sprite.scale = Vector2.ONE * (2.2 + sin(float(frame_tick) * 0.08) * 0.10)
-				status_sprite.position.x = 680.0
+				status_sprite.position.x = 820.559
 			else:
 				var exit_tick := frame_tick - 240
 				status_sprite.frame = 120 + (exit_tick % 72)
 				status_sprite.scale = Vector2.ONE * 2.2
-				status_sprite.position.x = lerpf(680.0, 1030.0, clampf(float(exit_tick) / 72.0, 0.0, 1.0))
+				status_sprite.position.x = lerpf(820.559, 1242.905, clampf(float(exit_tick) / 72.0, 0.0, 1.0))
 
 func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node, save_manager: AuroraPetSave = null) -> void:
 
@@ -349,8 +349,8 @@ func _start_development_pet() -> void:
 func _show_story(page: int) -> void:
 	story_page = clampi(page, 0, 1)
 	intro_anim_time = 0.0
-	presenter_sprite.position.x = 760.0
-	guide_sprite.position.x = 790.0
+	presenter_sprite.position.x = 917.095
+	guide_sprite.position.x = 953.296
 	background.color = Color("#071332")
 	_hide_all_panels()
 	intro_backdrop.visible = true
@@ -386,7 +386,7 @@ func _back_story() -> void:
 func _show_egg_selection() -> void:
 	state = &"egg_select"
 	intro_anim_time = 0.0
-	presenter_sprite.position.x = 790.0
+	presenter_sprite.position.x = 953.296
 	background.color = Color("#071332")
 	_hide_all_panels()
 	intro_backdrop.visible = true
@@ -425,7 +425,7 @@ func _confirm_egg_selection() -> void:
 func _show_egg() -> void:
 	state = &"egg"
 	intro_anim_time = 0.0
-	guide_sprite.position.x = 145.0
+	guide_sprite.position.x = 174.972
 	background.color = Color(0, 0, 0, 0)
 	_hide_all_panels()
 	if deepworld != null:

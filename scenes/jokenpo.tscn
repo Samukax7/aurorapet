@@ -54,40 +54,40 @@ theme_override_styles/panel = SubResource("StyleBox_Back")
 mouse_filter = 2
 
 [node name="Title" type="Label" parent="."]
-offset_left = 120.0
-offset_top = 24.0
-offset_right = 775.0
-offset_bottom = 64.0
+offset_left = 144.804469
+offset_top = 19.141104
+offset_right = 935.195531
+offset_bottom = 51.042945
 theme_override_colors/font_color = Color(0.72, 0.94, 1, 1)
 theme_override_font_sizes/font_size = 26
 text = "PEDRA, PAPEL E TESOURA"
 horizontal_alignment = 1
 
 [node name="Status" type="Label" parent="."]
-offset_left = 100.0
-offset_top = 76.0
-offset_right = 795.0
-offset_bottom = 112.0
+offset_left = 120.670391
+offset_top = 60.613497
+offset_right = 959.329609
+offset_bottom = 89.325153
 theme_override_colors/font_color = Color(1, 0.83, 0.4, 1)
 theme_override_font_sizes/font_size = 18
 text = "ESCOLHA UM SÍMBOLO"
 horizontal_alignment = 1
 
 [node name="PlayerLabel" type="Label" parent="."]
-offset_left = 90.0
-offset_top = 145.0
-offset_right = 390.0
-offset_bottom = 180.0
+offset_left = 108.603352
+offset_top = 115.644172
+offset_right = 470.614525
+offset_bottom = 143.558282
 theme_override_colors/font_color = Color(0.48, 0.94, 1, 1)
 theme_override_font_sizes/font_size = 17
 text = "SUA ESCOLHA"
 horizontal_alignment = 1
 
 [node name="ComputerLabel" type="Label" parent="."]
-offset_left = 505.0
-offset_top = 145.0
-offset_right = 805.0
-offset_bottom = 180.0
+offset_left = 609.385475
+offset_top = 115.644172
+offset_right = 971.396648
+offset_bottom = 143.558282
 theme_override_colors/font_color = Color(1, 0.55, 0.85, 1)
 theme_override_font_sizes/font_size = 17
 text = "AURORA"
@@ -95,10 +95,10 @@ horizontal_alignment = 1
 
 [node name="PlayerIcon" type="TextureRect" parent="."]
 visible = false
-offset_left = 100.0
-offset_top = 190.0
-offset_right = 380.0
-offset_bottom = 430.0
+offset_left = 120.670391
+offset_top = 151.533742
+offset_right = 458.547486
+offset_bottom = 342.944785
 texture_filter = 1
 expand_mode = 1
 stretch_mode = 5
@@ -106,20 +106,20 @@ mouse_filter = 2
 
 [node name="ComputerIcon" type="TextureRect" parent="."]
 visible = false
-offset_left = 515.0
-offset_top = 190.0
-offset_right = 795.0
-offset_bottom = 430.0
+offset_left = 621.452514
+offset_top = 151.533742
+offset_right = 959.329609
+offset_bottom = 342.944785
 texture_filter = 1
 expand_mode = 1
 stretch_mode = 5
 mouse_filter = 2
 
 [node name="Choices" type="HBoxContainer" parent="."]
-offset_left = 105.0
-offset_top = 455.0
-offset_right = 790.0
-offset_bottom = 665.0
+offset_left = 126.703911
+offset_top = 362.883436
+offset_right = 953.296089
+offset_bottom = 530.368098
 theme_override_constants/separation = 12
 alignment = 1
 
@@ -151,20 +151,20 @@ stretch_mode = 5
 theme_override_styles/normal = SubResource("StyleBox_Choice")
 
 [node name="Result" type="Label" parent="."]
-offset_left = 100.0
-offset_top = 680.0
-offset_right = 795.0
-offset_bottom = 725.0
+offset_left = 120.670391
+offset_top = 542.331288
+offset_right = 959.329609
+offset_bottom = 578.220859
 theme_override_colors/font_color = Color(0.45, 0.96, 0.84, 1)
 theme_override_font_sizes/font_size = 19
 text = ""
 horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="."]
-offset_left = 75.0
-offset_top = 742.0
-offset_right = 820.0
-offset_bottom = 785.0
+offset_left = 90.502793
+offset_top = 591.779141
+offset_right = 989.497207
+offset_bottom = 626.07362
 theme_override_colors/font_color = Color(0.62, 0.82, 0.96, 1)
 theme_override_font_sizes/font_size = 14
 text = "D-PAD: MOVER   •   VERDE: CONFIRMAR   •   ROSA: SAIR"
