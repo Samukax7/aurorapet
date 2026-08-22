@@ -23,6 +23,7 @@ extends Sprite2D
 @onready var aurora_pet_save: AuroraPetSave = $ScreenContent/AuroraPetSave
 @onready var eva_journey_manager: EvaJourneyManager = $ScreenContent/EvaJourneyManager
 @onready var confirm_audio: AudioStreamPlayer = get_node_or_null(^"ConfirmAudio") as AudioStreamPlayer
+@onready var lobby_music: AudioStreamPlayer = get_node_or_null(^"LobbyMusic") as AudioStreamPlayer
 
 var quarto_entry_pending := false
 var eva_encounter_pending := false
@@ -109,6 +110,15 @@ func _ready() -> void:
 		pet_evolution.evolution_completed.connect(_on_evolution_completed)
 	if pet_identity != null:
 		call_deferred("_show_identity_intro")
+
+func _process(_delta: float) -> void:
+	if lobby_music == null:
+		return
+	if _is_lobby_active():
+		if not lobby_music.playing:
+			lobby_music.play()
+	elif lobby_music.playing:
+		lobby_music.stop()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
