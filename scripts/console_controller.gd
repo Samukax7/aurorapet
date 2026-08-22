@@ -22,6 +22,7 @@ extends Sprite2D
 @onready var quarto_cosmico: QuartoCosmico = $ScreenContent/Deepworld/QuartoCosmico
 @onready var aurora_pet_save: AuroraPetSave = $ScreenContent/AuroraPetSave
 @onready var eva_journey_manager: EvaJourneyManager = $ScreenContent/EvaJourneyManager
+@onready var confirm_audio: AudioStreamPlayer = get_node_or_null(^"ConfirmAudio") as AudioStreamPlayer
 
 var quarto_entry_pending := false
 var eva_encounter_pending := false
@@ -110,6 +111,8 @@ func _ready() -> void:
 		call_deferred("_show_identity_intro")
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_accept"):
+		_play_confirm_sound()
 	if opening_flow != null and opening_flow.active:
 		if event.is_action_pressed("ui_left"):
 			opening_flow.handle_direction(Vector2i.LEFT)
@@ -361,6 +364,7 @@ func _connect_console_buttons() -> void:
 	$DPadRight.pressed.connect(func(): _move_active_selection(Vector2i.RIGHT))
 
 func _on_green_pressed() -> void:
+	_play_confirm_sound()
 	if eva_encounter_pending:
 		_resolve_eva_encounter(true)
 		return
@@ -395,6 +399,10 @@ func _on_green_pressed() -> void:
 		batalha_exploracao.confirm()
 		return
 	_confirm_active_selection()
+
+func _play_confirm_sound() -> void:
+	if confirm_audio != null:
+		confirm_audio.play()
 
 func _on_yellow_pressed() -> void:
 	if opening_flow != null and opening_flow.active:
