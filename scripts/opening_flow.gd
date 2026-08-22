@@ -321,6 +321,7 @@ func _confirm_menu() -> void:
 	var action: StringName = menu_options[menu_selected_index]
 	match action:
 		&"start":
+			_start_intro_eva_loop()
 			_show_story(0)
 		&"continue":
 			_continue_saved_pet()
@@ -382,7 +383,7 @@ func _start_development_pet() -> void:
 		pet_ui.show_system_message("MODO DEV ATIVO • EVA • NÍVEL 100 • TUDO DESBLOQUEADO")
 
 func _show_story(page: int) -> void:
-	_play_intro_eva_sound()
+	_start_intro_eva_loop()
 	story_page = clampi(page, 0, 1)
 	intro_anim_time = 0.0
 	presenter_sprite.position.x = 917.095
@@ -423,7 +424,7 @@ func _back_story() -> void:
 		_show_menu()
 
 func _show_egg_selection() -> void:
-	_play_intro_eva_sound()
+	_start_intro_eva_loop()
 	state = &"egg_select"
 	intro_anim_time = 0.0
 	presenter_sprite.position.x = 953.296
@@ -463,7 +464,7 @@ func _confirm_egg_selection() -> void:
 	_show_egg()
 
 func _show_egg() -> void:
-	_play_intro_eva_sound()
+	_start_intro_eva_loop()
 	state = &"egg"
 	intro_anim_time = 0.0
 	guide_sprite.position = Vector2(953.296, EGG_EVA_Y)
@@ -514,7 +515,7 @@ func _shake_egg() -> void:
 	egg_shake_tween.tween_property(egg_image, "position", egg_base_position, 0.06)
 
 func _show_pet_status() -> void:
-	_play_intro_eva_sound()
+	_start_intro_eva_loop()
 	state = &"status"
 	intro_anim_time = 0.0
 	background.color = Color("#FFFFFF")
@@ -531,9 +532,13 @@ func _show_pet_status() -> void:
 		status_attributes.text = "NÍVEL %d   XP %d\nFORÇA %d   DEFESA %d\nAGILIDADE %d   INTELIGÊNCIA %d" % [pet_skills.level, pet_skills.total_xp, pet_skills.strength, pet_skills.defense, pet_skills.agility, pet_skills.intelligence]
 	status_hint.text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
 
-func _play_intro_eva_sound() -> void:
-	if intro_eva_audio != null:
+func _start_intro_eva_loop() -> void:
+	if intro_eva_audio != null and not intro_eva_audio.playing:
 		intro_eva_audio.play()
+
+func _stop_intro_eva_loop() -> void:
+	if intro_eva_audio != null and intro_eva_audio.playing:
+		intro_eva_audio.stop()
 
 func _continue_saved_pet() -> void:
 	development_mode_active = false
@@ -581,6 +586,7 @@ func _save_new_pet() -> void:
 		file.store_string(JSON.stringify(data))
 
 func _finish_flow() -> void:
+	_stop_intro_eva_loop()
 	active = false
 	visible = false
 	if deepworld != null:
