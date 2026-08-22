@@ -41,7 +41,8 @@ var intro_anim_time := 0.0
 
 const INTRO_FPS := 24.0
 const EVA_TRAVEL_FRAME_START := 120
-const EVA_TRAVEL_FRAME_COUNT := 72
+const EVA_ENTRY_FRAME_COUNT := 40
+const EVA_EXIT_FRAME_COUNT := 72
 const EVA_IDLE_FRAME_START := 192
 const EVA_IDLE_FRAME_COUNT := 48
 const EVA_IDLE_PINGPONG_COUNT := EVA_IDLE_FRAME_COUNT * 2 - 2
@@ -99,7 +100,7 @@ func _process(delta: float) -> void:
 		return
 	intro_anim_time += delta
 	var frame_tick := int(intro_anim_time * INTRO_FPS)
-	var transition_progress := clampf(float(frame_tick) / float(EVA_TRAVEL_FRAME_COUNT), 0.0, 1.0)
+	var transition_progress := clampf(float(frame_tick) / float(EVA_ENTRY_FRAME_COUNT), 0.0, 1.0)
 	match state:
 		&"story":
 			# Bloco 1: o ciclo de apresentação toca uma vez e depois entra no idle suave.
@@ -131,9 +132,9 @@ func _process(delta: float) -> void:
 				status_sprite.position.x = 820.559
 			else:
 				var exit_tick := frame_tick - 240
-				status_sprite.frame = EVA_TRAVEL_FRAME_START + (exit_tick % EVA_TRAVEL_FRAME_COUNT)
+				status_sprite.frame = EVA_TRAVEL_FRAME_START + (exit_tick % EVA_EXIT_FRAME_COUNT)
 				status_sprite.scale = Vector2.ONE * 2.2
-				status_sprite.position.x = lerpf(820.559, 1242.905, clampf(float(exit_tick) / float(EVA_TRAVEL_FRAME_COUNT), 0.0, 1.0))
+				status_sprite.position.x = lerpf(820.559, 1242.905, clampf(float(exit_tick) / float(EVA_EXIT_FRAME_COUNT), 0.0, 1.0))
 
 func _idle_frame(elapsed_frames: int) -> int:
 	var phase := posmod(elapsed_frames, EVA_IDLE_PINGPONG_COUNT)
@@ -143,12 +144,12 @@ func _idle_frame(elapsed_frames: int) -> int:
 
 func _animate_eva_to_idle(sprite: Sprite2D, frame_tick: int, start_x: float, end_x: float, face_left: bool) -> void:
 	sprite.flip_h = face_left
-	if frame_tick < EVA_TRAVEL_FRAME_COUNT:
+	if frame_tick < EVA_ENTRY_FRAME_COUNT:
 		sprite.frame = EVA_TRAVEL_FRAME_START + frame_tick
 		sprite.scale = Vector2.ONE * 2.2
-		sprite.position.x = lerpf(start_x, end_x, clampf(float(frame_tick) / float(EVA_TRAVEL_FRAME_COUNT), 0.0, 1.0))
+		sprite.position.x = lerpf(start_x, end_x, clampf(float(frame_tick) / float(EVA_ENTRY_FRAME_COUNT), 0.0, 1.0))
 	else:
-		var idle_tick := frame_tick - EVA_TRAVEL_FRAME_COUNT
+		var idle_tick := frame_tick - EVA_ENTRY_FRAME_COUNT
 		sprite.frame = _idle_frame(idle_tick)
 		# O último frame de pouso é menor que o primeiro idle. Uma breve
 		# interpolação de escala evita o salto que denunciava a troca de bloco.
