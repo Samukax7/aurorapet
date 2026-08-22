@@ -820,9 +820,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="WelcomeAudio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("14_sfx_welcome")
+stream = ExtResource("15_sfx_intro_eva")
 volume_db = -8.0
 
 [node name="IntroEvaAudio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("15_sfx_intro_eva")
+stream = ExtResource("14_sfx_welcome")
 volume_db = -9.0
