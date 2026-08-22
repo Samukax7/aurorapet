@@ -8,21 +8,23 @@
 
 ## Critérios gerais da V0.1
 
+> **Janela de entrega:** segunda-feira, 24/08/2026. Até essa data, o escopo está congelado. O fundo animado e o Guarda-Roupas Cósmico não serão incluídos. O áudio só entra depois dos fluxos, da legibilidade e da exportação estarem estáveis.
+
 A versão V0.1 será considerada pronta quando o fluxo inicial puder ser concluído sem confusão visual, as animações principais não apresentarem desalinhamentos perceptíveis, as telas de pet e batalha tiverem leitura adequada no console e os efeitos de áudio e feedback estiverem integrados de forma consistente. A exportação web deverá funcionar em computador e celular, sem arquivos temporários ou plugins locais publicados no repositório.
 
 ## Lista priorizada
 
 | Prioridade | Área | Pendência | Critério de conclusão | Status |
 |---:|---|---|---|---|
-| 1 | Introdução | Ajustar as animações da cena de abertura | EVA entra, muda de lado, mantém idle e finaliza no close sem saltos, cortes ou desalinhamentos entre frames | Pendente |
-| 2 | Pet | Ajustar as animações do pet | Idle, ações, crescimento e reações respeitam escala, origem, camadas modulares e posição da plataforma | Pendente |
-| 3 | Batalha | Ajustar a cena de batalha | Pet e Eco permanecem visíveis acima do palco, UI legível, log compacto e botões sem sobreposição | Pendente |
-| 4 | Feedback | Incluir reações para os pets | Alimentação, cuidado, sono, brincadeiras, treino, dano, vitória e recusa apresentam sinais visuais coerentes | Pendente |
-| 5 | Cenário | Criar animações para o fundo | Deepworld mantém a plataforma fixa e recebe camadas animadas, partículas ou efeitos sem deformar a composição | Pendente |
-| 6 | Áudio | Incluir música e efeitos sonoros | BIOS, menus, ações, eclosão, batalha e minijogos possuem áudio controlável e sem volume agressivo | Pendente |
-| 7 | Personalização | Criar o Guarda-Roupas Cósmico | Acesso pelo Quarto Cósmico, slots modulares, preview, aplicação visual e regras de custo funcionam sem quebrar o pet | Pendente |
-| 8 | Técnico | Fazer a vistoria e os polimentos técnicos | Fluxos testados, warnings críticos tratados, telas responsivas, cache web revisado, saves preservados e projeto sem artefatos temporários | Pendente |
-| 9 | Release | Atualizar para a build V0.1 | Build web exportada, testada em desktop e celular, documentada e publicada com identificação clara de versão | Pendente |
+| 1 | Introdução | Ajustar as animações da cena de abertura | EVA entra, muda de lado, mantém idle e finaliza no close sem saltos, cortes ou desalinhamentos entre frames | Corrigido estruturalmente; validação visual pendente |
+| 2 | Pet | Ajustar as animações do pet | Idle, ações, crescimento e reações respeitam escala, origem, camadas modulares e posição da plataforma | Sem bloqueio conhecido; ajuste fino pós-entrega |
+| 3 | Batalha | Ajustar a cena de batalha | Pet e Eco permanecem visíveis acima do palco, UI legível, log compacto e botões sem sobreposição | Camada corrigida; validação visual pendente |
+| 4 | Feedback | Incluir reações para os pets | Alimentação, cuidado, sono, brincadeiras, treino, dano, vitória e recusa apresentam sinais visuais coerentes | Base integrada; polimento opcional |
+| 5 | Cenário | Criar animações para o fundo | Deepworld mantém a plataforma fixa e recebe camadas animadas, partículas ou efeitos sem deformar a composição | Fora da entrega de 24/08 |
+| 6 | Áudio | Incluir música e efeitos sonoros | BIOS, menus, ações, eclosão, batalha e minijogos possuem áudio controlável e sem volume agressivo | Última prioridade da entrega |
+| 7 | Personalização | Criar o Guarda-Roupas Cósmico | Acesso pelo Quarto Cósmico, slots modulares, preview, aplicação visual e regras de custo funcionam sem quebrar o pet | Fora da entrega de 24/08 |
+| 8 | Técnico | Fazer a vistoria e os polimentos técnicos | Fluxos testados, warnings críticos tratados, telas responsivas, cache web revisado, saves preservados e projeto sem artefatos temporários | Em andamento |
+| 9 | Release | Atualizar para a build V0.1 | Build web exportada, testada em desktop e celular, documentada e publicada com identificação clara de versão | Após validação final |
 
 ## 1. Ajustar as animações da cena de abertura
 
