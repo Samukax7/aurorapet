@@ -629,7 +629,7 @@ frame = 0
 
 [node name="ControlsSpeechBubble" type="Panel" parent="."]
 visible = false
-z_index = 7
+z_index = 6
 offset_left = 30.167598
 offset_top = 43.865031
 offset_right = 349.944134

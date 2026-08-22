@@ -120,8 +120,8 @@ func _process(delta: float) -> void:
 			# A EVA fica à esquerda, voltada para os ovos e para a descrição da aura.
 			_animate_eva_to_idle(presenter_sprite, frame_tick, 953.296, 223.240, false)
 		&"egg":
-			# A EVA cruza a tela uma vez e termina no canto esquerdo, voltada para o ovo.
-			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, 174.972, false)
+			# A entrada lateral termina em idle ao lado do ovo.
+			_animate_eva_to_idle(guide_sprite, frame_tick, 174.972, 518.883, false)
 			guide_sprite.position.y = EGG_EVA_Y
 		&"status":
 			# Bloco 3: ciclo completo espelhado; termina com voo para fora da tela.
@@ -456,7 +456,7 @@ func _confirm_egg_selection() -> void:
 func _show_egg() -> void:
 	state = &"egg"
 	intro_anim_time = 0.0
-	guide_sprite.position = Vector2(953.296, EGG_EVA_Y)
+	guide_sprite.position = Vector2(174.972, EGG_EVA_Y)
 	background.color = Color(0, 0, 0, 0)
 	_hide_all_panels()
 	if deepworld != null:
