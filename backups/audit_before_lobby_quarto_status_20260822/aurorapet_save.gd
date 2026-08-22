@@ -567,9 +567,9 @@ func _restore_world(raw_data: Variant) -> void:
 		batalha_exploracao.exploration_points = points
 		batalha_exploracao.points_changed.emit(points)
 	if quarto_cosmico != null:
-		quarto_cosmico.shop_total_value = maxi(0, int(data.get("shop_total_value", 0)))
-		quarto_cosmico.set_owned_items(data.get("owned_items", []))
-		quarto_cosmico.set_exploration_points(points)
+			quarto_cosmico.shop_total_value = maxi(0, int(data.get("shop_total_value", 0)))
+			quarto_cosmico.set_owned_items(data.get("owned_items", []))
+			quarto_cosmico.set_exploration_points(points)
 	if eva_journey != null:
 		eva_journey.restore_save_data(data.get("eva_journey", {}))
 	stellar_coins = maxi(0, int(data.get("stellar_coins", stellar_coins)))

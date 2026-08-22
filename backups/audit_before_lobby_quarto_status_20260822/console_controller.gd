@@ -130,15 +130,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			opening_flow.back()
 			get_viewport().set_input_as_handled()
 		return
-	if eva_encounter_pending:
-		if event.is_action_pressed("ui_accept"):
-			_resolve_eva_encounter(true)
-		elif event.is_action_pressed("ui_cancel"):
-			_resolve_eva_encounter(false)
-		get_viewport().set_input_as_handled()
-		return
 	if jogo_da_velha != null and jogo_da_velha.visible:
-
 		if event.is_action_pressed("ui_left"):
 			jogo_da_velha.handle_direction(Vector2i.LEFT)
 			get_viewport().set_input_as_handled()
@@ -322,33 +314,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			skill_tree.close_tree()
 			get_viewport().set_input_as_handled()
 		return
-	if not _is_lobby_active():
-		return
 	if event.is_action_pressed("ui_left"):
-		if pet_ui.menu_visible or pet_ui.submenu_visible:
-			pet_ui.move_selection(Vector2i.LEFT)
+		pet_ui.move_selection(Vector2i.LEFT)
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_right"):
-		if pet_ui.menu_visible or pet_ui.submenu_visible:
-			pet_ui.move_selection(Vector2i.RIGHT)
+		pet_ui.move_selection(Vector2i.RIGHT)
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_up"):
-		if pet_ui.menu_visible or pet_ui.submenu_visible:
-			pet_ui.move_selection(Vector2i.UP)
+		pet_ui.move_selection(Vector2i.UP)
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_down"):
-		if pet_ui.menu_visible or pet_ui.submenu_visible:
-			pet_ui.move_selection(Vector2i.DOWN)
+		pet_ui.move_selection(Vector2i.DOWN)
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_accept"):
-		if pet_ui.menu_visible or pet_ui.submenu_visible:
-			pet_ui.confirm_selected()
+		pet_ui.confirm_selected()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_cancel"):
-		if pet_ui.submenu_visible:
-			pet_ui.close_submenu()
-		else:
-			pet_ui.toggle_menu()
+		pet_ui.toggle_menu()
 		get_viewport().set_input_as_handled()
 
 func _connect_console_buttons() -> void:
@@ -406,8 +388,6 @@ func _on_yellow_pressed() -> void:
 	if quarto_cosmico != null and quarto_cosmico.visible:
 		if quarto_cosmico.is_shop_open():
 			quarto_cosmico.back()
-		return
-	if not _is_lobby_active():
 		return
 	pet_ui.toggle_status()
 
@@ -486,7 +466,7 @@ func _move_active_selection(direction: Vector2i) -> void:
 		quarto_cosmico.handle_direction(direction)
 	elif skill_tree != null and skill_tree.visible:
 		skill_tree.move_selection(direction)
-	elif pet_ui != null and _is_lobby_active() and (pet_ui.menu_visible or pet_ui.submenu_visible):
+	elif pet_ui != null:
 		pet_ui.move_selection(direction)
 
 func _confirm_active_selection() -> void:
@@ -502,11 +482,10 @@ func _confirm_active_selection() -> void:
 		quarto_cosmico.confirm()
 	elif skill_tree != null and skill_tree.visible:
 		skill_tree.confirm_selected()
-	elif pet_ui != null and _is_lobby_active() and (pet_ui.menu_visible or pet_ui.submenu_visible):
+	elif pet_ui != null:
 		pet_ui.confirm_selected()
 
 func _open_skill_tree() -> void:
-
 	if skill_tree == null:
 		return
 	skill_tree.set_pet_skills(pet_skills)
@@ -666,45 +645,10 @@ func _on_2048_completed(_result: StringName, reward: int) -> void:
 	if pet_ui != null:
 		pet_ui.show_progression_message("2048 CONCLUÍDO: +%d XP" % reward)
 
-func _is_lobby_active() -> bool:
-	# Lobby = Deepworld normal visível, PetUI visível e nenhum modo externo ativo.
-	# Essa guarda central impede que ↑ abra o quarto durante mapas, batalha ou minijogos.
+func _is_quarto_global_access_available() -> bool:
 	if opening_flow != null and opening_flow.active:
 		return false
-	if pet_ui == null or not pet_ui.visible:
-		return false
-	if deepworld_controller == null or not deepworld_controller.visible:
-		return false
-	if quarto_entry_pending or eva_encounter_pending:
-		return false
-	if quarto_cosmico != null and quarto_cosmico.visible:
-		return false
-	if skill_tree != null and skill_tree.visible:
-		return false
-	if jogo_da_velha != null and jogo_da_velha.visible:
-		return false
-	if jokenpo != null and jokenpo.visible:
-		return false
-	if jogo_2048 != null and jogo_2048.visible:
-		return false
-	if batalhar_menu != null and batalhar_menu.visible:
-		return false
-	if mapa_exploracao != null and mapa_exploracao.visible:
-		return false
-	if mapa_campanha_eva != null and mapa_campanha_eva.visible:
-		return false
-	if batalha_exploracao != null and batalha_exploracao.visible:
-		return false
-	var battle_stage := deepworld_controller.get_battle_stage()
-	if battle_stage != null and battle_stage.visible:
-		return false
-	return true
-
-func _is_quarto_global_access_available() -> bool:
-	if not _is_lobby_active():
-		return false
-	# O quarto só é acessível com o menu principal e os submenus fechados.
-	if pet_ui.menu_visible or pet_ui.submenu_visible:
+	if pet_ui == null or pet_ui.menu_visible or pet_ui.submenu_visible:
 		return false
 	return quarto_cosmico != null and not quarto_cosmico.visible
 

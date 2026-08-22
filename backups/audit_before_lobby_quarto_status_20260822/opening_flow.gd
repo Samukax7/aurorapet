@@ -50,8 +50,6 @@ const EVA_IDLE_BLEND_FRAMES := 18
 const EVA_IDLE_START_SCALE := 1.46
 const CONTROLS_EVA_Y := 342.0
 const EGG_EVA_Y := 352.0
-const STATUS_EVA_POSITION := Vector2(1015.0, 520.0)
-const STATUS_EVA_EXIT_X := 1242.905
 
 @onready var background: ColorRect = $Background
 @onready var logo: Label = $Logo
@@ -128,16 +126,15 @@ func _process(delta: float) -> void:
 		&"status":
 			# Bloco 3: ciclo completo espelhado; termina com voo para fora da tela.
 			status_sprite.flip_h = true
-			status_sprite.position.y = STATUS_EVA_POSITION.y
 			if frame_tick < 240:
 				status_sprite.frame = frame_tick
 				status_sprite.scale = Vector2.ONE * (2.2 + sin(float(frame_tick) * 0.08) * 0.10)
-				status_sprite.position.x = STATUS_EVA_POSITION.x
+				status_sprite.position.x = 820.559
 			else:
 				var exit_tick := frame_tick - 240
 				status_sprite.frame = EVA_TRAVEL_FRAME_START + (exit_tick % EVA_EXIT_FRAME_COUNT)
 				status_sprite.scale = Vector2.ONE * 2.2
-				status_sprite.position.x = lerpf(STATUS_EVA_POSITION.x, STATUS_EVA_EXIT_X, clampf(float(exit_tick) / float(EVA_EXIT_FRAME_COUNT), 0.0, 1.0))
+				status_sprite.position.x = lerpf(820.559, 1242.905, clampf(float(exit_tick) / float(EVA_EXIT_FRAME_COUNT), 0.0, 1.0))
 
 func _idle_frame(elapsed_frames: int) -> int:
 	var phase := posmod(elapsed_frames, EVA_IDLE_PINGPONG_COUNT)
@@ -513,7 +510,6 @@ func _show_pet_status() -> void:
 	_hide_all_panels()
 	status_panel.visible = true
 	status_sprite.visible = true
-	status_sprite.position = STATUS_EVA_POSITION
 	status_sprite.frame = 0
 	if pet_identity == null or pet_skills == null:
 		status_identity.text = "IDENTIDADE AINDA NÃO DISPONÍVEL"
