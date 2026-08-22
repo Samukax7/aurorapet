@@ -38,17 +38,7 @@ var pet_save: AuroraPetSave
 var egg_base_position := Vector2(382.525, 323.006)
 var egg_shake_tween: Tween
 var intro_anim_time := 0.0
-
-const INTRO_FPS := 24.0
-const EVA_TRAVEL_FRAME_START := 120
-const EVA_TRAVEL_FRAME_COUNT := 72
-const EVA_IDLE_FRAME_START := 192
-const EVA_IDLE_FRAME_COUNT := 48
-const EVA_IDLE_PINGPONG_COUNT := EVA_IDLE_FRAME_COUNT * 2 - 2
-const EVA_IDLE_BLEND_FRAMES := 18
-const EVA_IDLE_START_SCALE := 1.46
-const CONTROLS_EVA_Y := 342.0
-const EGG_EVA_Y := 352.0
+var intro_transition_frames := 72
 
 @onready var background: ColorRect = $Background
 @onready var logo: Label = $Logo
@@ -98,30 +88,34 @@ func _process(delta: float) -> void:
 	if not active:
 		return
 	intro_anim_time += delta
-	var frame_tick := int(intro_anim_time * INTRO_FPS)
-	var transition_progress := clampf(float(frame_tick) / float(EVA_TRAVEL_FRAME_COUNT), 0.0, 1.0)
+	var frame_tick := int(intro_anim_time * 24.0)
+	var transition_progress := clampf(float(frame_tick) / float(intro_transition_frames), 0.0, 1.0)
 	match state:
 		&"story":
-			# Bloco 1: o ciclo de apresentação toca uma vez e depois entra no idle suave.
+			# Bloco 1: ciclo completo uma vez, depois idle contínuo.
 			presenter_sprite.flip_h = false
 			if frame_tick < 240:
 				presenter_sprite.frame = frame_tick
 				presenter_sprite.scale = Vector2.ONE * (2.4 + sin(float(frame_tick) * 0.08) * 0.10)
 			else:
-				presenter_sprite.frame = _idle_frame(frame_tick - 240)
+				presenter_sprite.frame = 192 + ((frame_tick - 240) % 48)
 				presenter_sprite.scale = Vector2.ONE * 2.4
 			presenter_sprite.position.x = lerpf(917.095, 223.240, transition_progress)
 		&"controls":
-			# A entrada termina no idle: não há voo repetindo depois do giro.
-			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, 174.972, false)
-			guide_sprite.position.y = CONTROLS_EVA_Y
+			# Bloco 2: voo, pouso e idle espelhados durante a entrada.
+			guide_sprite.flip_h = true
+			guide_sprite.frame = 120 + (frame_tick % 72) if frame_tick < 72 else 192 + ((frame_tick - 72) % 48)
+			guide_sprite.position.x = lerpf(953.296, 174.972, transition_progress)
 		&"egg_select":
-			# A EVA fica à esquerda, voltada para os ovos e para a descrição da aura.
-			_animate_eva_to_idle(presenter_sprite, frame_tick, 953.296, 223.240, false)
+			# A EVA permanece espelhada ao lado da descrição da aura.
+			presenter_sprite.flip_h = true
+			presenter_sprite.frame = 192 + ((frame_tick - 72) % 48) if frame_tick >= 72 else 120 + frame_tick
+			presenter_sprite.position.x = lerpf(953.296, 223.240, transition_progress)
 		&"egg":
-			# A entrada lateral termina em idle ao lado do ovo.
-			_animate_eva_to_idle(guide_sprite, frame_tick, 174.972, 518.883, false)
-			guide_sprite.position.y = EGG_EVA_Y
+			# Entrada lateral, pouso e idle ao lado do ovo.
+			guide_sprite.flip_h = false
+			guide_sprite.frame = 120 + (frame_tick % 72) if frame_tick < 72 else 192 + ((frame_tick - 72) % 48)
+			guide_sprite.position.x = lerpf(174.972, 518.883, transition_progress)
 		&"status":
 			# Bloco 3: ciclo completo espelhado; termina com voo para fora da tela.
 			status_sprite.flip_h = true
@@ -131,30 +125,9 @@ func _process(delta: float) -> void:
 				status_sprite.position.x = 820.559
 			else:
 				var exit_tick := frame_tick - 240
-				status_sprite.frame = EVA_TRAVEL_FRAME_START + (exit_tick % EVA_TRAVEL_FRAME_COUNT)
+				status_sprite.frame = 120 + (exit_tick % 72)
 				status_sprite.scale = Vector2.ONE * 2.2
-				status_sprite.position.x = lerpf(820.559, 1242.905, clampf(float(exit_tick) / float(EVA_TRAVEL_FRAME_COUNT), 0.0, 1.0))
-
-func _idle_frame(elapsed_frames: int) -> int:
-	var phase := posmod(elapsed_frames, EVA_IDLE_PINGPONG_COUNT)
-	if phase >= EVA_IDLE_FRAME_COUNT:
-		phase = EVA_IDLE_PINGPONG_COUNT - phase
-	return EVA_IDLE_FRAME_START + phase
-
-func _animate_eva_to_idle(sprite: Sprite2D, frame_tick: int, start_x: float, end_x: float, face_left: bool) -> void:
-	sprite.flip_h = face_left
-	if frame_tick < EVA_TRAVEL_FRAME_COUNT:
-		sprite.frame = EVA_TRAVEL_FRAME_START + frame_tick
-		sprite.scale = Vector2.ONE * 2.2
-		sprite.position.x = lerpf(start_x, end_x, clampf(float(frame_tick) / float(EVA_TRAVEL_FRAME_COUNT), 0.0, 1.0))
-	else:
-		var idle_tick := frame_tick - EVA_TRAVEL_FRAME_COUNT
-		sprite.frame = _idle_frame(idle_tick)
-		# O último frame de pouso é menor que o primeiro idle. Uma breve
-		# interpolação de escala evita o salto que denunciava a troca de bloco.
-		var idle_blend := clampf(float(idle_tick) / float(EVA_IDLE_BLEND_FRAMES), 0.0, 1.0)
-		sprite.scale = Vector2.ONE * lerpf(EVA_IDLE_START_SCALE, 2.2, idle_blend)
-		sprite.position.x = end_x
+				status_sprite.position.x = lerpf(820.559, 1242.905, clampf(float(exit_tick) / 72.0, 0.0, 1.0))
 
 func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node, save_manager: AuroraPetSave = null) -> void:
 
@@ -385,14 +358,11 @@ func _show_story(page: int) -> void:
 		state = &"controls"
 		controls_panel.visible = true
 		controls_speech_bubble.visible = true
-		guide_sprite.position.y = CONTROLS_EVA_Y
-
 		controls_speech_body.text = "Olá!\n\nUse os controles para explorar o Deepworld.\n\nEscolha uma opção e confirme quando estiver pronto."
 		guide_sprite.visible = true
 		guide_sprite.frame = 1
 		controls_next.text = "PRÓXIMA"
 		return
-
 	state = &"story"
 	story_panel.visible = true
 	presenter_sprite.visible = true
@@ -455,7 +425,7 @@ func _confirm_egg_selection() -> void:
 func _show_egg() -> void:
 	state = &"egg"
 	intro_anim_time = 0.0
-	guide_sprite.position = Vector2(174.972, EGG_EVA_Y)
+	guide_sprite.position.x = 174.972
 	background.color = Color(0, 0, 0, 0)
 	_hide_all_panels()
 	if deepworld != null:

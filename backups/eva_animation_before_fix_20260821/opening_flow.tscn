@@ -352,7 +352,6 @@ horizontal_alignment = 1
 
 [node name="StoryPanel" type="Panel" parent="."]
 visible = false
-z_index = 6
 offset_left = 380.111732
 offset_top = 71.779141
 offset_right = 1049.832402
@@ -406,7 +405,6 @@ text = "PRÓXIMA"
 
 [node name="EggPanel" type="Panel" parent="."]
 visible = false
-z_index = 6
 offset_left = 229.273743
 offset_top = 95.705521
 offset_right = 850.726257
@@ -481,7 +479,6 @@ mouse_filter = 2
 
 [node name="PetStatusPanel" type="Panel" parent="."]
 visible = false
-z_index = 6
 offset_left = 120.670391
 offset_top = 75.766871
 offset_right = 959.329609
@@ -542,7 +539,6 @@ flat = true
 
 [node name="ControlsPanel" type="Panel" parent="."]
 visible = false
-z_index = 6
 offset_left = 362.011173
 offset_top = 83.742331
 offset_right = 1043.798883
@@ -607,7 +603,7 @@ frame = 0
 [node name="GuideSprite" type="Sprite2D" parent="."]
 visible = false
 z_index = 5
-position = Vector2(174.972067, 370.0)
+position = Vector2(174.972067, 283.128834)
 scale = Vector2(2.2, 2.2)
 texture_filter = 1
 texture = ExtResource("8_presenter_pointing")
@@ -733,7 +729,6 @@ vertical_alignment = 1
 
 [node name="EggSelectionPanel" type="Panel" parent="."]
 visible = false
-z_index = 6
 offset_left = 307.709497
 offset_top = 75.766871
 offset_right = 1049.832402
