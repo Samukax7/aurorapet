@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/pet.tscn" id="2_pet"]
 
 [node name="BattleStage" type="Node2D"]
-z_index = 35
+z_index = 45
 script = ExtResource("1_stage")
 
 [node name="PlayerCombatant" parent="." instance=ExtResource("2_pet")]
