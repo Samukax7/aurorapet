@@ -22,4 +22,6 @@ A pasta `intro/` contém as animações reutilizáveis da EVA Deusa Cósmica:
 
 As três spritesheets finais usam canal alfa real. A ordem de leitura é da esquerda para a direita e de cima para baixo. As versões `*_padded.png` possuem margem transparente de 2 px entre as células e são as versões usadas pela cena `opening_flow.tscn`, evitando que pixels de um frame vizinho apareçam acima da cabeça ou nas bordas durante a animação.
 
+A versão atual em revisão usa `intro/eva_presenter_restored_48frames_160px.png`, uma spritesheet 8×6 restaurada a partir da referência recebida, com preservação dos detalhes brancos e transparentes. As poses individuais da novela visual ficam em `encounter/restored/`. Os arquivos brutos recebidos ficam em `source/` apenas como referência de prototipagem e não são carregados diretamente pelas cenas.
+
 O fundo da introdução sem plataforma foi colocado em `assets/fundo/aurorapet-deepworld-intro-no-platform.png`, pois é um cenário reutilizável e não um sprite da personagem.

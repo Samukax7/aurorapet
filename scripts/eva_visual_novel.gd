@@ -79,12 +79,12 @@ const ENCOUNTER_BACKGROUNDS: Dictionary = {
 }
 
 const EVA_POSES: Dictionary = {
-	&"cry": "res://assets/eva/encounter/eva_cry_crop.png",
-	&"suspicious": "res://assets/eva/encounter/eva_suspicious_crop.png",
-	&"confident": "res://assets/eva/encounter/eva_confident_crop.png",
-	&"happy": "res://assets/eva/encounter/eva_happy_crop.png",
-	&"neutral": "res://assets/eva/encounter/eva_neutral_crop.png",
-	&"angry": "res://assets/eva/encounter/eva_angry_crop.png",
+	&"cry": "res://assets/eva/encounter/restored/eva_cry_restored.png",
+	&"suspicious": "res://assets/eva/encounter/restored/eva_suspicious_restored.png",
+	&"confident": "res://assets/eva/encounter/restored/eva_confident_restored.png",
+	&"happy": "res://assets/eva/encounter/restored/eva_happy_restored.png",
+	&"neutral": "res://assets/eva/encounter/restored/eva_neutral_restored.png",
+	&"angry": "res://assets/eva/encounter/restored/eva_angry_restored.png",
 }
 
 const ENCOUNTER_LINES: Array[Dictionary] = [

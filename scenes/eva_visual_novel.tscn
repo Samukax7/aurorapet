@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/eva_visual_novel.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_idle_12frames_64px_padded.png" id="2_eva"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_restored_48frames_160px.png" id="2_eva"]
 [ext_resource type="AudioStream" path="res://assets/audio/eva_campaign_underscore.wav" id="3_audio"]
 [ext_resource type="AudioStream" path="res://assets/audio/eva_choice_chime.wav" id="4_choice"]
 [ext_resource type="AudioStream" path="res://assets/audio/aurorapet_lobby_theme.wav" id="5_dialogue"]
@@ -195,8 +195,8 @@ z_index = 2
 position = Vector2(142, 268)
 scale = Vector2(3.25, 3.25)
 texture = ExtResource("2_eva")
-hframes = 3
-vframes = 4
+hframes = 8
+vframes = 6
 frame = 0
 
 [node name="DialogueFrame" type="Panel" parent="."]

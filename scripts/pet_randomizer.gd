@@ -91,10 +91,12 @@ var _randomizer := RandomNumberGenerator.new()
 var _palette_randomizer := RandomNumberGenerator.new()
 var _reaction_tween: Tween
 var _reaction_origin := Vector2.ZERO
+var _reaction_scale := Vector2.ONE
 @onready var cosmetic_overlay: Sprite2D = get_node_or_null(^"CosmeticOverlay") as Sprite2D
 
 func _ready() -> void:
 	_reaction_origin = position
+	_reaction_scale = scale
 	if Engine.is_editor_hint():
 		if randomize_in_editor:
 			call_deferred("randomize_pet")
@@ -133,7 +135,7 @@ func play_reaction(action: StringName, reaction_id: StringName = &"") -> void:
 	if _reaction_tween != null:
 		_reaction_tween.kill()
 	position = _reaction_origin
-	scale = Vector2.ONE
+	scale = _reaction_scale
 	rotation = 0.0
 
 	# O tremor curto permanece como assinatura comum, mas cada ação ganha
@@ -143,9 +145,9 @@ func play_reaction(action: StringName, reaction_id: StringName = &"") -> void:
 	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(reaction_shake_pixels, 0), 0.08)
 	match selected_reaction:
 		&"comer", &"fruta_estelar", &"nectar_cosmico", &"banquete_nebulosa":
-			_reaction_tween.tween_property(self, "scale", Vector2(1.08, 0.92), 0.10)
-			_reaction_tween.tween_property(self, "scale", Vector2(0.96, 1.06), 0.12)
-			_reaction_tween.tween_property(self, "scale", Vector2.ONE, 0.12)
+			_reaction_tween.tween_property(self, "scale", _reaction_scale * Vector2(1.08, 0.92), 0.10)
+			_reaction_tween.tween_property(self, "scale", _reaction_scale * Vector2(0.96, 1.06), 0.12)
+			_reaction_tween.tween_property(self, "scale", _reaction_scale, 0.12)
 		&"brincar", &"jokenpo", &"jogo_da_velha", &"2048":
 			_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(0, -12), 0.14)
 			_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(0, 0), 0.18)
@@ -154,15 +156,15 @@ func play_reaction(action: StringName, reaction_id: StringName = &"") -> void:
 			_reaction_tween.tween_property(self, "rotation", deg_to_rad(6.0), 0.12)
 			_reaction_tween.tween_property(self, "rotation", 0.0, 0.10)
 		&"dar_remedio":
-			_reaction_tween.tween_property(self, "scale", Vector2(0.94, 1.08), 0.16)
-			_reaction_tween.tween_property(self, "scale", Vector2.ONE, 0.18)
+			_reaction_tween.tween_property(self, "scale", _reaction_scale * Vector2(0.94, 1.08), 0.16)
+			_reaction_tween.tween_property(self, "scale", _reaction_scale, 0.18)
 		&"treinar":
 			_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(0, -8), 0.10)
-			_reaction_tween.tween_property(self, "scale", Vector2(1.10, 0.90), 0.10)
+			_reaction_tween.tween_property(self, "scale", _reaction_scale * Vector2(1.10, 0.90), 0.10)
 			_reaction_tween.tween_property(self, "position", _reaction_origin, 0.12)
-			_reaction_tween.tween_property(self, "scale", Vector2.ONE, 0.14)
+			_reaction_tween.tween_property(self, "scale", _reaction_scale, 0.14)
 		&"dormir":
-			_reaction_tween.tween_property(self, "scale", Vector2(0.96, 0.92), 0.18)
+			_reaction_tween.tween_property(self, "scale", _reaction_scale * Vector2(0.96, 0.92), 0.18)
 			_reaction_tween.tween_property(self, "rotation", deg_to_rad(-4.0), 0.14)
 			_reaction_tween.tween_property(self, "rotation", 0.0, 0.16)
 		&"recusa", &"refusal", &"blocked":

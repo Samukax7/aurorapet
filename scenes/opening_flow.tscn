@@ -1,20 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://byuwmehk7mxl6"]
 
-[ext_resource type="Script" path="res://scripts/opening_flow.gd" id="1_opening"]
-[ext_resource type="Texture2D" path="res://assets/UI/auroralogo.png" id="2_logo"]
-[ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_Luz.png" id="3_egg_luz"]
-[ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_trevas.png" id="4_egg_trevas"]
-[ext_resource type="Texture2D" path="res://assets/UI/minigames/ovos/ovo_cosmico_neutro.png" id="5_egg_neutro"]
-[ext_resource type="Texture2D" path="res://assets/fundo/aurorapet-deepworld-intro-no-platform.png" id="6_intro_bg"]
-[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_gif_full_240frames_160px.png" id="7_presenter_idle"]
-[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_gif_full_240frames_160px.png" id="8_presenter_pointing"]
-[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_gif_full_240frames_160px.png" id="9_presenter_close"]
-[ext_resource type="Texture2D" path="res://assets/console/controles/dpad.png" id="10_dpad"]
-[ext_resource type="Texture2D" path="res://assets/console/controles/button_green.png" id="11_green"]
-[ext_resource type="Texture2D" path="res://assets/console/controles/button_pink.png" id="12_pink"]
-[ext_resource type="Texture2D" path="res://assets/console/controles/button_yellow.png" id="13_yellow"]
-[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_welcome.wav" id="14_sfx_welcome"]
-[ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_intro_eva.wav" id="15_sfx_intro_eva"]
+[ext_resource type="Script" uid="uid://5sseffm638lr" path="res://scripts/opening_flow.gd" id="1_opening"]
+[ext_resource type="Texture2D" uid="uid://jx21ct38fqw4" path="res://assets/UI/auroralogo.png" id="2_logo"]
+[ext_resource type="Texture2D" uid="uid://d03lp57judsj6" path="res://assets/UI/minigames/ovos/ovo_cosmico_Luz_static.png" id="3_egg_luz"]
+[ext_resource type="Texture2D" uid="uid://xtnp1sasog4d" path="res://assets/UI/minigames/ovos/ovo_cosmico_trevas_static.png" id="4_egg_trevas"]
+[ext_resource type="Texture2D" uid="uid://daduwj50vytl" path="res://assets/UI/minigames/ovos/ovo_cosmico_neutro_static.png" id="5_egg_neutro"]
+[ext_resource type="Texture2D" uid="uid://n6r4wbl8e0cr" path="res://assets/fundo/aurorapet-deepworld-intro-no-platform.png" id="6_intro_bg"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_256frames_320x256.png" id="9_presenter_close"]
+[ext_resource type="Texture2D" uid="uid://blge37k2650gg" path="res://assets/console/controles/dpad.png" id="10_dpad"]
+[ext_resource type="Texture2D" uid="uid://tpbqt0qqrj84" path="res://assets/console/controles/button_green.png" id="11_green"]
+[ext_resource type="Texture2D" uid="uid://bdmuu73hg762b" path="res://assets/console/controles/button_pink.png" id="12_pink"]
+[ext_resource type="Texture2D" uid="uid://c6xglxy1a0ygj" path="res://assets/console/controles/button_yellow.png" id="13_yellow"]
+[ext_resource type="AudioStream" uid="uid://cc4fn13qyxndn" path="res://assets/audio/aurorapet_sfx_welcome.wav" id="14_sfx_welcome"]
+[ext_resource type="AudioStream" uid="uid://x4upu1l7gukq" path="res://assets/audio/aurorapet_sfx_intro_eva.wav" id="15_sfx_intro_eva"]
+[ext_resource type="Texture2D" uid="uid://bjyk1ubxubmk" path="res://assets/branding/lukas_logo.png" id="16_user_logo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_MenuPanel"]
 bg_color = Color(0.97, 0.98, 1, 0.98)
@@ -30,19 +29,29 @@ corner_radius_bottom_left = 18
 shadow_color = Color(0.1, 0.15, 0.25, 0.28)
 shadow_size = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_StoryPanel"]
-bg_color = Color(0, 0, 0, 0)
-border_width_left = 0
-border_width_top = 0
-border_width_right = 0
-border_width_bottom = 0
-border_color = Color(0, 0, 0, 0)
-corner_radius_top_left = 0
-corner_radius_top_right = 0
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
-shadow_color = Color(0, 0, 0, 0)
-shadow_size = 0
+[sub_resource type="StyleBoxFlat" id="StyleBox_Button"]
+bg_color = Color(0.1, 0.2, 0.36, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.36, 0.76, 0.9, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_ButtonHover"]
+bg_color = Color(0.17, 0.42, 0.58, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.84, 0.34, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_FactionPanel"]
 bg_color = Color(0.035, 0.075, 0.19, 0.98)
@@ -73,56 +82,9 @@ shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 14
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_EggPanel"]
-bg_color = Color(0.025, 0.06, 0.15, 0.0)
-border_width_left = 0
-border_width_top = 0
-border_width_right = 0
-border_width_bottom = 0
-border_color = Color(1, 0.77, 0.3, 0.0)
-corner_radius_top_left = 0
-corner_radius_top_right = 0
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
+bg_color = Color(0.025, 0.06, 0.15, 0)
+border_color = Color(1, 0.77, 0.3, 0)
 shadow_color = Color(0, 0, 0, 0)
-shadow_size = 0
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_StatusPanel"]
-bg_color = Color(0.97, 0.98, 1, 0.99)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.45, 0.72, 0.86, 1)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
-shadow_color = Color(0.04, 0.08, 0.18, 0.32)
-shadow_size = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_Button"]
-bg_color = Color(0.1, 0.2, 0.36, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.36, 0.76, 0.9, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_ButtonHover"]
-bg_color = Color(0.17, 0.42, 0.58, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 0.84, 0.34, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_ProgressTrack"]
 bg_color = Color(0.06, 0.12, 0.22, 1)
@@ -143,7 +105,21 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[node name="OpeningFlow" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBox_StatusPanel"]
+bg_color = Color(0.97, 0.98, 1, 0.99)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.45, 0.72, 0.86, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.04, 0.08, 0.18, 0.32)
+shadow_size = 12
+
+[node name="OpeningFlow" type="Control" unique_id=229933526]
 z_index = 30
 layout_mode = 3
 anchors_preset = 15
@@ -154,7 +130,7 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_opening")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1441964985]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -162,276 +138,313 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(1, 1, 1, 1)
 
-[node name="IntroBackdrop" type="TextureRect" parent="."]
+[node name="IntroBackdrop" type="TextureRect" parent="." unique_id=1054120871]
 visible = false
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture_filter = 1
+mouse_filter = 2
 texture = ExtResource("6_intro_bg")
 expand_mode = 1
 stretch_mode = 6
-mouse_filter = 2
 
-[node name="Logo" type="Label" parent="."]
-visible = false
-
-[node name="LogoImage" type="TextureRect" parent="."]
+[node name="Logo" type="Label" parent="." unique_id=1622241613]
 visible = false
 layout_mode = 0
+
+[node name="UserLogoImage" type="TextureRect" parent="." unique_id=2106261186]
+texture_filter = 1
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -410.27933
-offset_top = -162.699387
-offset_right = 410.27933
-offset_bottom = 162.699387
+offset_left = -492.0
+offset_top = -263.0
+offset_right = -181.99997
+offset_bottom = 47.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1.2547756, 1.1188921)
+mouse_filter = 2
+texture = ExtResource("16_user_logo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LogoImage" type="TextureRect" parent="." unique_id=636083180]
+visible = false
 texture_filter = 1
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -410.27933
+offset_top = -162.69939
+offset_right = 410.27933
+offset_bottom = 162.69939
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("2_logo")
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
-[node name="LogoSubtitle" type="Label" parent="."]
+[node name="LogoSubtitle" type="Label" parent="." unique_id=1522651106]
 visible = false
+layout_mode = 0
 
-[node name="MenuPanel" type="Panel" parent="."]
+[node name="MenuPanel" type="Panel" parent="." unique_id=568526618]
 visible = false
-offset_left = 84.469274
+layout_mode = 0
+offset_left = 84.46928
 offset_top = 57.423313
-offset_right = 995.530726
-offset_bottom = 593.374233
+offset_right = 995.5307
+offset_bottom = 593.3742
 theme_override_styles/panel = SubResource("StyleBox_MenuPanel")
 
-[node name="Title" type="Label" parent="MenuPanel"]
-offset_left = 48.268156
+[node name="Title" type="Label" parent="MenuPanel" unique_id=889978949]
+layout_mode = 0
+offset_left = 48.268154
 offset_top = 27.116564
-offset_right = 862.793296
-offset_bottom = 73.374233
+offset_right = 862.7933
+offset_bottom = 73.37423
 theme_override_colors/font_color = Color(0.15, 0.26, 0.62, 1)
 theme_override_font_sizes/font_size = 40
 text = "AURORAPETS"
 horizontal_alignment = 1
 
-[node name="Menu" type="VBoxContainer" parent="MenuPanel"]
-offset_left = 150.837989
-offset_top = 115.644172
-offset_right = 778.324022
-offset_bottom = 398.773006
+[node name="Menu" type="VBoxContainer" parent="MenuPanel" unique_id=1689568885]
+layout_mode = 0
+offset_left = 150.83798
+offset_top = 115.64417
+offset_right = 778.32404
+offset_bottom = 398.773
 theme_override_constants/separation = 12
 
-[node name="Start" type="Button" parent="MenuPanel/Menu"]
+[node name="Start" type="Button" parent="MenuPanel/Menu" unique_id=1322445443]
 custom_minimum_size = Vector2(520, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBox_Button")
-theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 theme_override_styles/pressed = SubResource("StyleBox_ButtonHover")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "START"
 
-[node name="Continue" type="Button" parent="MenuPanel/Menu"]
-visible = false
+[node name="Continue" type="Button" parent="MenuPanel/Menu" unique_id=1979498602]
 custom_minimum_size = Vector2(520, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBox_Button")
-theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 theme_override_styles/pressed = SubResource("StyleBox_ButtonHover")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "CONTINUE"
 
-[node name="Options" type="Button" parent="MenuPanel/Menu"]
+[node name="Options" type="Button" parent="MenuPanel/Menu" unique_id=829609576]
 custom_minimum_size = Vector2(520, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBox_Button")
-theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 theme_override_styles/pressed = SubResource("StyleBox_ButtonHover")
+theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "OPTIONS"
 
-[node name="Notice" type="Label" parent="MenuPanel"]
-offset_left = 66.368715
-offset_top = 458.588957
-offset_right = 844.692737
-offset_bottom = 522.392638
+[node name="Notice" type="Label" parent="MenuPanel" unique_id=436273496]
+layout_mode = 0
+offset_left = 66.36871
+offset_top = 458.58896
+offset_right = 844.69275
+offset_bottom = 522.39264
 theme_override_colors/font_color = Color(0.28, 0.4, 0.58, 1)
 theme_override_font_sizes/font_size = 20
 text = "D-PAD: NAVEGAR   •   VERDE: CONFIRMAR"
 horizontal_alignment = 1
 
-[node name="AccessCodePanel" type="Panel" parent="."]
+[node name="AccessCodePanel" type="Panel" parent="." unique_id=1833316892]
 visible = false
-offset_left = 120.670391
-offset_top = 99.693252
-offset_right = 959.329609
-offset_bottom = 510.429448
+layout_mode = 0
+offset_left = 120.67039
+offset_top = 99.69325
+offset_right = 959.3296
+offset_bottom = 510.42944
 theme_override_styles/panel = SubResource("StyleBox_FactionPanel")
 
-[node name="Title" type="Label" parent="AccessCodePanel"]
-offset_left = 42.234637
+[node name="Title" type="Label" parent="AccessCodePanel" unique_id=1014358797]
+layout_mode = 0
+offset_left = 42.23464
 offset_top = 23.92638
-offset_right = 796.424581
-offset_bottom = 62.208589
+offset_right = 796.42456
+offset_bottom = 62.208588
 theme_override_colors/font_color = Color(0.75, 0.97, 1, 1)
 theme_override_font_sizes/font_size = 28
 text = "CHAVE DE ACESSO CÓSMICA"
 horizontal_alignment = 1
 
-[node name="Body" type="Label" parent="AccessCodePanel"]
-offset_left = 54.301676
-offset_top = 83.742331
-offset_right = 784.357542
-offset_bottom = 143.558282
+[node name="Body" type="Label" parent="AccessCodePanel" unique_id=431167955]
+layout_mode = 0
+offset_left = 54.301678
+offset_top = 83.74233
+offset_right = 784.35754
+offset_bottom = 143.55829
 theme_override_colors/font_color = Color(0.82, 0.92, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "Digite a chave de 3 caracteres do protótipo.\nA chave gera uma identidade procedural a partir da seed.\nDEV inicia EVA em modo de teste, sem história ou ovo."
+text = "Digite a chave de 3 caracteres do protótipo.
+A chave gera uma identidade procedural a partir da seed.
+DEV inicia EVA em modo de teste, sem história ou ovo."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Code" type="LineEdit" parent="AccessCodePanel"]
-offset_left = 295.642458
-offset_top = 171.472393
-offset_right = 543.01676
-offset_bottom = 219.325153
+[node name="Code" type="LineEdit" parent="AccessCodePanel" unique_id=1696017381]
+layout_mode = 0
+offset_left = 295.64246
+offset_top = 171.4724
+offset_right = 543.0168
+offset_bottom = 219.32515
 theme_override_colors/font_color = Color(1, 0.84, 0.34, 1)
 theme_override_colors/caret_color = Color(0.45, 0.95, 0.86, 1)
 theme_override_font_sizes/font_size = 32
 placeholder_text = "1WX"
-max_length = 3
 alignment = 1
+max_length = 3
 
-[node name="Message" type="Label" parent="AccessCodePanel"]
-offset_left = 54.301676
-offset_top = 239.263804
-offset_right = 784.357542
-offset_bottom = 279.141104
+[node name="Message" type="Label" parent="AccessCodePanel" unique_id=210191149]
+layout_mode = 0
+offset_left = 54.301678
+offset_top = 239.26381
+offset_right = 784.35754
+offset_bottom = 279.1411
 theme_override_colors/font_color = Color(0.63, 0.84, 0.93, 1)
 theme_override_font_sizes/font_size = 16
 text = "DIGITE 3 CARACTERES • DEV: EVA DE TESTE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Load" type="Button" parent="AccessCodePanel"]
-offset_left = 102.569832
-offset_top = 307.055215
-offset_right = 362.011173
-offset_bottom = 354.907975
+[node name="Load" type="Button" parent="AccessCodePanel" unique_id=1318146945]
+layout_mode = 0
+offset_left = 102.56983
+offset_top = 307.0552
+offset_right = 362.01117
+offset_bottom = 354.908
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "CARREGAR"
 
-[node name="Cancel" type="Button" parent="AccessCodePanel"]
-offset_left = 476.648045
-offset_top = 307.055215
-offset_right = 736.089385
-offset_bottom = 354.907975
+[node name="Cancel" type="Button" parent="AccessCodePanel" unique_id=297700285]
+layout_mode = 0
+offset_left = 476.64804
+offset_top = 307.0552
+offset_right = 736.08936
+offset_bottom = 354.908
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "VOLTAR"
 
-[node name="Hint" type="Label" parent="AccessCodePanel"]
-offset_left = 42.234637
-offset_top = 370.858896
-offset_right = 796.424581
-offset_bottom = 398.773006
+[node name="Hint" type="Label" parent="AccessCodePanel" unique_id=479263702]
+layout_mode = 0
+offset_left = 42.23464
+offset_top = 370.8589
+offset_right = 796.42456
+offset_bottom = 398.773
 theme_override_colors/font_color = Color(0.62, 0.8, 0.93, 1)
 theme_override_font_sizes/font_size = 18
 text = "VERDE: CARREGAR   •   ROSA: VOLTAR"
 horizontal_alignment = 1
 
-[node name="StoryPanel" type="Panel" parent="."]
+[node name="StoryPanel" type="Panel" parent="." unique_id=1517071084]
 visible = false
 z_index = 6
-offset_left = 380.111732
-offset_top = 71.779141
-offset_right = 1049.832402
-offset_bottom = 582.208589
+layout_mode = 0
+offset_left = 380.11172
+offset_top = 71.779144
+offset_right = 1049.8324
+offset_bottom = 582.2086
 theme_override_styles/panel = SubResource("StyleBox_TextCard")
 
-[node name="Page" type="Label" parent="StoryPanel"]
+[node name="Page" type="Label" parent="StoryPanel" unique_id=1820130549]
+layout_mode = 0
 offset_left = 38.614525
 offset_top = 19.141104
-offset_right = 643.173184
-offset_bottom = 55.828221
+offset_right = 643.17316
+offset_bottom = 55.82822
 theme_override_colors/font_color = Color(0.75, 0.97, 1, 1)
 theme_override_font_sizes/font_size = 25
 text = "DEEPWORLD 1 / 2"
 horizontal_alignment = 1
 
-[node name="Body" type="Label" parent="StoryPanel"]
-offset_left = 36.201117
-offset_top = 83.742331
-offset_right = 633.519553
-offset_bottom = 386.809816
+[node name="Body" type="Label" parent="StoryPanel" unique_id=291061789]
+layout_mode = 0
+offset_left = 36.20112
+offset_top = 83.74233
+offset_right = 633.51953
+offset_bottom = 386.8098
 theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 24
 text = "HISTÓRIA AQUI"
-autowrap_mode = 2
 horizontal_alignment = 1
-vertical_alignment = 0
+autowrap_mode = 2
 
-[node name="Back" type="Button" parent="StoryPanel"]
-offset_left = 45.854749
-offset_top = 414.723926
-offset_right = 295.642458
-offset_bottom = 458.588957
+[node name="Back" type="Button" parent="StoryPanel" unique_id=154770201]
+layout_mode = 0
+offset_left = 47.888287
+offset_top = 443.22086
+offset_right = 297.676
+offset_bottom = 487.08588
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "VOLTAR"
 
-[node name="Next" type="Button" parent="StoryPanel"]
-offset_left = 386.145251
-offset_top = 446.625767
-offset_right = 635.932961
-offset_bottom = 490.490798
+[node name="Next" type="Button" parent="StoryPanel" unique_id=452660487]
+layout_mode = 0
+offset_left = 386.14526
+offset_top = 446.62576
+offset_right = 635.933
+offset_bottom = 490.49078
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "PRÓXIMA"
 
-[node name="EggPanel" type="Panel" parent="."]
-visible = false
+[node name="EggPanel" type="Panel" parent="." unique_id=1547976144]
 z_index = 6
-offset_left = 229.273743
-offset_top = 95.705521
-offset_right = 850.726257
-offset_bottom = 542.331288
+layout_mode = 0
+offset_left = 245.0
+offset_top = 11.0
+offset_right = 866.4525
+offset_bottom = 457.6258
 theme_override_styles/panel = SubResource("StyleBox_EggPanel")
 
-[node name="Title" type="Label" parent="EggPanel"]
-visible = false
-offset_left = 36.201117
-offset_top = 22.331288
-offset_right = 585.251397
-offset_bottom = 55.828221
+[node name="Title" type="Label" parent="EggPanel" unique_id=403635766]
+layout_mode = 0
+offset_left = 36.20112
+offset_top = 22.331287
+offset_right = 585.2514
+offset_bottom = 55.82822
 theme_override_colors/font_color = Color(1, 0.84, 0.4, 1)
 theme_override_font_sizes/font_size = 32
 text = "NASCIMENTO DEEPMON"
 horizontal_alignment = 1
 
-[node name="Egg" type="Label" parent="EggPanel"]
-visible = false
-offset_left = 96.536313
-offset_top = 99.693252
-offset_right = 524.916201
-offset_bottom = 263.190184
+[node name="Egg" type="Label" parent="EggPanel" unique_id=747809549]
+layout_mode = 0
+offset_left = 96.536316
+offset_top = 99.69325
+offset_right = 524.9162
+offset_bottom = 263.1902
 theme_override_colors/font_color = Color(0.82, 0.93, 1, 1)
 theme_override_colors/font_outline_color = Color(0.2, 0.55, 0.8, 1)
 theme_override_constants/outline_size = 8
@@ -440,391 +453,434 @@ text = "OVO"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Progress" type="ProgressBar" parent="EggPanel"]
-offset_left = 66.368715
-offset_top = 65.398773
-offset_right = 555.083799
-offset_bottom = 92.515337
+[node name="Progress" type="ProgressBar" parent="EggPanel" unique_id=280145479]
+layout_mode = 0
+offset_left = 66.36871
+offset_top = 65.39877
+offset_right = 555.0838
+offset_bottom = 92.515335
 theme_override_styles/background = SubResource("StyleBox_ProgressTrack")
 theme_override_styles/fill = SubResource("StyleBox_ProgressFill")
-value = 0.0
 show_percentage = false
 
-[node name="Hint" type="Label" parent="EggPanel"]
-offset_left = 36.201117
-offset_top = 97.300613
-offset_right = 585.251397
+[node name="Hint" type="Label" parent="EggPanel" unique_id=984688285]
+layout_mode = 0
+offset_left = 36.20112
+offset_top = 97.30061
+offset_right = 585.2514
 offset_bottom = 133.98773
 theme_override_colors/font_color = Color(0.65, 0.85, 0.95, 1)
 theme_override_font_sizes/font_size = 20
 text = "APERTE VERDE PARA AJUDAR O OVO A CHOCAR"
 horizontal_alignment = 1
 
-[node name="HitButton" type="Button" parent="EggPanel"]
+[node name="HitButton" type="Button" parent="EggPanel" unique_id=501905878]
 modulate = Color(1, 1, 1, 0)
-offset_left = 102.569832
-offset_top = 235.276074
-offset_right = 518.882682
-offset_bottom = 458.588957
+layout_mode = 0
+offset_left = 102.56983
+offset_top = 235.27608
+offset_right = 518.8827
+offset_bottom = 458.58896
 mouse_default_cursor_shape = 2
 flat = true
 
-[node name="EggImage" type="TextureRect" parent="."]
-visible = false
-offset_left = 450.0
-offset_top = 360.0
-offset_right = 630.0
-offset_bottom = 540.0
-scale = Vector2(1, 0.68)
-pivot_offset = Vector2(0, 0)
+[node name="EggImage" type="TextureRect" parent="." unique_id=1508299124]
 texture_filter = 1
+layout_mode = 0
+offset_left = 469.0
+offset_top = 372.00003
+offset_right = 679.0
+offset_bottom = 582.0
+scale = Vector2(2.3557396, 1.605168)
+pivot_offset = Vector2(105, 105)
+mouse_filter = 2
 texture = ExtResource("5_egg_neutro")
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
-[node name="PetStatusPanel" type="Panel" parent="."]
+[node name="PetStatusPanel" type="Panel" parent="." unique_id=1274211994]
 visible = false
 z_index = 6
-offset_left = 120.670391
-offset_top = 75.766871
-offset_right = 959.329609
-offset_bottom = 550.306748
+layout_mode = 0
+offset_left = 121.0
+offset_top = 109.0
+offset_right = 959.6592
+offset_bottom = 583.5399
 theme_override_styles/panel = SubResource("StyleBox_StatusPanel")
 
-[node name="Title" type="Label" parent="PetStatusPanel"]
-offset_left = 42.234637
+[node name="Title" type="Label" parent="PetStatusPanel" unique_id=822095854]
+layout_mode = 0
+offset_left = 42.23464
 offset_top = 19.141104
-offset_right = 796.424581
+offset_right = 796.42456
 offset_bottom = 49.447853
 theme_override_colors/font_color = Color(0.18, 0.35, 0.72, 1)
 theme_override_font_sizes/font_size = 32
 text = "FICHA DO DEEPMON"
 horizontal_alignment = 1
 
-[node name="Identity" type="Label" parent="PetStatusPanel"]
-offset_left = 259.441341
-offset_top = 65.398773
-offset_right = 784.357542
-offset_bottom = 203.374233
+[node name="Identity" type="Label" parent="PetStatusPanel" unique_id=744869696]
+layout_mode = 0
+offset_left = 160.0
+offset_top = 63.0
+offset_right = 684.9162
+offset_bottom = 200.97546
 theme_override_colors/font_color = Color(0.12, 0.16, 0.28, 1)
 theme_override_font_sizes/font_size = 20
-text = "NOME\nFACÇÃO\nLINHAGEM\nELEMENTO"
+text = "NOME
+FACÇÃO
+LINHAGEM
+ELEMENTO"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Attributes" type="Label" parent="PetStatusPanel"]
-offset_left = 259.441341
-offset_top = 223.312883
-offset_right = 784.357542
-offset_bottom = 334.969325
+[node name="Attributes" type="Label" parent="PetStatusPanel" unique_id=1156065009]
+layout_mode = 0
+offset_left = 153.0
+offset_top = 223.00002
+offset_right = 677.9162
+offset_bottom = 334.65646
 theme_override_colors/font_color = Color(0.12, 0.24, 0.46, 1)
 theme_override_font_sizes/font_size = 24
-text = "NÍVEL 1   XP 0\nFORÇA 10   DEFESA 10\nAGILIDADE 10   INTELIGÊNCIA 10"
+text = "NÍVEL 1   XP 0
+FORÇA 10   DEFESA 10
+AGILIDADE 10   INTELIGÊNCIA 10"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Hint" type="Label" parent="PetStatusPanel"]
-offset_left = 42.234637
-offset_top = 366.871166
-offset_right = 796.424581
-offset_bottom = 398.773006
+[node name="Hint" type="Label" parent="PetStatusPanel" unique_id=370005371]
+layout_mode = 0
+offset_left = 42.000004
+offset_top = 405.0
+offset_right = 796.18994
+offset_bottom = 439.0
 theme_override_colors/font_color = Color(0.28, 0.4, 0.58, 1)
 theme_override_font_sizes/font_size = 24
 text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
 horizontal_alignment = 1
 
-[node name="ExitButton" type="Button" parent="PetStatusPanel"]
+[node name="ExitButton" type="Button" parent="PetStatusPanel" unique_id=1293472677]
 modulate = Color(1, 1, 1, 0)
-offset_left = 217.206704
-offset_top = 342.944785
-offset_right = 621.452514
-offset_bottom = 434.662577
+layout_mode = 0
+offset_left = 216.99998
+offset_top = 440.0
+offset_right = 621.2458
+offset_bottom = 531.7178
 mouse_default_cursor_shape = 2
 flat = true
 
-
-[node name="ControlsPanel" type="Panel" parent="."]
+[node name="ControlsPanel" type="Panel" parent="." unique_id=1397921496]
 visible = false
 z_index = 6
-offset_left = 362.011173
-offset_top = 83.742331
-offset_right = 1043.798883
-offset_bottom = 562.269939
+layout_mode = 0
+offset_left = 362.01117
+offset_top = 83.74233
+offset_right = 1043.7988
+offset_bottom = 562.26996
 theme_override_styles/panel = SubResource("StyleBox_TextCard")
 
-[node name="Title" type="Label" parent="ControlsPanel"]
+[node name="Title" type="Label" parent="ControlsPanel" unique_id=307743419]
+layout_mode = 0
 offset_left = 38.614525
 offset_top = 19.141104
-offset_right = 643.173184
-offset_bottom = 55.828221
+offset_right = 643.17316
+offset_bottom = 55.82822
 theme_override_colors/font_color = Color(0.75, 0.97, 1, 1)
 theme_override_font_sizes/font_size = 26
 text = "COMO JOGAR"
 horizontal_alignment = 1
 
-[node name="Body" type="Label" parent="ControlsPanel"]
+[node name="Body" type="Label" parent="ControlsPanel" unique_id=1489644159]
 visible = false
+layout_mode = 0
 offset_left = 50.681564
-offset_top = 79.754601
-offset_right = 631.106145
-offset_bottom = 338.957055
+offset_top = 79.7546
+offset_right = 631.10614
+offset_bottom = 338.95706
 theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 22
-text = "D-PAD\nNavegar pelos menus e escolher uma opção.\n\nVERDE\nConfirmar, abrir e realizar uma ação.\n\nROSA\nVoltar ou cancelar.\n\nAMARELO\nVoltar em áreas compatíveis."
+text = "D-PAD
+Navegar pelos menus e escolher uma opção.
+
+VERDE
+Confirmar, abrir e realizar uma ação.
+
+ROSA
+Voltar ou cancelar.
+
+AMARELO
+Voltar em áreas compatíveis."
 vertical_alignment = 1
 
-[node name="Back" type="Button" parent="ControlsPanel"]
-offset_left = 45.854749
-offset_top = 442.638037
-offset_right = 295.642458
-offset_bottom = 486.503067
+[node name="Back" type="Button" parent="ControlsPanel" unique_id=546625834]
+layout_mode = 0
+offset_left = 43.988842
+offset_top = 414.25766
+offset_right = 293.77655
+offset_bottom = 458.12268
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "VOLTAR"
 
-[node name="Next" type="Button" parent="ControlsPanel"]
-offset_left = 386.145251
-offset_top = 442.638037
-offset_right = 635.932961
-offset_bottom = 486.503067
+[node name="Next" type="Button" parent="ControlsPanel" unique_id=484143771]
+layout_mode = 0
+offset_left = 390.98883
+offset_top = 414.25766
+offset_right = 640.77655
+offset_bottom = 458.12268
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "PRÓXIMA"
 
-[node name="PresenterSprite" type="Sprite2D" parent="."]
-visible = false
-z_index = 5
-position = Vector2(223.240223, 514.417178)
-scale = Vector2(2.4, 2.4)
+[node name="DPadIcon" type="TextureRect" parent="ControlsPanel" unique_id=952625657]
 texture_filter = 1
-texture = ExtResource("7_presenter_idle")
-hframes = 16
-vframes = 15
-frame = 0
+layout_mode = 0
+offset_left = 33.988815
+offset_top = 87.25767
+offset_right = 130.52513
+offset_bottom = 151.06134
+texture = ExtResource("10_dpad")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="GuideSprite" type="Sprite2D" parent="."]
-visible = false
-z_index = 5
-position = Vector2(174.972067, 370.0)
-scale = Vector2(2.2, 2.2)
-texture_filter = 1
-texture = ExtResource("8_presenter_pointing")
-hframes = 16
-vframes = 15
-frame = 0
+[node name="DPadLabel" type="Label" parent="ControlsPanel" unique_id=73101504]
+layout_mode = 0
+offset_left = 122.98883
+offset_top = 91.257675
+offset_right = 575.5028
+offset_bottom = 148.25768
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 19
+text = "D-PAD
+Navegar e escolher"
+vertical_alignment = 1
 
-[node name="StatusSprite" type="Sprite2D" parent="."]
-visible = false
-z_index = 7
-position = Vector2(820.558659, 442.638037)
-scale = Vector2(2.2, 2.2)
+[node name="GreenIcon" type="TextureRect" parent="ControlsPanel" unique_id=1408511264]
 texture_filter = 1
+layout_mode = 0
+offset_left = 50.681564
+offset_top = 163.49693
+offset_right = 111.01676
+offset_bottom = 203.37424
+texture = ExtResource("11_green")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GreenLabel" type="Label" parent="ControlsPanel" unique_id=1201129606]
+layout_mode = 0
+offset_left = 126.70391
+offset_top = 163.49693
+offset_right = 331.84357
+offset_bottom = 203.37424
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "VERDE
+Confirmar"
+vertical_alignment = 1
+
+[node name="PinkIcon" type="TextureRect" parent="ControlsPanel" unique_id=1986868856]
+texture_filter = 1
+layout_mode = 0
+offset_left = 53.98883
+offset_top = 294.2577
+offset_right = 114.324036
+offset_bottom = 334.135
+texture = ExtResource("12_pink")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PinkLabel" type="Label" parent="ControlsPanel" unique_id=1214144731]
+layout_mode = 0
+offset_left = 127.98883
+offset_top = 294.2577
+offset_right = 335.54193
+offset_bottom = 349.2577
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "ROSA
+Voltar"
+vertical_alignment = 1
+
+[node name="YellowIcon" type="TextureRect" parent="ControlsPanel" unique_id=1642463944]
+texture_filter = 1
+layout_mode = 0
+offset_left = 50.681564
+offset_top = 227.30061
+offset_right = 111.01676
+offset_bottom = 267.17792
+texture = ExtResource("13_yellow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="YellowLabel" type="Label" parent="ControlsPanel" unique_id=702415104]
+layout_mode = 0
+offset_left = 127.98882
+offset_top = 229.25768
+offset_right = 616.7039
+offset_bottom = 284.2577
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "AMARELO
+Voltar em áreas compatíveis"
+vertical_alignment = 1
+
+[node name="PresenterSprite" type="Sprite2D" parent="." unique_id=2060804429]
+z_index = 5
+texture_filter = 1
+position = Vector2(190, 491.00006)
+scale = Vector2(2.7700598, 2.457402)
 texture = ExtResource("9_presenter_close")
 hframes = 16
-vframes = 15
-frame = 0
+vframes = 16
 
+[node name="GuideSprite" type="Sprite2D" parent="." unique_id=1305530704]
+z_index = 5
+texture_filter = 1
+position = Vector2(166, 625)
+scale = Vector2(2.2, 2.48)
+texture = ExtResource("9_presenter_close")
+hframes = 16
+vframes = 16
 
-[node name="ControlsSpeechBubble" type="Panel" parent="."]
-visible = false
+[node name="StatusSprite" type="Sprite2D" parent="." unique_id=2130777426]
 z_index = 7
-offset_left = 30.167598
-offset_top = 43.865031
-offset_right = 349.944134
-offset_bottom = 195.398773
+texture_filter = 1
+position = Vector2(938.00006, 498)
+scale = Vector2(2.2, 2.526298)
+texture = ExtResource("9_presenter_close")
+hframes = 16
+vframes = 16
+
+[node name="ControlsSpeechBubble" type="Panel" parent="." unique_id=809522842]
+z_index = 7
+layout_mode = 0
+offset_left = 34.0
+offset_top = 91.0
+offset_right = 353.77652
+offset_bottom = 242.53374
+scale = Vector2(0.7980678, 1.5600338)
 theme_override_styles/panel = SubResource("StyleBox_TextCard")
 
-[node name="Body" type="Label" parent="ControlsSpeechBubble"]
+[node name="Body" type="Label" parent="ControlsSpeechBubble" unique_id=473065167]
+layout_mode = 0
 offset_left = 21.72067
 offset_top = 12.760736
-offset_right = 298.055866
-offset_bottom = 138.773006
+offset_right = 298.05588
+offset_bottom = 138.77301
+scale = Vector2(0.9648139, 0.631525)
 theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 18
-text = "Olá!\n\nUse os controles para explorar o Deepworld.\n\nEscolha uma opção e confirme quando estiver pronto."
+text = "Olá!
+
+Use os controles para explorar o Deepworld.
+
+Escolha uma opção e confirme quando estiver pronto."
+vertical_alignment = 1
 autowrap_mode = 2
-vertical_alignment = 1
 
-[node name="DPadIcon" type="TextureRect" parent="ControlsPanel"]
-offset_left = 50.681564
-offset_top = 83.742331
-offset_right = 147.217877
-offset_bottom = 147.546012
-texture_filter = 1
-texture = ExtResource("10_dpad")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="DPadLabel" type="Label" parent="ControlsPanel"]
-offset_left = 162.905028
-offset_top = 91.717791
-offset_right = 615.418994
-offset_bottom = 143.558282
-theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
-theme_override_font_sizes/font_size = 19
-text = "D-PAD\nNavegar e escolher"
-vertical_alignment = 1
-
-[node name="GreenIcon" type="TextureRect" parent="ControlsPanel"]
-offset_left = 50.681564
-offset_top = 163.496933
-offset_right = 111.01676
-offset_bottom = 203.374233
-texture_filter = 1
-texture = ExtResource("11_green")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="GreenLabel" type="Label" parent="ControlsPanel"]
-offset_left = 126.703911
-offset_top = 163.496933
-offset_right = 331.843575
-offset_bottom = 203.374233
-theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
-theme_override_font_sizes/font_size = 18
-text = "VERDE\nConfirmar"
-vertical_alignment = 1
-
-[node name="PinkIcon" type="TextureRect" parent="ControlsPanel"]
-offset_left = 352.357542
-offset_top = 163.496933
-offset_right = 412.692737
-offset_bottom = 203.374233
-texture_filter = 1
-texture = ExtResource("12_pink")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="PinkLabel" type="Label" parent="ControlsPanel"]
-offset_left = 428.379888
-offset_top = 163.496933
-offset_right = 635.932961
-offset_bottom = 203.374233
-theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
-theme_override_font_sizes/font_size = 18
-text = "ROSA\nVoltar"
-vertical_alignment = 1
-
-[node name="YellowIcon" type="TextureRect" parent="ControlsPanel"]
-offset_left = 50.681564
-offset_top = 227.300613
-offset_right = 111.01676
-offset_bottom = 267.177914
-texture_filter = 1
-texture = ExtResource("13_yellow")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="YellowLabel" type="Label" parent="ControlsPanel"]
-offset_left = 126.703911
-offset_top = 227.300613
-offset_right = 615.418994
-offset_bottom = 267.177914
-theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
-theme_override_font_sizes/font_size = 18
-text = "AMARELO\nVoltar em áreas compatíveis"
-vertical_alignment = 1
-
-
-[node name="EggSelectionPanel" type="Panel" parent="."]
+[node name="EggSelectionPanel" type="Panel" parent="." unique_id=112522129]
 visible = false
 z_index = 6
-offset_left = 307.709497
-offset_top = 75.766871
-offset_right = 1049.832402
-offset_bottom = 562.269939
+layout_mode = 0
+offset_left = 307.7095
+offset_top = 75.76687
+offset_right = 1049.8324
+offset_bottom = 562.26996
 theme_override_styles/panel = SubResource("StyleBox_FactionPanel")
 
-[node name="Title" type="Label" parent="EggSelectionPanel"]
+[node name="Title" type="Label" parent="EggSelectionPanel" unique_id=494161284]
+layout_mode = 0
 offset_left = 38.614525
-offset_top = 22.331288
-offset_right = 703.50838
-offset_bottom = 62.208589
+offset_top = 22.331287
+offset_right = 703.50836
+offset_bottom = 62.208588
 theme_override_colors/font_color = Color(0.75, 0.97, 1, 1)
 theme_override_font_sizes/font_size = 27
 text = "ESCOLHA SEU OVO"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="EggSelectionPanel"]
+[node name="Subtitle" type="Label" parent="EggSelectionPanel" unique_id=881098224]
+layout_mode = 0
 offset_left = 38.614525
-offset_top = 70.184049
-offset_right = 703.50838
-offset_bottom = 115.644172
+offset_top = 70.18405
+offset_right = 703.50836
+offset_bottom = 115.64417
 theme_override_colors/font_color = Color(0.62, 0.8, 0.93, 1)
 theme_override_font_sizes/font_size = 18
 text = "Cada ovo carrega uma aura diferente do Deepworld."
 horizontal_alignment = 1
 
-[node name="Options" type="HBoxContainer" parent="EggSelectionPanel"]
+[node name="Options" type="HBoxContainer" parent="EggSelectionPanel" unique_id=1678410794]
+layout_mode = 0
 offset_left = 38.614525
-offset_top = 139.570552
-offset_right = 703.50838
-offset_bottom = 271.165644
+offset_top = 139.57056
+offset_right = 703.50836
+offset_bottom = 271.16565
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Luz" type="Button" parent="EggSelectionPanel/Options"]
+[node name="Luz" type="Button" parent="EggSelectionPanel/Options" unique_id=633744614]
 custom_minimum_size = Vector2(175, 145)
 layout_mode = 2
-icon = ExtResource("3_egg_luz")
-expand_icon = true
-icon_max_width = 64
 theme_override_colors/font_color = Color(0.98, 0.91, 0.54, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "LUZ"
+icon = ExtResource("3_egg_luz")
+expand_icon = true
 
-[node name="Trevas" type="Button" parent="EggSelectionPanel/Options"]
+[node name="Trevas" type="Button" parent="EggSelectionPanel/Options" unique_id=120544756]
 custom_minimum_size = Vector2(175, 145)
 layout_mode = 2
-icon = ExtResource("4_egg_trevas")
-expand_icon = true
-icon_max_width = 64
 theme_override_colors/font_color = Color(0.86, 0.6, 1, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "TREVAS"
+icon = ExtResource("4_egg_trevas")
+expand_icon = true
 
-[node name="Neutro" type="Button" parent="EggSelectionPanel/Options"]
+[node name="Neutro" type="Button" parent="EggSelectionPanel/Options" unique_id=893688048]
 custom_minimum_size = Vector2(175, 145)
 layout_mode = 2
-icon = ExtResource("5_egg_neutro")
-expand_icon = true
-icon_max_width = 64
 theme_override_colors/font_color = Color(0.52, 0.92, 0.86, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBox_Button")
 theme_override_styles/hover = SubResource("StyleBox_ButtonHover")
 text = "NEUTRO"
+icon = ExtResource("5_egg_neutro")
+expand_icon = true
 
-[node name="Hint" type="Label" parent="EggSelectionPanel"]
+[node name="Hint" type="Label" parent="EggSelectionPanel" unique_id=1177097593]
+layout_mode = 0
 offset_left = 38.614525
-offset_top = 304.662577
-offset_right = 703.50838
-offset_bottom = 414.723926
+offset_top = 304.66257
+offset_right = 703.50836
+offset_bottom = 414.72394
 theme_override_colors/font_color = Color(0.63, 0.84, 0.93, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.05, 0.16, 1)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 17
-text = "AURA LUZ\nHarmonia, cura e defesa.\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR"
+text = "AURA LUZ
+Harmonia, cura e defesa.
+
+VERDE: ESCOLHER   •   ROSA: VOLTAR"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WelcomeAudio" type="AudioStreamPlayer" parent="."]
+[node name="WelcomeAudio" type="AudioStreamPlayer" parent="." unique_id=2045147231]
 stream = ExtResource("14_sfx_welcome")
 volume_db = -8.0
 
-[node name="IntroEvaAudio" type="AudioStreamPlayer" parent="."]
+[node name="IntroEvaAudio" type="AudioStreamPlayer" parent="." unique_id=1083439689]
 stream = ExtResource("15_sfx_intro_eva")
 volume_db = -9.0

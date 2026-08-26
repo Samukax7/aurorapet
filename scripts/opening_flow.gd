@@ -9,11 +9,19 @@ signal flow_completed
 
 const SAVE_PATH := "user://aurorapet_save.json"
 const HATCH_HITS_REQUIRED := 8
+const HATCH_FRAME_COUNT := 6
+const HATCH_FRAME_DURATION := 0.16
+const HATCH_FINAL_HOLD := 0.45
 const DEVELOPMENT_CODE := "DEV"
 const EGG_TEXTURES := {
-	&"luz": "res://assets/UI/minigames/ovos/ovo_cosmico_Luz.png",
-	&"trevas": "res://assets/UI/minigames/ovos/ovo_cosmico_trevas.png",
-	&"neutro": "res://assets/UI/minigames/ovos/ovo_cosmico_neutro.png",
+	&"luz": "res://assets/UI/minigames/ovos/ovo_cosmico_Luz_static.png",
+	&"trevas": "res://assets/UI/minigames/ovos/ovo_cosmico_trevas_static.png",
+	&"neutro": "res://assets/UI/minigames/ovos/ovo_cosmico_neutro_static.png",
+}
+const EGG_HATCHING_TEXTURES := {
+	&"luz": "res://assets/UI/minigames/ovos/ovo_cosmico_Luz_hatching.png",
+	&"trevas": "res://assets/UI/minigames/ovos/ovo_cosmico_trevas_hatching.png",
+	&"neutro": "res://assets/UI/minigames/ovos/ovo_cosmico_neutro_hatching.png",
 }
 
 var active := true
@@ -24,7 +32,11 @@ var story_page := 0
 var egg_selection_index := 0
 var selected_faction: StringName = &"neutro"
 var development_mode_active := false
+var presentation_audio_active := false
 var hatch_hits := 0
+var hatching := false
+var hatch_animation_elapsed := 0.0
+var hatch_animation_frame := -1
 
 var pet_identity: PetIdentity
 var pet_stats: PetStats
@@ -35,25 +47,31 @@ var deepworld: Node
 var pet_node: Node2D
 var skill_tree: Node
 var pet_save: AuroraPetSave
-var egg_base_position := Vector2(450.0, 360.0)
+var egg_base_position := Vector2(435.0, 280.0)
 var egg_shake_tween: Tween
+var intro_tween: Tween
 var intro_anim_time := 0.0
 
 const INTRO_FPS := 24.0
-const EVA_TRAVEL_FRAME_START := 120
-const EVA_ENTRY_FRAME_COUNT := 40
-const EVA_EXIT_FRAME_COUNT := 72
-const EVA_IDLE_FRAME_START := 192
+const EVA_ATLAS_FRAME_COUNT := 256
+# A entrada usa exclusivamente voo → giro → acomodação (frames 0–95).
+const EVA_PRESENTATION_FRAME_COUNT := 96
+const EVA_TRAVEL_FRAME_START := 0
+const EVA_ENTRY_FRAME_COUNT := 96
+# A saída opcional da ficha usa somente o deslocamento final (frames 176–207).
+const EVA_EXIT_FRAME_START := 176
+const EVA_EXIT_FRAME_COUNT := 32
+# O único trecho em loop é o idle final aprovado (frames 208–255).
+const EVA_IDLE_FRAME_START := 208
 const EVA_IDLE_FRAME_COUNT := 48
-const EVA_IDLE_PINGPONG_COUNT := EVA_IDLE_FRAME_COUNT * 2 - 2
-const EVA_IDLE_BLEND_FRAMES := 18
-const EVA_IDLE_START_SCALE := 1.46
+const EVA_SPRITE_SCALE := 1.8
 const CONTROLS_EVA_Y := 342.0
 const EGG_EVA_Y := 352.0
 const STATUS_EVA_POSITION := Vector2(1015.0, 520.0)
 const STATUS_EVA_EXIT_X := 1242.905
 
 @onready var background: ColorRect = $Background
+@onready var user_logo_image: TextureRect = $UserLogoImage
 @onready var logo: Label = $Logo
 @onready var logo_image: TextureRect = $LogoImage
 @onready var logo_subtitle: Label = $LogoSubtitle
@@ -96,70 +114,66 @@ const STATUS_EVA_EXIT_X := 1242.905
 func _ready() -> void:
 	_connect_buttons()
 	_hide_all_panels()
-	_show_logo()
+	_show_user_logo()
 	set_process(true)
 
 func _process(delta: float) -> void:
 	if not active:
 		return
 	intro_anim_time += delta
+	if state == &"egg" and hatching:
+		_process_hatching_animation(delta)
 	var frame_tick := int(intro_anim_time * INTRO_FPS)
 	var transition_progress := clampf(float(frame_tick) / float(EVA_ENTRY_FRAME_COUNT), 0.0, 1.0)
 	match state:
 		&"story":
-			# Bloco 1: o ciclo de apresentação toca uma vez e depois entra no idle suave.
+			# A apresentação percorre voo → giro → acomodação uma única vez;
+			# depois repete somente o bloco final de idle (208–255).
 			presenter_sprite.flip_h = false
-			if frame_tick < 240:
-				presenter_sprite.frame = frame_tick
-				presenter_sprite.scale = Vector2.ONE * (2.4 + sin(float(frame_tick) * 0.08) * 0.10)
+			if frame_tick < EVA_PRESENTATION_FRAME_COUNT:
+				presenter_sprite.frame = EVA_TRAVEL_FRAME_START + frame_tick
 			else:
-				presenter_sprite.frame = _idle_frame(frame_tick - 240)
-				presenter_sprite.scale = Vector2.ONE * 2.4
+				presenter_sprite.frame = _idle_frame(frame_tick - EVA_PRESENTATION_FRAME_COUNT)
+			presenter_sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
 			presenter_sprite.position.x = lerpf(917.095, 223.240, transition_progress)
 		&"controls":
-			# A entrada termina no idle: não há voo repetindo depois do giro.
 			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, 174.972, false)
 			guide_sprite.position.y = CONTROLS_EVA_Y
 		&"egg_select":
-			# A EVA fica à esquerda, voltada para os ovos e para a descrição da aura.
 			_animate_eva_to_idle(presenter_sprite, frame_tick, 953.296, 223.240, false)
 		&"egg":
-			# A EVA cruza a tela uma vez e termina no canto esquerdo, voltada para o ovo.
 			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, 174.972, false)
 			guide_sprite.position.y = EGG_EVA_Y
 		&"status":
-			# Bloco 3: ciclo completo espelhado; termina com voo para fora da tela.
+			# A ficha também usa a entrada uma vez e, na saída, apenas o trecho
+			# de voo final; nenhum frame do idle é misturado nessa transição.
 			status_sprite.flip_h = true
 			status_sprite.position.y = STATUS_EVA_POSITION.y
-			if frame_tick < 240:
-				status_sprite.frame = frame_tick
-				status_sprite.scale = Vector2.ONE * (2.2 + sin(float(frame_tick) * 0.08) * 0.10)
+			if frame_tick < EVA_PRESENTATION_FRAME_COUNT:
+				status_sprite.frame = EVA_TRAVEL_FRAME_START + frame_tick
+				status_sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
 				status_sprite.position.x = STATUS_EVA_POSITION.x
 			else:
-				var exit_tick := frame_tick - 240
-				status_sprite.frame = EVA_TRAVEL_FRAME_START + (exit_tick % EVA_EXIT_FRAME_COUNT)
-				status_sprite.scale = Vector2.ONE * 2.2
+				var exit_tick := frame_tick - EVA_PRESENTATION_FRAME_COUNT
+				status_sprite.frame = EVA_EXIT_FRAME_START + posmod(exit_tick, EVA_EXIT_FRAME_COUNT)
+				status_sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
 				status_sprite.position.x = lerpf(STATUS_EVA_POSITION.x, STATUS_EVA_EXIT_X, clampf(float(exit_tick) / float(EVA_EXIT_FRAME_COUNT), 0.0, 1.0))
 
 func _idle_frame(elapsed_frames: int) -> int:
-	var phase := posmod(elapsed_frames, EVA_IDLE_PINGPONG_COUNT)
-	if phase >= EVA_IDLE_FRAME_COUNT:
-		phase = EVA_IDLE_PINGPONG_COUNT - phase
-	return EVA_IDLE_FRAME_START + phase
+	return EVA_IDLE_FRAME_START + posmod(elapsed_frames, EVA_IDLE_FRAME_COUNT)
 
 func _animate_eva_to_idle(sprite: Sprite2D, frame_tick: int, start_x: float, end_x: float, face_left: bool) -> void:
 	sprite.flip_h = face_left
 	if frame_tick < EVA_ENTRY_FRAME_COUNT:
 		sprite.frame = EVA_TRAVEL_FRAME_START + frame_tick
-		sprite.scale = Vector2.ONE * 2.2
+		sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
 		sprite.position.x = lerpf(start_x, end_x, clampf(float(frame_tick) / float(EVA_ENTRY_FRAME_COUNT), 0.0, 1.0))
 	else:
 		var idle_tick := frame_tick - EVA_ENTRY_FRAME_COUNT
 		sprite.frame = _idle_frame(idle_tick)
-		# O último frame de pouso é menor que o primeiro idle. Uma breve
-		# interpolação de escala evita o salto que denunciava a troca de bloco.
-		var idle_blend := clampf(float(idle_tick) / float(EVA_IDLE_BLEND_FRAMES), 0.0, 1.0)
-		sprite.scale = Vector2.ONE * lerpf(EVA_IDLE_START_SCALE, 2.2, idle_blend)
+		# O idle é um bloco independente: seu loop nunca retorna aos frames
+		# de voo, giro ou acomodação.
+		sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
 		sprite.position.x = end_x
 
 func configure(identity: PetIdentity, stats: PetStats, skills: PetSkills, randomizer: PetRandomizer, ui: PetUI, world: Node, tree: Node, save_manager: AuroraPetSave = null) -> void:
@@ -224,6 +238,8 @@ func confirm() -> void:
 	if not active:
 		return
 	match state:
+		&"user_logo":
+			_show_logo()
 		&"logo":
 			_show_menu()
 		&"menu":
@@ -245,6 +261,8 @@ func back() -> void:
 	if not active:
 		return
 	match state:
+		&"user_logo":
+			_show_logo()
 		&"logo":
 			_show_menu()
 		&"story":
@@ -260,15 +278,40 @@ func back() -> void:
 		&"status":
 			_finish_flow()
 
+func _show_user_logo() -> void:
+	if intro_tween != null:
+		intro_tween.kill()
+	state = &"user_logo"
+	if welcome_audio != null:
+		welcome_audio.stop()
+	if intro_eva_audio != null:
+		intro_eva_audio.stop()
+	background.color = Color.BLACK
+	_hide_all_panels()
+	user_logo_image.visible = true
+	user_logo_image.modulate = Color(1, 1, 1, 0)
+	var logo_centered_position := Vector2(
+		(size.x - user_logo_image.size.x) * 0.5,
+		(size.y - user_logo_image.size.y) * 0.5
+	)
+	user_logo_image.position = Vector2(logo_centered_position.x, size.y + 40.0)
+	intro_tween = create_tween()
+	intro_tween.tween_property(user_logo_image, "position", logo_centered_position, 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	intro_tween.parallel().tween_property(user_logo_image, "modulate:a", 1.0, 0.35)
+	intro_tween.tween_interval(1.0)
+	intro_tween.tween_property(user_logo_image, "modulate:a", 0.0, 0.35)
+	intro_tween.tween_callback(_show_logo)
+
 func _show_logo() -> void:
+	if intro_tween != null:
+		intro_tween.kill()
 	state = &"logo"
 	if welcome_audio != null:
-		welcome_audio.play()
+		welcome_audio.stop()
+	if intro_eva_audio != null:
+		intro_eva_audio.play()
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
-	logo.visible = false
-	logo_image.visible = false
-	logo_subtitle.visible = false
 	logo_image.visible = true
 	var logo_centered_position := Vector2(
 		(size.x - logo_image.size.x) * 0.5,
@@ -277,17 +320,22 @@ func _show_logo() -> void:
 	var logo_start_position := Vector2(-logo_image.size.x - 80.0, logo_centered_position.y)
 	logo_image.position = logo_start_position
 	logo_image.modulate = Color(1, 1, 1, 0)
-	var tween := create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(logo_image, "position", logo_centered_position, 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(logo_image, "modulate:a", 1.0, 0.55)
-	tween.set_parallel(false)
-	tween.tween_interval(0.65)
-	tween.tween_property(logo_image, "modulate:a", 0.0, 0.35)
-	tween.tween_callback(_show_menu)
+	intro_tween = create_tween()
+	intro_tween.set_parallel(true)
+	intro_tween.tween_property(logo_image, "position", logo_centered_position, 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	intro_tween.tween_property(logo_image, "modulate:a", 1.0, 0.55)
+	intro_tween.set_parallel(false)
+	intro_tween.tween_interval(0.65)
+	intro_tween.tween_property(logo_image, "modulate:a", 0.0, 0.35)
+	intro_tween.tween_callback(_show_menu)
 
 func _show_menu() -> void:
+	presentation_audio_active = false
+	if intro_tween != null:
+		intro_tween.kill()
 	state = &"menu"
+	if intro_eva_audio != null:
+		intro_eva_audio.stop()
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
 	menu_panel.visible = true
@@ -321,6 +369,7 @@ func _confirm_menu() -> void:
 	var action: StringName = menu_options[menu_selected_index]
 	match action:
 		&"start":
+			presentation_audio_active = true
 			_start_intro_eva_loop()
 			_show_story(0)
 		&"continue":
@@ -383,7 +432,6 @@ func _start_development_pet() -> void:
 		pet_ui.show_system_message("MODO DEV ATIVO • EVA • NÍVEL 100 • TUDO DESBLOQUEADO")
 
 func _show_story(page: int) -> void:
-	_start_intro_eva_loop()
 	story_page = clampi(page, 0, 1)
 	intro_anim_time = 0.0
 	presenter_sprite.position.x = 917.095
@@ -424,7 +472,6 @@ func _back_story() -> void:
 		_show_menu()
 
 func _show_egg_selection() -> void:
-	_start_intro_eva_loop()
 	state = &"egg_select"
 	intro_anim_time = 0.0
 	presenter_sprite.position.x = 953.296
@@ -464,7 +511,8 @@ func _confirm_egg_selection() -> void:
 	_show_egg()
 
 func _show_egg() -> void:
-	_start_intro_eva_loop()
+	if intro_tween != null:
+		intro_tween.kill()
 	state = &"egg"
 	intro_anim_time = 0.0
 	guide_sprite.position = Vector2(953.296, EGG_EVA_Y)
@@ -481,20 +529,43 @@ func _show_egg() -> void:
 	guide_sprite.frame = 2
 	egg_image.visible = true
 	egg_image.position = egg_base_position
-	egg_image.texture = load(String(EGG_TEXTURES.get(selected_faction, EGG_TEXTURES[&"neutro"]))) as Texture2D
+	hatching = false
+	hatch_animation_elapsed = 0.0
+	hatch_animation_frame = -1
+	_set_static_egg_texture()
 	hatch_hits = 0
 	egg_label.text = ""
 	egg_progress.value = 0.0
 	egg_hint.text = "AJUDE O OVO A CHOCAR\nPRESSIONE VERDE  •  0 / %d" % HATCH_HITS_REQUIRED
 
 func _hatch_step() -> void:
-	if hatch_hits >= HATCH_HITS_REQUIRED:
+	if hatching or hatch_hits >= HATCH_HITS_REQUIRED:
 		return
 	hatch_hits = mini(hatch_hits + 1, HATCH_HITS_REQUIRED)
 	egg_progress.value = float(hatch_hits) / float(HATCH_HITS_REQUIRED) * 100.0
-	egg_hint.text = "O OVO ESTÁ REAGINDO...\n%d / %d" % [hatch_hits, HATCH_HITS_REQUIRED]
-	_shake_egg()
-	if hatch_hits >= HATCH_HITS_REQUIRED:
+	if hatch_hits < HATCH_HITS_REQUIRED:
+		egg_hint.text = "O OVO ESTÁ REAGINDO...\n%d / %d" % [hatch_hits, HATCH_HITS_REQUIRED]
+		_set_static_egg_texture()
+		_shake_egg()
+		return
+	# O oitavo toque inicia a folha de seis quadros. O ovo só desaparece
+	# depois do último quadro, para que a eclosão tenha leitura visual.
+	hatching = true
+	hatch_animation_elapsed = 0.0
+	hatch_animation_frame = 0
+	egg_hint.text = "O OVO ESTÁ ECLODINDO...\n%d / %d" % [hatch_hits, HATCH_HITS_REQUIRED]
+	_set_hatching_frame(0)
+
+func _process_hatching_animation(delta: float) -> void:
+	hatch_animation_elapsed += delta
+	var frame_progress := hatch_animation_elapsed / HATCH_FRAME_DURATION
+	var next_frame := mini(int(frame_progress), HATCH_FRAME_COUNT - 1)
+	if next_frame != hatch_animation_frame:
+		hatch_animation_frame = next_frame
+		_set_hatching_frame(hatch_animation_frame)
+	var animation_duration := HATCH_FRAME_DURATION * float(HATCH_FRAME_COUNT) + HATCH_FINAL_HOLD
+	if hatch_animation_elapsed >= animation_duration:
+		hatching = false
 		if egg_shake_tween != null:
 			egg_shake_tween.kill()
 		egg_image.position = egg_base_position
@@ -503,6 +574,26 @@ func _hatch_step() -> void:
 			pet_node.visible = true
 		_save_new_pet()
 		_show_pet_status()
+
+func _set_static_egg_texture() -> void:
+	if egg_image == null:
+		return
+	egg_image.texture = load(String(EGG_TEXTURES.get(selected_faction, EGG_TEXTURES[&"neutro"]))) as Texture2D
+	egg_image.position = egg_base_position
+	egg_image.visible = true
+
+func _set_hatching_frame(frame_index: int) -> void:
+	if egg_image == null:
+		return
+	var sheet := load(String(EGG_HATCHING_TEXTURES.get(selected_faction, EGG_HATCHING_TEXTURES[&"neutro"]))) as Texture2D
+	if sheet == null:
+		return
+	var atlas := AtlasTexture.new()
+	atlas.atlas = sheet
+	atlas.region = Rect2(float(frame_index % 3) * 512.0, float(frame_index / 3) * 512.0, 512.0, 512.0)
+	egg_image.texture = atlas
+	egg_image.position = egg_base_position
+	egg_image.visible = true
 
 func _shake_egg() -> void:
 	if egg_shake_tween != null:
@@ -515,7 +606,6 @@ func _shake_egg() -> void:
 	egg_shake_tween.tween_property(egg_image, "position", egg_base_position, 0.06)
 
 func _show_pet_status() -> void:
-	_start_intro_eva_loop()
 	state = &"status"
 	intro_anim_time = 0.0
 	background.color = Color("#FFFFFF")
@@ -533,12 +623,17 @@ func _show_pet_status() -> void:
 	status_hint.text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
 
 func _start_intro_eva_loop() -> void:
-	if intro_eva_audio != null and not intro_eva_audio.playing:
-		intro_eva_audio.play()
+	# O loop nasce uma única vez ao confirmar START. As telas intermediárias
+	# não devem reiniciar nem disputar o mesmo AudioStreamPlayer.
+	if not presentation_audio_active:
+		return
+	if welcome_audio != null and not welcome_audio.playing:
+		welcome_audio.play()
 
 func _stop_intro_eva_loop() -> void:
-	if intro_eva_audio != null and intro_eva_audio.playing:
-		intro_eva_audio.stop()
+	presentation_audio_active = false
+	if welcome_audio != null and welcome_audio.playing:
+		welcome_audio.stop()
 
 func _continue_saved_pet() -> void:
 	development_mode_active = false
@@ -610,6 +705,7 @@ func _has_save() -> bool:
 	return pet_save != null and pet_save.has_save() or FileAccess.file_exists(SAVE_PATH)
 
 func _hide_all_panels() -> void:
+	user_logo_image.visible = false
 	logo.visible = false
 	logo_image.visible = false
 	logo_subtitle.visible = false
