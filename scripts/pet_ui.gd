@@ -274,6 +274,10 @@ func toggle_menu() -> void:
 	menu_visible = not menu_visible
 	_set_menu_visibility(menu_visible)
 
+func set_menu_visibility(value: bool) -> void:
+	menu_visible = value
+	_set_menu_visibility(value)
+
 ## Alterna as quatro barras superiores pelo botão amarelo.
 func toggle_status() -> void:
 	status_visible = not status_visible

@@ -100,7 +100,7 @@ func _ready() -> void:
 	if jogo_2048 != null:
 		jogo_2048.match_completed.connect(_on_2048_completed)
 	if batalha_exploracao != null:
-		batalha_exploracao.configure(pet_stats, pet_skills, pet_identity)
+		batalha_exploracao.configure(pet_stats, pet_skills, pet_identity, pet_randomizer)
 		batalha_exploracao.points_changed.connect(_on_exploration_points_changed)
 		batalha_exploracao.battle_completed.connect(_on_exploration_battle_completed)
 		batalha_exploracao.battle_started.connect(_on_exploration_battle_started)
@@ -363,6 +363,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		elif event.is_action_pressed("ui_cancel"):
 			skill_tree.close_tree()
+			if pet_ui != null:
+				pet_ui.set_menu_visibility(true)
 			get_viewport().set_input_as_handled()
 		return
 	if not _is_lobby_active():
@@ -531,6 +533,8 @@ func _on_pink_pressed() -> void:
 		return
 	if skill_tree != null and skill_tree.visible:
 		skill_tree.close_tree()
+		if pet_ui != null:
+			pet_ui.set_menu_visibility(true)
 
 	elif pet_ui != null and pet_ui.submenu_visible:
 		pet_ui.close_submenu()
@@ -589,9 +593,10 @@ func _confirm_active_selection() -> void:
 		pet_ui.confirm_selected()
 
 func _open_skill_tree() -> void:
-
 	if skill_tree == null:
 		return
+	if pet_ui != null:
+		pet_ui.set_menu_visibility(false)
 	skill_tree.set_pet_skills(pet_skills)
 	skill_tree.open_tree()
 

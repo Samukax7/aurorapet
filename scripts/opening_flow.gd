@@ -65,6 +65,9 @@ const EVA_EXIT_FRAME_COUNT := 32
 const EVA_IDLE_FRAME_START := 208
 const EVA_IDLE_FRAME_COUNT := 48
 const EVA_SPRITE_SCALE := 1.8
+# Posição do centro da célula do atlas; o desenho da EVA ocupa a área
+# direita da célula, por isso este valor deixa o sprite visualmente no canto esquerdo.
+const EVA_LEFT_CORNER_X := 40.0
 const CONTROLS_EVA_Y := 342.0
 const EGG_EVA_Y := 352.0
 const STATUS_EVA_POSITION := Vector2(1015.0, 520.0)
@@ -114,6 +117,9 @@ const STATUS_EVA_EXIT_X := 1242.905
 func _ready() -> void:
 	_connect_buttons()
 	_hide_all_panels()
+	_configure_welcome_audio_loop()
+	if welcome_audio != null and not welcome_audio.finished.is_connected(_on_welcome_audio_finished):
+		welcome_audio.finished.connect(_on_welcome_audio_finished)
 	_show_user_logo()
 	set_process(true)
 
@@ -121,6 +127,11 @@ func _process(delta: float) -> void:
 	if not active:
 		return
 	intro_anim_time += delta
+	# A proteção evita que o player fique parado caso a exportação tenha
+	# perdido o loop do AudioStreamWAV. Ela não reinicia o áudio enquanto ele
+	# estiver tocando e só fica ativa entre START e o fim da ficha.
+	if presentation_audio_active:
+		_start_intro_eva_loop()
 	if state == &"egg" and hatching:
 		_process_hatching_animation(delta)
 	var frame_tick := int(intro_anim_time * INTRO_FPS)
@@ -135,14 +146,14 @@ func _process(delta: float) -> void:
 			else:
 				presenter_sprite.frame = _idle_frame(frame_tick - EVA_PRESENTATION_FRAME_COUNT)
 			presenter_sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
-			presenter_sprite.position.x = lerpf(917.095, 223.240, transition_progress)
+			presenter_sprite.position.x = lerpf(917.095, EVA_LEFT_CORNER_X, transition_progress)
 		&"controls":
-			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, 174.972, false)
+			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, EVA_LEFT_CORNER_X, false)
 			guide_sprite.position.y = CONTROLS_EVA_Y
 		&"egg_select":
-			_animate_eva_to_idle(presenter_sprite, frame_tick, 953.296, 223.240, false)
+			_animate_eva_to_idle(presenter_sprite, frame_tick, 953.296, EVA_LEFT_CORNER_X, false)
 		&"egg":
-			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, 174.972, false)
+			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, EVA_LEFT_CORNER_X, false)
 			guide_sprite.position.y = EGG_EVA_Y
 		&"status":
 			# A ficha também usa a entrada uma vez e, na saída, apenas o trecho
@@ -621,6 +632,21 @@ func _show_pet_status() -> void:
 		status_identity.text = "%s\nCHAVE: %s\nFACÇÃO: %s\nLINHAGEM: %s\nELEMENTO: %s" % [pet_identity.pet_name.to_upper(), pet_identity.get_access_code(), pet_identity.faction_label.to_upper(), pet_identity.lineage_label.to_upper(), String(pet_identity.element).to_upper()]
 		status_attributes.text = "NÍVEL %d   XP %d\nFORÇA %d   DEFESA %d\nAGILIDADE %d   INTELIGÊNCIA %d" % [pet_skills.level, pet_skills.total_xp, pet_skills.strength, pet_skills.defense, pet_skills.agility, pet_skills.intelligence]
 	status_hint.text = "VERMELHO: FECHAR FICHA E ENTRAR NO CONSOLE"
+
+func _configure_welcome_audio_loop() -> void:
+	if welcome_audio == null or welcome_audio.stream == null:
+		return
+	var wav_stream := welcome_audio.stream as AudioStreamWAV
+	if wav_stream != null:
+		# Reforço em runtime para builds locais e web, independentemente do
+		# estado do arquivo .import gerado pelo editor.
+		wav_stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+
+func _on_welcome_audio_finished() -> void:
+	# Fallback para exportações que ignoram o loop do WAV: o evento de término
+	# reinicia a faixa apenas enquanto a apresentação ainda estiver ativa.
+	if active and presentation_audio_active and welcome_audio != null:
+		welcome_audio.play()
 
 func _start_intro_eva_loop() -> void:
 	# O loop nasce uma única vez ao confirmar START. As telas intermediárias

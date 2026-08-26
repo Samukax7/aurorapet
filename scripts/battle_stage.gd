@@ -14,6 +14,10 @@ var _player_source: PetRandomizer
 var _enemy_name := "ECO"
 var _enemy_faction: StringName = &"neutro"
 
+const PLAYER_BATTLE_POSITION := Vector2(-1180, -65)
+const ENEMY_BATTLE_POSITION := Vector2(1180, -85)
+const COMBATANT_BATTLE_SCALE := Vector2(1.8, 1.8)
+
 func _ready() -> void:
 	visible = false
 	stage_banner.text = "CAMPO DE EXPLORAÇÃO"
@@ -21,9 +25,11 @@ func _ready() -> void:
 	eco_caption.text = "ECO"
 	if eco_combatant != null:
 		eco_combatant.self_modulate = Color(0.72, 0.48, 0.9, 0.96)
+	_apply_battle_transforms()
 
 func show_battle_stage(source_pet: Node = null) -> void:
 	visible = true
+	_apply_battle_transforms()
 	_player_source = source_pet as PetRandomizer
 	_sync_player_appearance()
 	if player_combatant != null:
@@ -34,6 +40,16 @@ func show_battle_stage(source_pet: Node = null) -> void:
 
 func hide_battle_stage() -> void:
 	visible = false
+
+func _apply_battle_transforms() -> void:
+	if player_combatant != null:
+		player_combatant.position = PLAYER_BATTLE_POSITION
+		player_combatant.scale = Vector2(-COMBATANT_BATTLE_SCALE.x, COMBATANT_BATTLE_SCALE.y)
+		player_combatant.z_index = 6
+	if eco_combatant != null:
+		eco_combatant.position = ENEMY_BATTLE_POSITION
+		eco_combatant.scale = COMBATANT_BATTLE_SCALE
+		eco_combatant.z_index = 6
 
 func set_enemy_profile(enemy_name: String, enemy_faction: StringName) -> void:
 	_enemy_name = enemy_name if not enemy_name.is_empty() else "ECO"

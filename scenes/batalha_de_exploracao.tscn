@@ -1,90 +1,178 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=14 format=3]
 
-[ext_resource type="Script" path="res://scripts/batalha_de_exploracao.gd" id="1_exploration"]
+[ext_resource type="Script" path="res://scripts/batalha_de_exploracao.gd" id="1_battle"]
 [ext_resource type="AudioStream" path="res://assets/audio/battle_victory_sting.wav" id="2_victory"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_Back"]
-bg_color = Color(0.025, 0.02, 0.13, 0.16)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0.56, 0.32, 0.95, 1)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-shadow_color = Color(0, 0, 0, 0.75)
-shadow_size = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_Card"]
-bg_color = Color(0.07, 0.035, 0.22, 0.78)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.63, 0.42, 1, 1)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_Lobby"]
-bg_color = Color(0.09, 0.06, 0.25, 0.99)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.34, 0.78, 1, 1)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_Log"]
-bg_color = Color(0.025, 0.015, 0.09, 0.99)
+[sub_resource type="StyleBoxFlat" id="Style_Back"]
+bg_color = Color(0.015, 0.012, 0.075, 0.26)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.45, 0.32, 0.85, 1)
+border_color = Color(0.32, 0.14, 0.58, 0.75)
+
+[sub_resource type="StyleBoxFlat" id="Style_PlayerCard"]
+bg_color = Color(0.025, 0.05, 0.18, 0.96)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.12, 0.83, 1, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0.8, 1, 0.35)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_EnemyCard"]
+bg_color = Color(0.12, 0.025, 0.16, 0.96)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.22, 0.76, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(1, 0.05, 0.65, 0.32)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_Arena"]
+bg_color = Color(0.04, 0.035, 0.19, 0.88)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.5, 0.12, 0.9, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.2, 0.05, 0.65, 0.55)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="Style_Cell"]
+bg_color = Color(0.06, 0.04, 0.27, 0.66)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45, 0.2, 0.9, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="Style_CellMiddle"]
+bg_color = Color(0.1, 0.12, 0.36, 0.72)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.75, 1, 0.95)
+
+[sub_resource type="StyleBoxFlat" id="Style_LaneMarker"]
+bg_color = Color(0.28, 1, 0.28, 0.25)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.45, 1, 0.16, 0.98)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0.2, 1, 0.1, 0.7)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_ActionPanel"]
+bg_color = Color(0.025, 0.018, 0.13, 0.96)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.55, 0.13, 0.92, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="Style_Button"]
+bg_color = Color(0.08, 0.12, 0.34, 0.98)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.24, 0.56, 1, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_PlayerBar"]
-bg_color = Color(0.18, 0.9, 0.55, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
+[sub_resource type="StyleBoxFlat" id="Style_ButtonFocus"]
+bg_color = Color(0.22, 0.08, 0.52, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.4, 1, 0.9, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.2, 1, 0.9, 0.7)
+shadow_size = 7
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_EnemyBar"]
-bg_color = Color(1, 0.28, 0.45, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
+[sub_resource type="StyleBoxFlat" id="Style_Log"]
+bg_color = Color(0.015, 0.012, 0.08, 0.97)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.55, 0.82, 1, 0.95)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_EnBar"]
-bg_color = Color(0.25, 0.72, 1, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
+[sub_resource type="StyleBoxFlat" id="Style_Ultimate"]
+bg_color = Color(0.07, 0.025, 0.2, 0.97)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.92, 0.23, 0.9, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_BarBg"]
-bg_color = Color(0.03, 0.025, 0.1, 1)
+[sub_resource type="StyleBoxFlat" id="Style_Blackout"]
+bg_color = Color(0.002, 0.002, 0.012, 1)
+
+[sub_resource type="StyleBoxFlat" id="Style_BarBg"]
+bg_color = Color(0.008, 0.015, 0.05, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.32, 0.25, 0.58, 1)
+border_color = Color(0.23, 0.35, 0.55, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="Style_HP"]
+bg_color = Color(0.26, 1, 0.12, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="Style_EN"]
+bg_color = Color(0.14, 0.68, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="BatalhaDeExploracao" type="Control"]
 visible = false
@@ -97,7 +185,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 focus_mode = 2
-script = ExtResource("1_exploration")
+script = ExtResource("1_battle")
 
 [node name="VictoryAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_victory")
@@ -110,437 +198,552 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBox_Back")
+theme_override_styles/panel = SubResource("Style_Back")
 mouse_filter = 2
 
-[node name="EmotionStrip" type="TextureRect" parent="."]
-offset_left = 38.614525
-offset_top = 14.355828
-offset_right = 207.553073
-offset_bottom = 59.018405
-texture_filter = 1
-expand_mode = 1
-stretch_mode = 0
-mouse_filter = 2
+[node name="LobbyCard" type="Panel" parent="."]
+offset_left = 190.0
+offset_top = 190.0
+offset_right = 890.0
+offset_bottom = 430.0
+theme_override_styles/panel = SubResource("Style_Arena")
 
-[node name="Title" type="Label" parent="."]
-visible = false
-offset_left = 205.139665
-offset_top = 14.355828
-offset_right = 874.860335
-offset_bottom = 43.067485
-theme_override_colors/font_color = Color(0.98, 0.92, 1, 1)
-theme_override_colors/font_outline_color = Color(0.18, 0.05, 0.35, 1)
+[node name="Title" type="Label" parent="LobbyCard"]
+offset_left = 30.0
+offset_top = 32.0
+offset_right = 670.0
+offset_bottom = 82.0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.02, 0.25, 1)
 theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 34
+text = "ECO DETECTADO"
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="LobbyCard"]
+offset_left = 35.0
+offset_top = 95.0
+offset_right = 665.0
+offset_bottom = 130.0
+theme_override_colors/font_color = Color(0.4, 1, 0.84, 1)
+theme_override_font_sizes/font_size = 19
 text = "BATALHA DE EXPLORAÇÃO"
 horizontal_alignment = 1
 
-[node name="Status" type="Label" parent="."]
-visible = false
-offset_left = 138.77095
-offset_top = 46.257669
-offset_right = 941.22905
-offset_bottom = 66.993865
-theme_override_colors/font_color = Color(1, 0.83, 0.38, 1)
-theme_override_colors/font_outline_color = Color(0.18, 0.05, 0.35, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 16
-text = "ÁREA PRONTA PARA EXPLORAÇÃO"
-horizontal_alignment = 1
-
-[node name="Points" type="Label" parent="."]
-offset_left = 138.77095
-offset_top = 68.588957
-offset_right = 941.22905
-offset_bottom = 88.527607
-theme_override_colors/font_color = Color(0.42, 1, 0.8, 1)
-theme_override_colors/font_outline_color = Color(0.18, 0.05, 0.35, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 16
+[node name="Points" type="Label" parent="LobbyCard"]
+offset_left = 35.0
+offset_top = 133.0
+offset_right = 665.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 0.82, 0.3, 1)
+theme_override_font_sizes/font_size = 18
 text = "PONTOS 00000"
 horizontal_alignment = 1
 
-[node name="LobbyCard" type="Panel" parent="."]
-offset_left = 126.703911
-offset_top = 139.570552
-offset_right = 953.296089
-offset_bottom = 398.773006
-theme_override_styles/panel = SubResource("StyleBox_Lobby")
+[node name="Hint" type="Label" parent="LobbyCard"]
+offset_left = 35.0
+offset_top = 182.0
+offset_right = 665.0
+offset_bottom = 212.0
+theme_override_colors/font_color = Color(0.78, 0.84, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "VERDE: PARTIR   •   ROSA: VOLTAR"
+horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="LobbyCard"]
-offset_left = 42.234637
-offset_top = 27.91411
-offset_right = 784.357542
-offset_bottom = 199.386503
-theme_override_colors/font_color = Color(0.96, 0.95, 1, 1)
-theme_override_colors/font_outline_color = Color(0.15, 0.03, 0.3, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 30
-text = "ECO DETECTADO"
+[node name="BattleCard" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PlayerCard" type="Panel" parent="BattleCard"]
+offset_left = 32.0
+offset_top = 20.0
+offset_right = 452.0
+offset_bottom = 122.0
+theme_override_styles/panel = SubResource("Style_PlayerCard")
+
+[node name="Avatar" type="Label" parent="BattleCard/PlayerCard"]
+offset_left = 14.0
+offset_top = 13.0
+offset_right = 60.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "◆"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BattleCard" type="Panel" parent="."]
-visible = false
-offset_left = 42.234637
-offset_top = 102.08589
-offset_right = 1037.765363
-offset_bottom = 562.269939
-theme_override_styles/panel = SubResource("StyleBox_Card")
-
-[node name="PlayerPanel" type="NinePatchRect" parent="BattleCard"]
-offset_left = 24.134078
-offset_top = 14.355828
-offset_right = 476.648045
-offset_bottom = 105.276074
-texture_filter = 1
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-mouse_filter = 2
-
-[node name="PlayerPlaceholderIcon" type="ColorRect" parent="BattleCard"]
-offset_left = 38.614525
-offset_top = 25.521472
-offset_right = 56.715084
-offset_bottom = 37.484663
-color = Color(0.12, 0.65, 0.95, 1)
-mouse_filter = 2
-
-[node name="PlayerName" type="Label" parent="BattleCard"]
-offset_left = 65.162011
-offset_top = 21.533742
-offset_right = 319.776536
-offset_bottom = 45.460123
-theme_override_colors/font_color = Color(0.05, 0.04, 0.13, 1)
-theme_override_font_sizes/font_size = 20
+[node name="PlayerName" type="Label" parent="BattleCard/PlayerCard"]
+offset_left = 70.0
+offset_top = 11.0
+offset_right = 300.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
 text = "PET"
 
-[node name="PlayerHP" type="Label" parent="BattleCard"]
-offset_left = 325.810056
-offset_top = 23.128834
-offset_right = 446.480447
-offset_bottom = 43.865031
-theme_override_colors/font_color = Color(0.05, 0.04, 0.13, 1)
-theme_override_font_sizes/font_size = 16
+[node name="PlayerLevel" type="Label" parent="BattleCard/PlayerCard"]
+offset_left = 330.0
+offset_top = 14.0
+offset_right = 395.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(1, 0.82, 0.25, 1)
+theme_override_font_sizes/font_size = 19
+text = "LV1"
+horizontal_alignment = 2
+
+[node name="PlayerHP" type="Label" parent="BattleCard/PlayerCard"]
+offset_left = 72.0
+offset_top = 43.0
+offset_right = 395.0
+offset_bottom = 65.0
+theme_override_colors/font_color = Color(0.68, 1, 0.7, 1)
+theme_override_font_sizes/font_size = 15
 text = "HP 000 / 000"
 horizontal_alignment = 2
 
-[node name="PlayerHPBar" type="ProgressBar" parent="BattleCard"]
-offset_left = 63.955307
-offset_top = 48.650307
-offset_right = 446.480447
-offset_bottom = 65.398773
-theme_override_styles/background = SubResource("StyleBox_BarBg")
-theme_override_styles/fill = SubResource("StyleBox_PlayerBar")
+[node name="PlayerHPBar" type="ProgressBar" parent="BattleCard/PlayerCard"]
+offset_left = 72.0
+offset_top = 67.0
+offset_right = 395.0
+offset_bottom = 82.0
+theme_override_styles/background = SubResource("Style_BarBg")
+theme_override_styles/fill = SubResource("Style_HP")
 value = 100.0
 show_percentage = false
 
-[node name="PlayerEN" type="Label" parent="BattleCard"]
-offset_left = 325.810056
-offset_top = 67.791411
-offset_right = 446.480447
-offset_bottom = 86.134969
-theme_override_colors/font_color = Color(0.04, 0.18, 0.45, 1)
-theme_override_font_sizes/font_size = 15
+[node name="PlayerEN" type="Label" parent="BattleCard/PlayerCard"]
+offset_left = 72.0
+offset_top = 83.0
+offset_right = 210.0
+offset_bottom = 100.0
+theme_override_colors/font_color = Color(0.48, 0.84, 1, 1)
+theme_override_font_sizes/font_size = 12
 text = "EN 000 / 000"
-horizontal_alignment = 2
 
-[node name="PlayerENBar" type="ProgressBar" parent="BattleCard"]
-offset_left = 63.955307
-offset_top = 82.147239
-offset_right = 446.480447
-offset_bottom = 95.705521
-theme_override_styles/background = SubResource("StyleBox_BarBg")
-theme_override_styles/fill = SubResource("StyleBox_EnBar")
+[node name="PlayerENBar" type="ProgressBar" parent="BattleCard/PlayerCard"]
+offset_left = 210.0
+offset_top = 85.0
+offset_right = 395.0
+offset_bottom = 96.0
+theme_override_styles/background = SubResource("Style_BarBg")
+theme_override_styles/fill = SubResource("Style_EN")
 value = 100.0
 show_percentage = false
 
-[node name="PlayerRole" type="Label" parent="BattleCard"]
-visible = false
-offset_left = 63.955307
-offset_top = 66.993865
-offset_right = 301.675978
-offset_bottom = 84.539877
-theme_override_colors/font_color = Color(0.1, 0.28, 0.4, 1)
-theme_override_font_sizes/font_size = 13
-text = "PET • COMPANHEIRO"
+[node name="EnemyCard" type="Panel" parent="BattleCard"]
+offset_left = 628.0
+offset_top = 20.0
+offset_right = 1048.0
+offset_bottom = 122.0
+theme_override_styles/panel = SubResource("Style_EnemyCard")
 
-[node name="EnemyPanel" type="NinePatchRect" parent="BattleCard"]
-offset_left = 518.882682
-offset_top = 14.355828
-offset_right = 971.396648
-offset_bottom = 105.276074
-texture_filter = 1
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-mouse_filter = 2
+[node name="Avatar" type="Label" parent="BattleCard/EnemyCard"]
+offset_left = 14.0
+offset_top = 13.0
+offset_right = 60.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(1, 0.35, 0.8, 1)
+theme_override_font_sizes/font_size = 32
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="EnemyName" type="Label" parent="BattleCard"]
-offset_left = 543.01676
-offset_top = 21.533742
-offset_right = 796.424581
-offset_bottom = 45.460123
-theme_override_colors/font_color = Color(0.05, 0.04, 0.13, 1)
-theme_override_font_sizes/font_size = 20
+[node name="EnemyName" type="Label" parent="BattleCard/EnemyCard"]
+offset_left = 70.0
+offset_top = 11.0
+offset_right = 300.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(1, 0.94, 0.99, 1)
+theme_override_font_sizes/font_size = 24
 text = "ECO"
 
-[node name="EnemyHP" type="Label" parent="BattleCard"]
-offset_left = 820.558659
-offset_top = 23.128834
-offset_right = 947.26257
-offset_bottom = 43.865031
-theme_override_colors/font_color = Color(0.05, 0.04, 0.13, 1)
-theme_override_font_sizes/font_size = 16
+[node name="EnemyLevel" type="Label" parent="BattleCard/EnemyCard"]
+offset_left = 330.0
+offset_top = 14.0
+offset_right = 395.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(1, 0.82, 0.25, 1)
+theme_override_font_sizes/font_size = 19
+text = "LV1"
+horizontal_alignment = 2
+
+[node name="EnemyHP" type="Label" parent="BattleCard/EnemyCard"]
+offset_left = 72.0
+offset_top = 43.0
+offset_right = 395.0
+offset_bottom = 65.0
+theme_override_colors/font_color = Color(0.68, 1, 0.7, 1)
+theme_override_font_sizes/font_size = 15
 text = "HP 000 / 000"
 horizontal_alignment = 2
 
-[node name="EnemyHPBar" type="ProgressBar" parent="BattleCard"]
-offset_left = 543.01676
-offset_top = 48.650307
-offset_right = 947.26257
-offset_bottom = 65.398773
-theme_override_styles/background = SubResource("StyleBox_BarBg")
-theme_override_styles/fill = SubResource("StyleBox_EnemyBar")
+[node name="EnemyHPBar" type="ProgressBar" parent="BattleCard/EnemyCard"]
+offset_left = 72.0
+offset_top = 67.0
+offset_right = 395.0
+offset_bottom = 82.0
+theme_override_styles/background = SubResource("Style_BarBg")
+theme_override_styles/fill = SubResource("Style_HP")
 value = 100.0
 show_percentage = false
 
-[node name="EnemyRole" type="Label" parent="BattleCard"]
-visible = false
-offset_left = 543.01676
-offset_top = 72.576687
-offset_right = 947.26257
-offset_bottom = 90.122699
-theme_override_colors/font_color = Color(0.35, 0.08, 0.25, 1)
+[node name="D20Badge" type="Panel" parent="BattleCard"]
+offset_left = 490.0
+offset_top = 26.0
+offset_right = 590.0
+offset_bottom = 110.0
+theme_override_styles/panel = SubResource("Style_Ultimate")
+
+[node name="Caption" type="Label" parent="BattleCard/D20Badge"]
+offset_left = 10.0
+offset_top = 9.0
+offset_right = 90.0
+offset_bottom = 29.0
+theme_override_colors/font_color = Color(0.78, 0.68, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "D20"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="BattleCard/D20Badge"]
+offset_left = 10.0
+offset_top = 28.0
+offset_right = 90.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(1, 0.84, 0.32, 1)
+theme_override_font_sizes/font_size = 29
+text = "—"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CommandMenuLabel" type="Label" parent="BattleCard"]
+offset_left = 32.0
+offset_top = 112.0
+offset_right = 1048.0
+offset_bottom = 132.0
+theme_override_colors/font_color = Color(0.78, 0.72, 1, 1)
 theme_override_font_sizes/font_size = 14
-text = "ECO PROCEDURAL • OPONENTE"
-
-[node name="BossSprite" type="TextureRect" parent="BattleCard"]
-visible = false
-offset_left = 567.150838
-offset_top = 110.06135
-offset_right = 929.162011
-offset_bottom = 295.092025
-texture_filter = 1
-expand_mode = 1
-stretch_mode = 5
-mouse_filter = 2
-
-[node name="MoveEffect" type="TextureRect" parent="BattleCard"]
-visible = false
-z_index = 5
-offset_left = 336.0
-offset_top = 116.0
-offset_right = 696.0
-offset_bottom = 476.0
-texture_filter = 1
-expand_mode = 1
-stretch_mode = 5
-mouse_filter = 2
-
-[node name="Turn" type="Label" parent="BattleCard"]
-offset_left = 26.547486
-offset_top = 179.447853
-offset_right = 968.98324
-offset_bottom = 202.576687
-theme_override_colors/font_color = Color(1, 0.84, 0.38, 1)
-theme_override_colors/font_outline_color = Color(0.12, 0.02, 0.25, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 20
-text = "TURNO 01 • SUA VEZ"
-horizontal_alignment = 1
-
-[node name="Action" type="Label" parent="BattleCard"]
-visible = false
-offset_left = 26.547486
-offset_top = 206.564417
-offset_right = 968.98324
-offset_bottom = 230.490798
-theme_override_colors/font_color = Color(0.75, 0.92, 1, 1)
-theme_override_colors/font_outline_color = Color(0.1, 0.02, 0.25, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 17
-text = "SELECIONE UMA AÇÃO"
-horizontal_alignment = 1
-
-[node name="CommandMenu" type="Label" parent="BattleCard"]
-visible = false
-offset_left = 26.547486
-offset_top = 232.08589
-offset_right = 968.98324
-offset_bottom = 253.619632
-theme_override_colors/font_color = Color(0.97, 0.9, 0.5, 1)
-theme_override_colors/font_outline_color = Color(0.1, 0.02, 0.25, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 17
 text = "AÇÕES DE BATALHA"
 horizontal_alignment = 1
 
-[node name="ActionButton1" type="NinePatchRect" parent="BattleCard"]
-offset_left = 26.547486
-offset_top = 303.067485
-offset_right = 489.921788
-offset_bottom = 352.515337
-texture_filter = 1
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
+[node name="TurnLabel" type="Label" parent="BattleCard"]
+offset_left = 320.0
+offset_top = 130.0
+offset_right = 760.0
+offset_bottom = 158.0
+theme_override_colors/font_color = Color(1, 0.86, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.02, 0.3, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+text = "T01 • SUA VEZ"
+horizontal_alignment = 1
+
+[node name="ArenaFrame" type="Panel" parent="BattleCard"]
+offset_left = 238.0
+offset_top = 160.0
+offset_right = 842.0
+offset_bottom = 390.0
+theme_override_styles/panel = SubResource("Style_Arena")
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="BattleCard/ActionButton1"]
+[node name="Cell00" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 200.0
+offset_bottom = 84.0
+theme_override_styles/panel = SubResource("Style_Cell")
+[node name="Cell01" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 204.0
+offset_top = 18.0
+offset_right = 386.0
+offset_bottom = 84.0
+theme_override_styles/panel = SubResource("Style_Cell")
+[node name="Cell02" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 390.0
+offset_top = 18.0
+offset_right = 572.0
+offset_bottom = 84.0
+theme_override_styles/panel = SubResource("Style_Cell")
+[node name="Cell10" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 18.0
+offset_top = 87.0
+offset_right = 200.0
+offset_bottom = 153.0
+theme_override_styles/panel = SubResource("Style_CellMiddle")
+[node name="Cell11" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 204.0
+offset_top = 87.0
+offset_right = 386.0
+offset_bottom = 153.0
+theme_override_styles/panel = SubResource("Style_CellMiddle")
+[node name="Cell12" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 390.0
+offset_top = 87.0
+offset_right = 572.0
+offset_bottom = 153.0
+theme_override_styles/panel = SubResource("Style_CellMiddle")
+[node name="Cell20" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 18.0
+offset_top = 156.0
+offset_right = 200.0
+offset_bottom = 222.0
+theme_override_styles/panel = SubResource("Style_Cell")
+[node name="Cell21" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 204.0
+offset_top = 156.0
+offset_right = 386.0
+offset_bottom = 222.0
+theme_override_styles/panel = SubResource("Style_Cell")
+[node name="Cell22" type="Panel" parent="BattleCard/ArenaFrame"]
+offset_left = 390.0
+offset_top = 156.0
+offset_right = 572.0
+offset_bottom = 222.0
+theme_override_styles/panel = SubResource("Style_Cell")
+
+[node name="LaneMarker" type="Panel" parent="BattleCard"]
+visible = false
+offset_left = 250.0
+offset_top = 160.0
+offset_right = 830.0
+offset_bottom = 230.0
+theme_override_styles/panel = SubResource("Style_LaneMarker")
+mouse_filter = 2
+z_index = 5
+
+[node name="LaneReadout" type="Label" parent="BattleCard"]
+offset_left = 410.0
+offset_top = 166.0
+offset_right = 670.0
+offset_bottom = 193.0
+theme_override_colors/font_color = Color(0.7, 1, 0.55, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.1, 0.02, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "TRAJETÓRIA: CENTRAL"
+horizontal_alignment = 1
+z_index = 6
+
+[node name="ActionLabel" type="Label" parent="BattleCard"]
+offset_left = 270.0
+offset_top = 398.0
+offset_right = 810.0
+offset_bottom = 422.0
+theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.02, 0.18, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "ESCOLHA UMA AÇÃO"
+horizontal_alignment = 1
+
+[node name="LogFrame" type="Panel" parent="BattleCard"]
+offset_left = 32.0
+offset_top = 425.0
+offset_right = 698.0
+offset_bottom = 474.0
+theme_override_styles/panel = SubResource("Style_Log")
+
+[node name="Log" type="Label" parent="BattleCard/LogFrame"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.05, 0.04, 0.13, 1)
-theme_override_font_sizes/font_size = 21
-text = "◆ GOLPES"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ActionButton2" type="NinePatchRect" parent="BattleCard"]
-offset_left = 506.815642
-offset_top = 303.067485
-offset_right = 970.189944
-offset_bottom = 352.515337
-texture_filter = 1
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-mouse_filter = 2
-
-[node name="Label" type="Label" parent="BattleCard/ActionButton2"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.05, 0.04, 0.13, 1)
-theme_override_font_sizes/font_size = 21
-text = "TÉCNICA"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ActionButton3" type="NinePatchRect" parent="BattleCard"]
-offset_left = 26.547486
-offset_top = 358.895706
-offset_right = 489.921788
-offset_bottom = 408.343558
-texture_filter = 1
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-mouse_filter = 2
-
-[node name="Label" type="Label" parent="BattleCard/ActionButton3"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.05, 0.04, 0.13, 1)
-theme_override_font_sizes/font_size = 21
-text = "GUARDA"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ActionButton4" type="NinePatchRect" parent="BattleCard"]
-offset_left = 506.815642
-offset_top = 358.895706
-offset_right = 970.189944
-offset_bottom = 408.343558
-texture_filter = 1
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-mouse_filter = 2
-
-[node name="Label" type="Label" parent="BattleCard/ActionButton4"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.05, 0.04, 0.13, 1)
-theme_override_font_sizes/font_size = 21
-text = "FUGIR"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="LogFrame" type="NinePatchRect" parent="BattleCard"]
-offset_left = 26.547486
-offset_top = 239.263804
-offset_right = 970.189944
-offset_bottom = 287.116564
-texture_filter = 1
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-mouse_filter = 2
-
-[node name="Log" type="Label" parent="BattleCard"]
-offset_left = 50.681564
-offset_top = 247.239264
-offset_right = 948.469274
-offset_bottom = 279.141104
-theme_override_colors/font_color = Color(0.03, 0.02, 0.1, 1)
-theme_override_colors/font_outline_color = Color(0.8, 0.95, 1, 0.35)
-theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 14
-text = ""
+offset_left = 12.0
+offset_top = 5.0
+offset_right = -12.0
+offset_bottom = -5.0
+theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "SUA VEZ"
 autowrap_mode = 2
 vertical_alignment = 1
 
+[node name="ActionPanel" type="Panel" parent="BattleCard"]
+offset_left = 32.0
+offset_top = 480.0
+offset_right = 698.0
+offset_bottom = 638.0
+theme_override_styles/panel = SubResource("Style_ActionPanel")
+
+[node name="ActionButton1" type="Button" parent="BattleCard/ActionPanel"]
+offset_left = 18.0
+offset_top = 14.0
+offset_right = 322.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.92, 0.96, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("Style_Button")
+theme_override_styles/hover = SubResource("Style_ButtonFocus")
+theme_override_styles/focus = SubResource("Style_ButtonFocus")
+theme_override_styles/pressed = SubResource("Style_ButtonFocus")
+text = "ATAQUE"
+
+[node name="ActionButton2" type="Button" parent="BattleCard/ActionPanel"]
+offset_left = 344.0
+offset_top = 14.0
+offset_right = 648.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.92, 0.96, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("Style_Button")
+theme_override_styles/hover = SubResource("Style_ButtonFocus")
+theme_override_styles/focus = SubResource("Style_ButtonFocus")
+theme_override_styles/pressed = SubResource("Style_ButtonFocus")
+text = "S. ATTACK"
+
+[node name="ActionButton3" type="Button" parent="BattleCard/ActionPanel"]
+offset_left = 18.0
+offset_top = 84.0
+offset_right = 322.0
+offset_bottom = 146.0
+theme_override_colors/font_color = Color(0.92, 0.96, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("Style_Button")
+theme_override_styles/hover = SubResource("Style_ButtonFocus")
+theme_override_styles/focus = SubResource("Style_ButtonFocus")
+theme_override_styles/pressed = SubResource("Style_ButtonFocus")
+text = "DEFESA"
+
+[node name="ActionButton4" type="Button" parent="BattleCard/ActionPanel"]
+offset_left = 344.0
+offset_top = 84.0
+offset_right = 648.0
+offset_bottom = 146.0
+theme_override_colors/font_color = Color(0.92, 0.96, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("Style_Button")
+theme_override_styles/hover = SubResource("Style_ButtonFocus")
+theme_override_styles/focus = SubResource("Style_ButtonFocus")
+theme_override_styles/pressed = SubResource("Style_ButtonFocus")
+text = "FUGIR"
+
+[node name="UltimateSlot" type="Panel" parent="BattleCard"]
+offset_left = 720.0
+offset_top = 425.0
+offset_right = 1048.0
+offset_bottom = 638.0
+theme_override_styles/panel = SubResource("Style_Ultimate")
+
+[node name="Caption" type="Label" parent="BattleCard/UltimateSlot"]
+offset_left = 18.0
+offset_top = 15.0
+offset_right = 310.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(1, 0.7, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "ULTIMATE"
+horizontal_alignment = 1
+
+[node name="Icon" type="Label" parent="BattleCard/UltimateSlot"]
+offset_left = 70.0
+offset_top = 55.0
+offset_right = 258.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(0.55, 0.32, 1, 0.65)
+theme_override_font_sizes/font_size = 48
+text = "✦  ◇  ✦"
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="BattleCard/UltimateSlot"]
+offset_left = 18.0
+offset_top = 145.0
+offset_right = 310.0
+offset_bottom = 190.0
+theme_override_colors/font_color = Color(0.75, 0.7, 0.92, 1)
+theme_override_font_sizes/font_size = 14
+text = "EVA: SOMENTE JORNADA\nSLOT BLOQUEADO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MoveEffect" type="TextureRect" parent="BattleCard"]
+visible = false
+offset_left = 400.0
+offset_top = 235.0
+offset_right = 680.0
+offset_bottom = 515.0
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+z_index = 20
+
+[node name="ImpactEffect" type="Label" parent="BattleCard"]
+visible = false
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 96.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.72, 1, 0.82, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.05, 0.12, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 64
+text = "✹"
+horizontal_alignment = 1
+vertical_alignment = 1
+pivot_offset = Vector2(48, 48)
+mouse_filter = 2
+z_index = 21
+
 [node name="Result" type="Label" parent="."]
 visible = false
-offset_left = 90.502793
-offset_top = 574.233129
-offset_right = 989.497207
-offset_bottom = 595.766871
-theme_override_colors/font_color = Color(0.55, 1, 0.82, 1)
-theme_override_colors/font_outline_color = Color(0.12, 0.02, 0.25, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 16
+offset_left = 80.0
+offset_top = 640.0
+offset_right = 1000.0
+offset_bottom = 648.0
+theme_override_colors/font_color = Color(0.5, 1, 0.78, 1)
+theme_override_font_sizes/font_size = 12
 text = ""
 horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="."]
 visible = false
-offset_left = 48.268156
-offset_top = 602.944785
-offset_right = 1031.731844
-offset_bottom = 631.656442
-theme_override_colors/font_color = Color(0.85, 0.9, 1, 1)
-theme_override_colors/font_outline_color = Color(0.12, 0.02, 0.25, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 14
+offset_left = 80.0
+offset_top = 640.0
+offset_right = 1000.0
+offset_bottom = 648.0
+theme_override_colors/font_color = Color(0.78, 0.86, 1, 1)
+theme_override_font_sizes/font_size = 12
 text = ""
 horizontal_alignment = 1
+
+[node name="BlackoutPanel" type="Panel" parent="."]
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Style_Blackout")
+mouse_filter = 1
+
+[node name="Text" type="Label" parent="BlackoutPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -54.0
+offset_right = 240.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.92, 0.45, 1, 1)
+theme_override_colors/font_outline_color = Color(0.18, 0.02, 0.3, 1)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 58
+text = "BATALHA"
+horizontal_alignment = 1
+vertical_alignment = 1
