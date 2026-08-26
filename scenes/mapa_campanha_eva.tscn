@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/mapa_campanha_eva.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/maps/eva_campaign_progression_map.png" id="2_map"]
+[ext_resource type="AudioStream" path="res://assets/audio/eva_campaign_underscore.wav" id="3_map_music"]
 
 [sub_resource type="StyleBoxFlat" id="TopPanel"]
 bg_color = Color(0.02, 0.025, 0.12, 0.9)
@@ -460,3 +461,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 13
 text = "D-PAD: SUBIR/DESCER   •   VERDE: ENTRAR   •   ROSA: VOLTAR"
 horizontal_alignment = 1
+
+[node name="MapMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_map_music")
+volume_db = -16.0

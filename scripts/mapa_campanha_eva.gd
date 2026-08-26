@@ -38,9 +38,11 @@ var _initial_scroll_pending := false
 @onready var selection_label: Label = $SelectionPanel/SelectionLabel
 @onready var hint_label: Label = $Hint
 @onready var stage_buttons: Array[Button] = []
+@onready var map_music: AudioStreamPlayer = $MapMusic
 
 func _ready() -> void:
 	visible = false
+	_configure_music_loop()
 	for child in map_content.get_children():
 		if child is Button and child.name.begins_with("Stage"):
 			stage_buttons.append(child)
@@ -61,6 +63,8 @@ func _process(delta: float) -> void:
 
 func open_map() -> void:
 	visible = true
+	if map_music != null and not map_music.playing:
+		map_music.play()
 	# A campanha sempre recomeça visualmente na plataforma neutra inferior.
 	# O jogador sobe pelos nós e o scroll acompanha a continuidade vertical.
 	selected_index = 0
@@ -85,7 +89,18 @@ func advance_to_stage(stage_id: StringName) -> void:
 
 func close_map() -> void:
 	visible = false
+	if map_music != null:
+		map_music.stop()
 	map_closed.emit()
+
+func _configure_music_loop() -> void:
+	if map_music == null:
+		return
+	var wav := map_music.stream as AudioStreamWAV
+	if wav != null:
+		var looped := wav.duplicate() as AudioStreamWAV
+		looped.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		map_music.stream = looped
 
 func handle_direction(direction: Vector2i) -> void:
 	if not visible or direction == Vector2i.ZERO:

@@ -471,10 +471,12 @@ flat = true
 
 [node name="EggImage" type="TextureRect" parent="."]
 visible = false
-offset_left = 382.52514
-offset_top = 323.006135
-offset_right = 696.268156
-offset_bottom = 530.368098
+offset_left = 450.0
+offset_top = 360.0
+offset_right = 630.0
+offset_bottom = 540.0
+scale = Vector2(1, 0.68)
+pivot_offset = Vector2(0, 0)
 texture_filter = 1
 texture = ExtResource("5_egg_neutro")
 expand_mode = 1
@@ -775,7 +777,7 @@ custom_minimum_size = Vector2(175, 145)
 layout_mode = 2
 icon = ExtResource("3_egg_luz")
 expand_icon = true
-icon_max_width = 72
+icon_max_width = 64
 theme_override_colors/font_color = Color(0.98, 0.91, 0.54, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -787,7 +789,7 @@ custom_minimum_size = Vector2(175, 145)
 layout_mode = 2
 icon = ExtResource("4_egg_trevas")
 expand_icon = true
-icon_max_width = 72
+icon_max_width = 64
 theme_override_colors/font_color = Color(0.86, 0.6, 1, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -799,7 +801,7 @@ custom_minimum_size = Vector2(175, 145)
 layout_mode = 2
 icon = ExtResource("5_egg_neutro")
 expand_icon = true
-icon_max_width = 72
+icon_max_width = 64
 theme_override_colors/font_color = Color(0.52, 0.92, 0.86, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBox_Button")
@@ -820,9 +822,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="WelcomeAudio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("15_sfx_intro_eva")
+stream = ExtResource("14_sfx_welcome")
 volume_db = -8.0
 
 [node name="IntroEvaAudio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("14_sfx_welcome")
+stream = ExtResource("15_sfx_intro_eva")
 volume_db = -9.0

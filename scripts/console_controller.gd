@@ -33,23 +33,20 @@ extends Sprite2D
 @onready var poop_audio: AudioStreamPlayer = get_node_or_null(^"PoopAudio") as AudioStreamPlayer
 
 var quarto_entry_pending := false
-var eva_encounter_pending := false
 var current_eva_stage_id: StringName = &""
 var eva_novel_pending_stage_id: StringName = &""
+var eva_exploration_encounter_active := false
 
 func _ready() -> void:
 	_connect_console_buttons()
 	if aurora_pet_save != null:
 		aurora_pet_save.configure(pet_identity, pet_stats, pet_skills, pet_evolution, pet_randomizer, quarto_cosmico, batalha_exploracao, eva_journey_manager)
-	if aurora_pet_save != null:
 		if mapa_exploracao != null:
 			mapa_exploracao.set_world_progression(aurora_pet_save)
 		if mapa_campanha_eva != null:
 			mapa_campanha_eva.set_progression(aurora_pet_save.eva_progress_stage_index)
 		if not aurora_pet_save.world_progression_changed.is_connected(_on_world_progression_changed):
 			aurora_pet_save.world_progression_changed.connect(_on_world_progression_changed)
-		if not aurora_pet_save.eva_encounter_ready.is_connected(_on_eva_encounter_ready):
-			aurora_pet_save.eva_encounter_ready.connect(_on_eva_encounter_ready)
 		if not aurora_pet_save.save_loaded.is_connected(_on_save_loaded):
 			aurora_pet_save.save_loaded.connect(_on_save_loaded)
 	if eva_journey_manager != null:
@@ -110,8 +107,12 @@ func _ready() -> void:
 	if batalhar_menu != null:
 		batalhar_menu.mode_selected.connect(_on_battle_mode_selected)
 	if eva_visual_novel != null:
-		eva_visual_novel.sequence_completed.connect(_on_eva_novel_completed)
-		eva_visual_novel.sequence_closed.connect(_on_eva_novel_closed)
+		if not eva_visual_novel.sequence_completed.is_connected(_on_eva_novel_completed):
+			eva_visual_novel.sequence_completed.connect(_on_eva_novel_completed)
+		if not eva_visual_novel.exploration_encounter_completed.is_connected(_on_exploration_eva_encounter_completed):
+			eva_visual_novel.exploration_encounter_completed.connect(_on_exploration_eva_encounter_completed)
+		if not eva_visual_novel.sequence_closed.is_connected(_on_eva_novel_closed):
+			eva_visual_novel.sequence_closed.connect(_on_eva_novel_closed)
 	if mapa_exploracao != null:
 		mapa_exploracao.area_selected.connect(_on_exploration_area_selected)
 	if mapa_campanha_eva != null:
@@ -163,13 +164,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("ui_cancel"):
 			opening_flow.back()
 			get_viewport().set_input_as_handled()
-		return
-	if eva_encounter_pending:
-		if event.is_action_pressed("ui_accept"):
-			_resolve_eva_encounter(true)
-		elif event.is_action_pressed("ui_cancel"):
-			_resolve_eva_encounter(false)
-		get_viewport().set_input_as_handled()
 		return
 	if jogo_da_velha != null and jogo_da_velha.visible:
 
@@ -411,9 +405,6 @@ func _connect_console_buttons() -> void:
 
 func _on_green_pressed() -> void:
 	_play_confirm_sound()
-	if eva_encounter_pending:
-		_resolve_eva_encounter(true)
-		return
 	if quarto_entry_pending:
 		_open_quarto()
 		return
@@ -449,6 +440,10 @@ func _on_green_pressed() -> void:
 		batalha_exploracao.confirm()
 		return
 	_confirm_active_selection()
+
+func _stop_lobby_music() -> void:
+	if lobby_music != null:
+		lobby_music.stop()
 
 func _play_confirm_sound() -> void:
 	if confirm_audio != null:
@@ -494,9 +489,6 @@ func _on_yellow_pressed() -> void:
 	pet_ui.toggle_status()
 
 func _on_pink_pressed() -> void:
-	if eva_encounter_pending:
-		_resolve_eva_encounter(false)
-		return
 	if quarto_entry_pending:
 		_cancel_quarto_entry()
 		return
@@ -613,7 +605,6 @@ func _on_training_requested() -> void:
 		skill_tree.refresh_tree()
 	if pet_ui != null:
 		pet_ui.show_progression_message("TREINO CONCLUÍDO: +25 XP")
-	print("Treino confirmado")
 
 func _show_identity_intro() -> void:
 	if pet_ui == null or pet_identity == null:
@@ -672,7 +663,6 @@ func _on_action_requested(action: StringName) -> void:
 
 	if pet_ui != null and pet_stats != null:
 		pet_ui.show_progression_message(pet_stats.get_action_feedback(action))
-	print("Ação selecionada: ", action)
 
 func _open_tic_tac_toe() -> void:
 	if pet_stats != null and not pet_stats.report_action_check(&"jogo_da_velha"):
@@ -695,9 +685,9 @@ func _close_tic_tac_toe() -> void:
 	if pet_ui != null:
 		pet_ui.visible = true
 
-func _on_tic_tac_toe_completed(result: StringName, reward: int) -> void:
+func _on_tic_tac_toe_completed(_result: StringName, reward: int) -> void:
 	if pet_stats != null:
-		pet_stats.perform_action(&"jogo_da_velha")
+		pet_stats.perform_action(&"jogo_da_velha", true)
 	if pet_skills != null:
 		pet_skills.add_xp(reward)
 
@@ -722,9 +712,9 @@ func _close_jokenpo() -> void:
 	if pet_ui != null:
 		pet_ui.visible = true
 
-func _on_jokenpo_completed(result: StringName, reward: int) -> void:
+func _on_jokenpo_completed(_result: StringName, reward: int) -> void:
 	if pet_stats != null:
-		pet_stats.perform_action(&"jokenpo")
+		pet_stats.perform_action(&"jokenpo", true)
 	if pet_skills != null:
 		pet_skills.add_xp(reward)
 
@@ -751,7 +741,7 @@ func _close_2048() -> void:
 
 func _on_2048_completed(_result: StringName, reward: int) -> void:
 	if pet_stats != null:
-		pet_stats.perform_action(&"2048")
+		pet_stats.perform_action(&"2048", true)
 	if pet_skills != null:
 		pet_skills.add_xp(reward)
 	if pet_ui != null:
@@ -766,7 +756,7 @@ func _is_lobby_active() -> bool:
 		return false
 	if deepworld_controller == null or not deepworld_controller.visible:
 		return false
-	if quarto_entry_pending or eva_encounter_pending:
+	if quarto_entry_pending:
 		return false
 	if quarto_cosmico != null and quarto_cosmico.visible:
 		return false
@@ -837,6 +827,7 @@ func _on_quarto_exit_confirmed() -> void:
 	_close_quarto()
 
 func _open_battle_modes() -> void:
+	_stop_lobby_music()
 	if batalhar_menu == null:
 		return
 	if pet_ui != null:
@@ -862,6 +853,7 @@ func _on_battle_mode_selected(mode_id: StringName) -> void:
 		_open_eva_campaign_map()
 
 func _open_exploration_map() -> void:
+	_stop_lobby_music()
 	if mapa_exploracao == null:
 		return
 	if pet_ui != null:
@@ -879,6 +871,7 @@ func _close_exploration_map() -> void:
 		deepworld_controller.visible = true
 
 func _open_eva_campaign_map() -> void:
+	_stop_lobby_music()
 	if mapa_campanha_eva == null:
 		return
 	if pet_ui != null:
@@ -976,6 +969,7 @@ func _eva_chapter_for_stage(stage_id: StringName) -> int:
 	return clampi(int(String(parts[1]).trim_prefix("ch")), 1, 6)
 
 func _open_eva_visual_novel(chapter_id: int, include_choice: bool) -> void:
+	_stop_lobby_music()
 	if eva_visual_novel == null:
 		return
 	if mapa_campanha_eva != null:
@@ -989,6 +983,45 @@ func _open_eva_visual_novel(chapter_id: int, include_choice: bool) -> void:
 	if deepworld_controller != null:
 		deepworld_controller.hide_battle_stage()
 	eva_visual_novel.open_chapter(chapter_id, include_choice)
+
+func _open_exploration_eva_encounter() -> void:
+	_stop_lobby_music()
+	if eva_visual_novel == null:
+		return
+	eva_exploration_encounter_active = true
+	if batalha_exploracao != null:
+		batalha_exploracao.close_area()
+	if mapa_exploracao != null:
+		mapa_exploracao.close_map()
+	if mapa_campanha_eva != null:
+		mapa_campanha_eva.close_map()
+	if pet_ui != null:
+		pet_ui.visible = false
+	if deepworld_controller != null:
+		deepworld_controller.hide_battle_stage()
+	# O fundo é um ponto de extensão: futuros bosses podem passar outra chave.
+	eva_visual_novel.open_exploration_encounter(&"field")
+
+func _on_exploration_eva_encounter_completed(helped: bool) -> void:
+	eva_exploration_encounter_active = false
+	if aurora_pet_save != null:
+		if helped:
+			aurora_pet_save.mark_eva_encounter_seen()
+			aurora_pet_save.unlock_eva_adventure()
+		else:
+			aurora_pet_save.reset_eva_encounter_after_refusal()
+	if eva_journey_manager != null:
+		eva_journey_manager.choose_help_eva(helped)
+	if helped:
+		if mapa_campanha_eva != null:
+			mapa_campanha_eva.open_map()
+		if pet_ui != null:
+			pet_ui.visible = false
+	else:
+		if mapa_exploracao != null:
+			mapa_exploracao.open_map()
+		if pet_ui != null:
+			pet_ui.visible = false
 
 func _on_eva_novel_completed(helped: bool) -> void:
 	if not eva_novel_pending_stage_id.is_empty():
@@ -1012,6 +1045,15 @@ func _on_eva_novel_completed(helped: bool) -> void:
 		_close_eva_campaign_map()
 
 func _on_eva_novel_closed() -> void:
+	if eva_exploration_encounter_active:
+		eva_exploration_encounter_active = false
+		if aurora_pet_save != null:
+			aurora_pet_save.reset_eva_encounter_after_refusal()
+		if mapa_exploracao != null:
+			mapa_exploracao.open_map()
+		if pet_ui != null:
+			pet_ui.visible = false
+		return
 	if not eva_novel_pending_stage_id.is_empty():
 		eva_novel_pending_stage_id = &""
 		if mapa_campanha_eva != null:
@@ -1022,6 +1064,11 @@ func _on_eva_novel_closed() -> void:
 		_close_eva_campaign_map()
 
 func _open_exploration() -> void:
+	_stop_lobby_music()
+	if mapa_exploracao != null and mapa_exploracao.visible:
+		mapa_exploracao.close_map()
+	if mapa_campanha_eva != null and mapa_campanha_eva.visible:
+		mapa_campanha_eva.close_map()
 	if pet_stats != null and not pet_stats.report_action_check(&"batalhar"):
 		return
 	if batalha_exploracao == null:
@@ -1051,14 +1098,19 @@ func _on_exploration_points_changed(total_points: int) -> void:
 
 func _on_exploration_battle_completed(victory: bool, xp_reward: int, _point_reward: int, _log_text: String) -> void:
 	var battle_mode := batalha_exploracao.get_mode_context() if batalha_exploracao != null else &"training"
+	var launch_eva_encounter := false
 	if aurora_pet_save != null and battle_mode == &"exploration":
 		aurora_pet_save.register_exploration_battle(victory)
-		if victory and aurora_pet_save.eva_encounter_seen:
+		if victory:
 			aurora_pet_save.unlock_next_exploration_island()
+			launch_eva_encounter = aurora_pet_save.consume_eva_encounter_trigger()
 	if pet_skills != null and xp_reward > 0:
 		pet_skills.add_xp(xp_reward)
 	if pet_stats != null and victory:
-		pet_stats.perform_action(&"batalhar")
+		pet_stats.perform_action(&"batalhar", true)
+	if launch_eva_encounter:
+		_open_exploration_eva_encounter()
+		return
 	if battle_mode == &"eva" and batalha_exploracao != null:
 		if victory:
 			if mapa_campanha_eva != null and not current_eva_stage_id.is_empty():
@@ -1078,7 +1130,6 @@ func _on_exploration_battle_completed(victory: bool, xp_reward: int, _point_rewa
 		pet_ui.show_progression_message("BATALHA %s: +%d XP" % ["VENCIDA" if victory else "ENCERRADA", xp_reward])
 
 func _on_skill_unlocked(skill_id: StringName) -> void:
-	print("Habilidade desbloqueada: ", skill_id)
 	if pet_ui != null and pet_skills != null:
 		var skill: Dictionary = pet_skills.get_skill(skill_id)
 		pet_ui.show_progression_message("NOVA HABILIDADE: " + String(skill.get("name", skill_id)).to_upper())
@@ -1098,7 +1149,6 @@ func _on_world_progression_changed() -> void:
 
 func _on_level_up(new_level: int) -> void:
 	_play_level_up_sound()
-	print("Nível aumentado: ", new_level)
 	if quarto_cosmico != null and pet_skills != null:
 		quarto_cosmico.configure_progression(pet_skills.level, pet_skills.xp, pet_skills.total_xp)
 	if pet_ui != null:
@@ -1126,21 +1176,7 @@ func _on_eva_memory_unlocked(fragment_id: int, text: String) -> void:
 	if pet_ui != null:
 		pet_ui.show_pet_message("MEMÓRIA %d: %s" % [fragment_id, text])
 
-func _on_eva_encounter_ready() -> void:
-	eva_encounter_pending = true
-	if pet_ui != null:
-		pet_ui.show_system_message("EVA ENCONTRADA\nVERDE: AJUDAR   •   ROSA: AGORA NÃO")
 
-func _resolve_eva_encounter(helped: bool) -> void:
-	eva_encounter_pending = false
-	if aurora_pet_save != null:
-		aurora_pet_save.mark_eva_encounter_seen()
-	if eva_journey_manager != null:
-		eva_journey_manager.choose_help_eva(helped)
-	if helped and aurora_pet_save != null:
-		aurora_pet_save.unlock_eva_adventure()
-	if pet_ui != null:
-		pet_ui.show_pet_message("EVA: Obrigada por aceitar a jornada." if helped else "EVA: Tudo bem. Estarei aqui quando você estiver pronto.")
 
 func _on_eva_journey_choice(helped: bool) -> void:
 	if pet_ui != null:
@@ -1149,7 +1185,6 @@ func _on_eva_journey_choice(helped: bool) -> void:
 func _on_evolution_completed(new_stage: int, stage_name: StringName, visual_scale: float) -> void:
 	if aurora_pet_save != null:
 		aurora_pet_save.mark_dirty()
-	print("Evolução concluída: ", stage_name, " escala=", visual_scale)
 	if pet_ui != null:
 		pet_ui.show_progression_message("EVOLUÇÃO: " + String(stage_name).to_upper())
 

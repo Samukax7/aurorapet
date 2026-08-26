@@ -450,8 +450,10 @@ func report_action_check(action: StringName) -> bool:
 		action_refused.emit(action, String(action_check.get("system_message", "AÇÃO RECUSADA")), String(action_check.get("pet_message", "")))
 	return false
 
-func perform_action(action: StringName) -> bool:
-	if not report_action_check(action):
+## Aplica uma ação. A segunda flag é usada somente por atividades externas
+## que já validaram a ação antes de abrir a tela do minijogo ou da batalha.
+func perform_action(action: StringName, already_checked: bool = false) -> bool:
+	if not already_checked and not report_action_check(action):
 		return false
 	match action:
 		&"comer":

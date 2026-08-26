@@ -32,11 +32,13 @@ var _dirty := false
 var _autosave_elapsed := 0.0
 var development_mode := false
 var exploration_battles_completed := 0
+var eva_encounter_battle_counter := 0
 var eva_encounter_available := false
 var eva_encounter_seen := false
 var eva_adventure_unlocked := false
 var eva_progress_stage_index := 1
 var exploration_islands_unlocked: Array[StringName] = [&"data_city"]
+var _dev_force_eva_encounter := false
 const EXPLORATION_ISLAND_ORDER: Array[StringName] = [&"data_city", &"crystal_forest", &"volcanic_core", &"crystal_ruins", &"electric_abysm"]
 
 func _process(delta: float) -> void:
@@ -73,9 +75,10 @@ func set_development_session(active: bool) -> void:
 		# Sessão DEV é descartável: libera o laboratório inteiro sem gravar no save real.
 		exploration_battles_completed = 999
 		exploration_islands_unlocked = EXPLORATION_ISLAND_ORDER.duplicate()
-		eva_encounter_available = true
+		eva_encounter_available = false
 		eva_encounter_seen = true
 		eva_adventure_unlocked = true
+		_dev_force_eva_encounter = true
 		eva_progress_stage_index = 21
 		_dirty = false
 		_autosave_elapsed = 0.0
@@ -88,20 +91,49 @@ func has_save() -> bool:
 	return FileAccess.file_exists(save_path)
 
 func register_exploration_battle(victory: bool) -> void:
-	if not victory or development_mode:
+	if not victory:
+		return
+	if development_mode:
 		return
 	exploration_battles_completed += 1
-	if exploration_battles_completed >= 3 and not eva_encounter_seen and not eva_encounter_available:
+	eva_encounter_battle_counter += 1
+	if eva_adventure_unlocked:
+		world_progression_changed.emit()
+		mark_dirty()
+		return
+	if eva_encounter_battle_counter >= 3 and not eva_encounter_available:
+		eva_encounter_battle_counter = 0
 		eva_encounter_available = true
 		eva_encounter_ready.emit()
 	world_progression_changed.emit()
 	mark_dirty()
 
+func is_eva_encounter_available() -> bool:
+	return eva_encounter_available
+
+func consume_eva_encounter_trigger() -> bool:
+	if development_mode and _dev_force_eva_encounter:
+		_dev_force_eva_encounter = false
+		return true
+	if eva_encounter_available and not eva_adventure_unlocked:
+		eva_encounter_available = false
+		mark_dirty()
+		return true
+	return false
+
 func mark_eva_encounter_seen() -> void:
+	# Aceitar EVA encerra definitivamente o gatilho da exploração.
 	eva_encounter_seen = true
 	eva_encounter_available = false
-	# O encontro abre a próxima etapa de exploração, independentemente da escolha narrativa.
+	eva_encounter_battle_counter = 0
 	unlock_exploration_island(&"crystal_forest")
+	world_progression_changed.emit()
+	mark_dirty()
+
+func reset_eva_encounter_after_refusal() -> void:
+	# Recusar não marca o encontro como concluído: ele poderá reaparecer após três vitórias.
+	eva_encounter_available = false
+	eva_encounter_battle_counter = 0
 	world_progression_changed.emit()
 	mark_dirty()
 
@@ -330,8 +362,9 @@ func _build_payload() -> Dictionary:
 		"appearance": _serialize_appearance(),
 		"world": {
 				"exploration_points": points,
-				"exploration_battles_completed": exploration_battles_completed,
-				"eva_encounter_available": eva_encounter_available,
+	"exploration_battles_completed": exploration_battles_completed,
+					"eva_encounter_battle_counter": eva_encounter_battle_counter,
+					"eva_encounter_available": eva_encounter_available,
 				"eva_encounter_seen": eva_encounter_seen,
 				"eva_adventure_unlocked": eva_adventure_unlocked,
 				"eva_progress_stage_index": eva_progress_stage_index,
@@ -561,7 +594,8 @@ func _restore_world(raw_data: Variant) -> void:
 		return
 	var data: Dictionary = raw_data
 	exploration_battles_completed = maxi(0, int(data.get("exploration_battles_completed", exploration_battles_completed)))
-	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3))
+	eva_encounter_battle_counter = clampi(int(data.get("eva_encounter_battle_counter", exploration_battles_completed % 3)), 0, 2)
+	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3 and not eva_encounter_seen))
 	eva_encounter_seen = bool(data.get("eva_encounter_seen", false))
 	eva_adventure_unlocked = bool(data.get("eva_adventure_unlocked", false))
 	eva_progress_stage_index = clampi(int(data.get("eva_progress_stage_index", eva_progress_stage_index)), 1, 21)

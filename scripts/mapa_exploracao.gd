@@ -17,9 +17,11 @@ var _world_progression: AuroraPetSave
 @onready var selection_label: Label = $SelectionPanel/SelectionLabel
 @onready var hint_label: Label = $Hint
 @onready var area_buttons: Array[Button] = [$AreaButtons/CrystalRuins, $AreaButtons/ElectricAbysm, $AreaButtons/VolcanicCore, $AreaButtons/CrystalForest, $AreaButtons/DataCity]
+@onready var map_music: AudioStreamPlayer = $MapMusic
 
 func _ready() -> void:
 	visible = false
+	_configure_music_loop()
 	_update_selection()
 
 func set_world_progression(world: AuroraPetSave) -> void:
@@ -28,13 +30,26 @@ func set_world_progression(world: AuroraPetSave) -> void:
 
 func open_map() -> void:
 	visible = true
+	if map_music != null and not map_music.playing:
+		map_music.play()
 	selected_index = 4
 	_update_selection()
 	grab_focus()
 
 func close_map() -> void:
 	visible = false
+	if map_music != null:
+		map_music.stop()
 	map_closed.emit()
+
+func _configure_music_loop() -> void:
+	if map_music == null:
+		return
+	var wav := map_music.stream as AudioStreamWAV
+	if wav != null:
+		var looped := wav.duplicate() as AudioStreamWAV
+		looped.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		map_music.stream = looped
 
 func handle_direction(direction: Vector2i) -> void:
 	if not visible or direction == Vector2i.ZERO:

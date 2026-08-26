@@ -1,5 +1,11 @@
 .godot/
 android/build/
+build/
+/*.pck
+/*.wasm
+/AuroraPet V 0.0.*
+/aurorapet_*.zip
+/AuroraPetMobileVersion_Publish.zip
 *.log
 *.tmp
 *.bak

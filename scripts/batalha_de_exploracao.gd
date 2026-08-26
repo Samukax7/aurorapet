@@ -181,6 +181,8 @@ func open_area() -> void:
 func close_area() -> void:
 	visible = false
 	phase = &"lobby"
+	if victory_audio != null:
+		victory_audio.stop()
 	area_closed.emit()
 
 func handle_direction(direction: Vector2i) -> void:

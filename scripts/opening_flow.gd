@@ -35,7 +35,7 @@ var deepworld: Node
 var pet_node: Node2D
 var skill_tree: Node
 var pet_save: AuroraPetSave
-var egg_base_position := Vector2(382.525, 323.006)
+var egg_base_position := Vector2(450.0, 360.0)
 var egg_shake_tween: Tween
 var intro_anim_time := 0.0
 
@@ -291,7 +291,7 @@ func _show_menu() -> void:
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
 	menu_panel.visible = true
-	menu_notice.text = "V 0.0 • PROTÓTIPO EM DESENVOLVIMENTO • SEM ÁUDIO\nD-PAD: NAVEGAR   •   VERDE: CONFIRMAR"
+	menu_notice.text = "V 0.1 • PROTÓTIPO EM DESENVOLVIMENTO • ÁUDIO ATIVO\nD-PAD: NAVEGAR   •   VERDE: CONFIRMAR"
 	menu_options = [&"start", &"options"]
 	if _has_save():
 		menu_options = [&"start", &"continue", &"options"]
