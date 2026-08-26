@@ -1,0 +1,210 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/eva_visual_novel.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_presenter_idle_12frames_64px_padded.png" id="2_eva"]
+[ext_resource type="AudioStream" path="res://assets/audio/eva_campaign_underscore.wav" id="3_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/eva_choice_chime.wav" id="4_choice"]
+
+[sub_resource type="StyleBoxFlat" id="NovelFrame"]
+bg_color = Color(0.018, 0.035, 0.12, 0.97)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.34, 0.9, 1, 0.98)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="ChoiceNormal"]
+bg_color = Color(0.05, 0.09, 0.22, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.52, 0.78, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="ChoicePressed"]
+bg_color = Color(0.18, 0.7, 0.9, 0.4)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.48, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="EvaVisualNovel" type="Control"]
+visible = false
+z_index = 70
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.008, 0.012, 0.055, 0.72)
+mouse_filter = 2
+
+[node name="EvaSprite" type="Sprite2D" parent="."]
+z_index = 2
+position = Vector2(142, 268)
+scale = Vector2(3.25, 3.25)
+texture = ExtResource("2_eva")
+hframes = 3
+vframes = 4
+frame = 0
+
+[node name="DialogueFrame" type="Panel" parent="."]
+offset_left = 190.0
+offset_top = 76.0
+offset_right = 1032.0
+offset_bottom = 430.0
+theme_override_styles/panel = SubResource("NovelFrame")
+
+[node name="Chapter" type="Label" parent="DialogueFrame"]
+offset_left = 28.0
+offset_top = 22.0
+offset_right = 814.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(0.62, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+text = "CAPÍTULO 1 • O SILÊNCIO DOS ECOS"
+horizontal_alignment = 1
+
+[node name="Region" type="Label" parent="DialogueFrame"]
+offset_left = 28.0
+offset_top = 61.0
+offset_right = 814.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.7, 0.84, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 14
+text = "REGIÃO: RUÍNAS DIGITAIS"
+horizontal_alignment = 1
+
+[node name="Speaker" type="Label" parent="DialogueFrame"]
+offset_left = 35.0
+offset_top = 111.0
+offset_right = 230.0
+offset_bottom = 148.0
+theme_override_colors/font_color = Color(1, 0.82, 0.42, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
+text = "EVA"
+
+[node name="Dialogue" type="Label" parent="DialogueFrame"]
+offset_left = 35.0
+offset_top = 156.0
+offset_right = 806.0
+offset_bottom = 290.0
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 23
+text = "Você ouviu? Há um eco preso entre estas estrelas."
+autowrap_mode = 2
+vertical_alignment = 1
+
+[node name="Progress" type="Label" parent="DialogueFrame"]
+offset_left = 700.0
+offset_top = 310.0
+offset_right = 806.0
+offset_bottom = 335.0
+theme_override_colors/font_color = Color(0.5, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "01 / 03"
+horizontal_alignment = 2
+
+[node name="ChoicePanel" type="Panel" parent="."]
+visible = false
+offset_left = 232.0
+offset_top = 362.0
+offset_right = 990.0
+offset_bottom = 522.0
+theme_override_styles/panel = SubResource("NovelFrame")
+
+[node name="Title" type="Label" parent="ChoicePanel"]
+offset_left = 24.0
+offset_top = 16.0
+offset_right = 734.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.8, 0.92, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "ESCOLHA O PRÓXIMO PASSO"
+horizontal_alignment = 1
+
+[node name="Help" type="Button" parent="ChoicePanel"]
+offset_left = 28.0
+offset_top = 62.0
+offset_right = 354.0
+offset_bottom = 126.0
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.9, 1, 0.96, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("ChoiceNormal")
+theme_override_styles/pressed = SubResource("ChoicePressed")
+text = "AJUDAR EVA"
+
+[node name="Wait" type="Button" parent="ChoicePanel"]
+offset_left = 392.0
+offset_top = 62.0
+offset_right = 728.0
+offset_bottom = 126.0
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.96, 0.9, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("ChoiceNormal")
+theme_override_styles/pressed = SubResource("ChoicePressed")
+text = "AGORA NÃO"
+
+[node name="CampaignMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_audio")
+volume_db = -10.0
+
+[node name="ChoiceAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_choice")
+volume_db = -7.0
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 160.0
+offset_top = 568.0
+offset_right = 920.0
+offset_bottom = 598.0
+theme_override_colors/font_color = Color(0.76, 0.92, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 14
+text = "VERDE: AVANÇAR   •   D-PAD: NAVEGAR   •   ROSA: SAIR"
+horizontal_alignment = 1

@@ -7,6 +7,16 @@ extends Node2D
 
 signal palette_changed(pair_index: int, palette_name: StringName, base_color: Color, complementary_color: Color)
 signal reaction_started(action: StringName, reaction_id: StringName)
+signal cosmetic_equipped(item_id: StringName)
+
+const COSMETIC_TEXTURES: Dictionary = {
+	&"cosmic_orbit_crown": "res://assets/cosmetics/wardrobe/cosmic_orbit_crown_64.png",
+	&"cosmic_star_scarf": "res://assets/cosmetics/wardrobe/cosmic_star_scarf_64.png",
+	&"nebula_backpack": "res://assets/cosmetics/wardrobe/nebula_backpack_64.png",
+	&"guardian_halo": "res://assets/cosmetics/wardrobe/guardian_halo_64.png",
+	&"comet_tail_ribbon": "res://assets/cosmetics/wardrobe/comet_tail_ribbon_64.png",
+	&"lunar_cape": "res://assets/cosmetics/wardrobe/lunar_cape_64.png",
+}
 
 const EYES_PATH := "res://assets/pet_modular/modulos/olhos/eye_%02d.png"
 const EARS_PATH := "res://assets/pet_modular/modulos/orelhas/ear_%02d.png"
@@ -48,6 +58,9 @@ const COSMIC_PALETTE: Array[Dictionary] = [
 @export var randomize_palette_in_editor := false
 @export var palette_seed_value: int = 0
 
+@export_category("Cosméticos")
+@export var equipped_cosmetic: StringName = &""
+
 @export_category("Ajuste individual das caudas")
 @export var apply_tail_variant_scales := true
 
@@ -78,6 +91,7 @@ var _randomizer := RandomNumberGenerator.new()
 var _palette_randomizer := RandomNumberGenerator.new()
 var _reaction_tween: Tween
 var _reaction_origin := Vector2.ZERO
+@onready var cosmetic_overlay: Sprite2D = get_node_or_null(^"CosmeticOverlay") as Sprite2D
 
 func _ready() -> void:
 	_reaction_origin = position
@@ -91,6 +105,27 @@ func _ready() -> void:
 		randomize_pet()
 	if randomize_palette_on_ready:
 		reroll_palette()
+	if not equipped_cosmetic.is_empty():
+		call_deferred("equip_cosmetic", equipped_cosmetic)
+
+func equip_cosmetic(item_id: StringName) -> void:
+	equipped_cosmetic = item_id
+	if cosmetic_overlay == null:
+		return
+	var texture_path := String(COSMETIC_TEXTURES.get(item_id, ""))
+	cosmetic_overlay.texture = load(texture_path) as Texture2D if not texture_path.is_empty() else null
+	cosmetic_overlay.visible = cosmetic_overlay.texture != null
+	cosmetic_overlay.z_index = 5
+	match item_id:
+		&"cosmic_orbit_crown", &"guardian_halo":
+			cosmetic_overlay.position = Vector2(0, -94)
+		&"cosmic_star_scarf", &"lunar_cape":
+			cosmetic_overlay.position = Vector2(0, -32)
+		&"nebula_backpack", &"comet_tail_ribbon":
+			cosmetic_overlay.position = Vector2(0, 22)
+		_:
+			cosmetic_overlay.position = Vector2.ZERO
+	cosmetic_equipped.emit(item_id)
 
 func play_reaction(action: StringName, reaction_id: StringName = &"") -> void:
 	var selected_reaction := reaction_id if not reaction_id.is_empty() else action
@@ -98,11 +133,44 @@ func play_reaction(action: StringName, reaction_id: StringName = &"") -> void:
 	if _reaction_tween != null:
 		_reaction_tween.kill()
 	position = _reaction_origin
-	_reaction_tween = create_tween()
-	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(-reaction_shake_pixels, 0), 0.06)
-	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(reaction_shake_pixels, 0), 0.10)
-	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(-reaction_shake_pixels * 0.5, 0), 0.08)
-	_reaction_tween.tween_property(self, "position", _reaction_origin, 0.08)
+	scale = Vector2.ONE
+	rotation = 0.0
+
+	# O tremor curto permanece como assinatura comum, mas cada ação ganha
+	# uma silhueta própria para o jogador reconhecer a resposta do pet.
+	_reaction_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(-reaction_shake_pixels, 0), 0.05)
+	_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(reaction_shake_pixels, 0), 0.08)
+	match selected_reaction:
+		&"comer", &"fruta_estelar", &"nectar_cosmico", &"banquete_nebulosa":
+			_reaction_tween.tween_property(self, "scale", Vector2(1.08, 0.92), 0.10)
+			_reaction_tween.tween_property(self, "scale", Vector2(0.96, 1.06), 0.12)
+			_reaction_tween.tween_property(self, "scale", Vector2.ONE, 0.12)
+		&"brincar", &"jokenpo", &"jogo_da_velha", &"2048":
+			_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(0, -12), 0.14)
+			_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(0, 0), 0.18)
+		&"limpar_sujeira":
+			_reaction_tween.tween_property(self, "rotation", deg_to_rad(-6.0), 0.08)
+			_reaction_tween.tween_property(self, "rotation", deg_to_rad(6.0), 0.12)
+			_reaction_tween.tween_property(self, "rotation", 0.0, 0.10)
+		&"dar_remedio":
+			_reaction_tween.tween_property(self, "scale", Vector2(0.94, 1.08), 0.16)
+			_reaction_tween.tween_property(self, "scale", Vector2.ONE, 0.18)
+		&"treinar":
+			_reaction_tween.tween_property(self, "position", _reaction_origin + Vector2(0, -8), 0.10)
+			_reaction_tween.tween_property(self, "scale", Vector2(1.10, 0.90), 0.10)
+			_reaction_tween.tween_property(self, "position", _reaction_origin, 0.12)
+			_reaction_tween.tween_property(self, "scale", Vector2.ONE, 0.14)
+		&"dormir":
+			_reaction_tween.tween_property(self, "scale", Vector2(0.96, 0.92), 0.18)
+			_reaction_tween.tween_property(self, "rotation", deg_to_rad(-4.0), 0.14)
+			_reaction_tween.tween_property(self, "rotation", 0.0, 0.16)
+		&"recusa", &"refusal", &"blocked":
+			_reaction_tween.tween_property(self, "rotation", deg_to_rad(-7.0), 0.08)
+			_reaction_tween.tween_property(self, "rotation", deg_to_rad(7.0), 0.12)
+			_reaction_tween.tween_property(self, "rotation", 0.0, 0.10)
+	_reaction_tween.tween_property(self, "position", _reaction_origin, 0.10)
+
 	var particle_path := "ReactionParticles/" + String(selected_reaction)
 	var particles := get_node_or_null(NodePath(particle_path)) as CPUParticles2D
 	if particles != null:

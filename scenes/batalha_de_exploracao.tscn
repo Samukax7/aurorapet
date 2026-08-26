@@ -1,6 +1,7 @@
 [gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/batalha_de_exploracao.gd" id="1_exploration"]
+[ext_resource type="AudioStream" path="res://assets/audio/battle_victory_sting.wav" id="2_victory"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_Back"]
 bg_color = Color(0.025, 0.02, 0.13, 0.16)
@@ -97,6 +98,10 @@ grow_vertical = 2
 mouse_filter = 1
 focus_mode = 2
 script = ExtResource("1_exploration")
+
+[node name="VictoryAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_victory")
+volume_db = -8.0
 
 [node name="Background" type="Panel" parent="."]
 layout_mode = 1
@@ -324,6 +329,18 @@ offset_left = 567.150838
 offset_top = 110.06135
 offset_right = 929.162011
 offset_bottom = 295.092025
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="MoveEffect" type="TextureRect" parent="BattleCard"]
+visible = false
+z_index = 5
+offset_left = 336.0
+offset_top = 116.0
+offset_right = 696.0
+offset_bottom = 476.0
 texture_filter = 1
 expand_mode = 1
 stretch_mode = 5

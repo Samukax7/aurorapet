@@ -23,10 +23,17 @@ const ACTION_LABELS: Dictionary = {
 	&"tecnica": "TÉCNICA",
 	&"defesa": "GUARDA",
 	&"fugir": "FUGIR",
-	&"golpe_fraco": "GOLPE FRACO",
-	&"golpe_forte": "GOLPE FORTE",
-	&"golpe_status": "GOLPE DE STATUS",
-	&"intuicao_cosmica": "INTUIÇÃO CÓSMICA",
+	&"golpe_fraco": "PULSO AURORA",
+	&"golpe_forte": "IMPACTO ESTELAR",
+	&"golpe_status": "SELO DO VAZIO",
+	&"intuicao_cosmica": "ÓRBITA DA INTUIÇÃO",
+}
+const MOVE_EFFECT_TEXTURES: Dictionary = {
+	&"golpe_fraco": "res://assets/battle/effects/pulso_aurora_64.png",
+	&"golpe_forte": "res://assets/battle/effects/impacto_estelar_64.png",
+	&"golpe_status": "res://assets/battle/effects/selo_vazio_64.png",
+	&"intuicao_cosmica": "res://assets/battle/effects/mare_plasma_64.png",
+	&"enemy": "res://assets/battle/effects/fragmento_nebular_64.png",
 }
 const TECHNIQUE_COST := 10
 
@@ -65,6 +72,9 @@ var encounter_point_reward := BATTLE_POINT_REWARD
 var battle_turn := 0
 var battle_logs: Array[String] = []
 var _last_d20 := 0
+var _boss_animation_time := 0.0
+var _boss_origin := Vector2.ZERO
+var _boss_tween: Tween
 var _rng := RandomNumberGenerator.new()
 var _pet_stats: PetStats
 var _pet_skills: PetSkills
@@ -101,9 +111,12 @@ var _pet_identity: PetIdentity
 @onready var option_3_label: Label = $BattleCard/ActionButton3/Label
 @onready var option_4_label: Label = $BattleCard/ActionButton4/Label
 @onready var log_label: Label = $BattleCard/Log
+@onready var move_effect: TextureRect = $BattleCard/MoveEffect
+@onready var victory_audio: AudioStreamPlayer = $VictoryAudio
 
 func _ready() -> void:
 	visible = false
+	_boss_origin = boss_sprite.position if boss_sprite != null else Vector2.ZERO
 	_load_battle_visual_assets()
 	_update_points()
 	_show_lobby()
@@ -125,6 +138,13 @@ func _load_battle_visual_assets() -> void:
 		log_frame.texture = log_cyan
 	if emotions != null:
 		emotion_strip.texture = emotions
+
+func _process(delta: float) -> void:
+	if boss_sprite == null or not boss_sprite.visible or phase != &"battle":
+		return
+	_boss_animation_time += delta
+	boss_sprite.position.y = _boss_origin.y + sin(_boss_animation_time * 2.4) * 3.0
+	boss_sprite.rotation = sin(_boss_animation_time * 1.7) * 0.018
 
 func configure_mode(context: StringName) -> void:
 	mode_context = context
@@ -363,6 +383,7 @@ func _execute_player_action(action: StringName, resolve_after_enemy: bool = fals
 	if d20 == 20:
 		damage = int(float(damage) * 1.50)
 	enemy_hp = maxi(0, enemy_hp - damage)
+	_play_move_effect(action, d20 == 20)
 	_add_log("CRÍTICO • -%d HP" % damage if d20 == 20 else "%s • -%d HP" % [String(ACTION_LABELS[action]), damage])
 	if action == &"golpe_status":
 		enemy_status = &"enfraquecido"
@@ -463,6 +484,7 @@ func _enemy_turn() -> void:
 		player_guarding = false
 		_add_log("GUARDA REDUZIU DANO")
 	player_hp = maxi(0, player_hp - damage)
+	_play_move_effect(&"enemy", enemy_d20 == 20)
 	_add_log("ECO CRÍTICO • -%d HP" % damage if enemy_d20 == 20 else "ECO • -%d HP" % damage)
 	if player_hp <= 0:
 		_finish_battle(false)
@@ -478,6 +500,8 @@ func _finish_battle(victory: bool) -> void:
 	var xp_reward := encounter_xp_reward if victory else BATTLE_DEFEAT_XP
 	var point_reward := encounter_point_reward if victory else 0
 	if victory:
+		if victory_audio != null:
+			victory_audio.play()
 		_add_log("VITÓRIA • +%d XP • +%d PONTOS" % [xp_reward, point_reward])
 		add_exploration_points(point_reward)
 		status_label.text = "%s CONCLUÍDA" % _mode_title()
@@ -488,6 +512,37 @@ func _finish_battle(victory: bool) -> void:
 		result_label.text = "DERROTA CONTRA %s" % enemy_name
 	battle_completed.emit(victory, xp_reward, point_reward, "Encontro contra %s" % enemy_name)
 	_update_result_ui()
+
+func _play_move_effect(action: StringName, critical: bool = false) -> void:
+	if move_effect == null:
+		return
+	var texture_path := String(MOVE_EFFECT_TEXTURES.get(action, ""))
+	if texture_path.is_empty():
+		return
+	move_effect.texture = load(texture_path) as Texture2D
+	if move_effect.texture == null:
+		return
+	if action != &"enemy" and encounter_is_boss:
+		_boss_hit_feedback()
+	move_effect.visible = true
+	move_effect.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	move_effect.scale = Vector2(0.58, 0.58) if not critical else Vector2(0.78, 0.78)
+	move_effect.rotation = -0.08 if action == &"enemy" else 0.0
+	var tween := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(move_effect, "scale", Vector2.ONE * (1.18 if critical else 1.0), 0.14)
+	tween.parallel().tween_property(move_effect, "modulate:a", 0.0, 0.32)
+	tween.tween_callback(move_effect.hide)
+
+func _boss_hit_feedback() -> void:
+	if boss_sprite == null or not boss_sprite.visible:
+		return
+	if _boss_tween != null:
+		_boss_tween.kill()
+	boss_sprite.modulate = Color(1.0, 0.48, 0.62, 1.0)
+	_boss_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_boss_tween.tween_property(boss_sprite, "modulate", Color.WHITE, 0.12)
+	_boss_tween.parallel().tween_property(boss_sprite, "scale", Vector2(1.08, 0.94), 0.10)
+	_boss_tween.tween_property(boss_sprite, "scale", Vector2.ONE, 0.16)
 
 func _update_boss_sprite() -> void:
 	if boss_sprite == null:
@@ -516,6 +571,14 @@ func _update_boss_sprite() -> void:
 		return
 	boss_sprite.texture = texture
 	boss_sprite.visible = true
+	boss_sprite.position = _boss_origin
+	boss_sprite.rotation = 0.0
+	boss_sprite.modulate = Color(1, 1, 1, 1)
+	boss_sprite.scale = Vector2(0.78, 0.78)
+	if _boss_tween != null:
+		_boss_tween.kill()
+	_boss_tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_boss_tween.tween_property(boss_sprite, "scale", Vector2.ONE, 0.32)
 
 func _area_encounter_label() -> String:
 	match exploration_area_id:

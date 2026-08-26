@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/eva_modular_pet.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/eva/idle/EVA_idle_spritesheet_64px.png" id="2_idle"]
+[ext_resource type="Texture2D" path="res://assets/eva/intro/eva_gif_full_240frames_160px.png" id="3_goddess"]
+
+[sub_resource type="Gradient" id="AuraGradient"]
+colors = PackedColorArray(0.45, 0.9, 1, 0.7, 0.45, 0.45, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="AuraTexture"]
+gradient = SubResource("AuraGradient")
+width = 8
+height = 8
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="EvaModularPet" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Aura" type="CPUParticles2D" parent="."]
+z_index = -1
+emitting = false
+amount = 12
+lifetime = 1.4
+randomness = 0.65
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, -12)
+initial_velocity_min = 8.0
+initial_velocity_max = 20.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+texture = SubResource("AuraTexture")
+color = Color(0.42, 0.92, 1, 0.42)
+
+[node name="IdleSprite" type="Sprite2D" parent="."]
+z_index = 1
+texture = ExtResource("2_idle")
+hframes = 3
+vframes = 6
+frame = 0
+scale = Vector2(3, 3)
+
+[node name="GoddessSprite" type="Sprite2D" parent="."]
+visible = false
+z_index = 1
+texture = ExtResource("3_goddess")
+hframes = 16
+vframes = 15
+frame = 192
+scale = Vector2(2.16, 2.16)

@@ -88,6 +88,8 @@ focus_mode = 2
 script = ExtResource("1_script")
 
 [node name="TopPanel" type="Panel" parent="."]
+visible = false
+z_index = 10
 offset_left = 22.0
 offset_top = 18.0
 offset_right = 1058.0
@@ -110,27 +112,28 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MapScroll" type="ScrollContainer" parent="."]
+z_index = 0
 offset_left = 0.0
-offset_top = 86.0
+offset_top = 0.0
 offset_right = 1080.0
-offset_bottom = 610.0
+offset_bottom = 650.0
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 1
 follow_focus = true
 mouse_filter = 2
 
 [node name="MapContent" type="Control" parent="MapScroll"]
-custom_minimum_size = Vector2(1080, 2000)
+custom_minimum_size = Vector2(1080, 1920)
 layout_mode = 2
 
 [node name="Background" type="TextureRect" parent="MapScroll/MapContent"]
 layout_mode = 0
 offset_right = 1080.0
-offset_bottom = 2000.0
+offset_bottom = 1920.0
 texture_filter = 1
 texture = ExtResource("2_map")
 expand_mode = 1
-stretch_mode = 6
+stretch_mode = 5
 mouse_filter = 2
 
 [node name="Stage01" type="Button" parent="MapScroll/MapContent"]
@@ -419,50 +422,14 @@ theme_override_styles/normal = SubResource("ButtonNormal")
 theme_override_styles/pressed = SubResource("ButtonPressed")
 theme_override_styles/disabled = SubResource("ButtonDisabled")
 
-[node name="Stage23" type="Button" parent="MapScroll/MapContent"]
-offset_left = 402.0
-offset_top = 228.0
-offset_right = 458.0
-offset_bottom = 284.0
-focus_mode = 0
-text = "·"
-theme_override_colors/font_color = Color(0.9, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("ButtonNormal")
-theme_override_styles/pressed = SubResource("ButtonPressed")
-theme_override_styles/disabled = SubResource("ButtonDisabled")
-
-[node name="Stage24" type="Button" parent="MapScroll/MapContent"]
-offset_left = 622.0
-offset_top = 156.0
-offset_right = 678.0
-offset_bottom = 212.0
-focus_mode = 0
-text = "·"
-theme_override_colors/font_color = Color(0.9, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("ButtonNormal")
-theme_override_styles/pressed = SubResource("ButtonPressed")
-theme_override_styles/disabled = SubResource("ButtonDisabled")
-
-[node name="Stage25" type="Button" parent="MapScroll/MapContent"]
-offset_left = 512.0
-offset_top = 84.0
-offset_right = 568.0
-offset_bottom = 140.0
-focus_mode = 0
-text = "★"
-theme_override_colors/font_color = Color(1, 0.8, 0.95, 1)
-theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("ButtonNormal")
-theme_override_styles/pressed = SubResource("BossPressed")
-theme_override_styles/disabled = SubResource("ButtonDisabled")
 
 [node name="SelectionPanel" type="Panel" parent="."]
-offset_left = 220.0
-offset_top = 545.0
-offset_right = 860.0
-offset_bottom = 608.0
+z_index = 10
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 280.0
+offset_bottom = 58.0
+mouse_filter = 2
 theme_override_styles/panel = SubResource("SelectionPanel")
 
 [node name="SelectionLabel" type="Label" parent="SelectionPanel"]
@@ -475,12 +442,14 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(0.96, 0.95, 1, 1)
 theme_override_colors/font_outline_color = Color(0.03, 0.02, 0.12, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 15
-text = "CAPÍTULO 1\nECO INICIAL"
+theme_override_font_sizes/font_size = 14
+text = "MARCADOR"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Hint" type="Label" parent="."]
+visible = false
+z_index = 10
 offset_left = 25.0
 offset_top = 625.0
 offset_right = 1055.0

@@ -70,8 +70,16 @@ func configure(
 func set_development_session(active: bool) -> void:
 	development_mode = active
 	if active:
+		# Sessão DEV é descartável: libera o laboratório inteiro sem gravar no save real.
+		exploration_battles_completed = 999
+		exploration_islands_unlocked = EXPLORATION_ISLAND_ORDER.duplicate()
+		eva_encounter_available = true
+		eva_encounter_seen = true
+		eva_adventure_unlocked = true
+		eva_progress_stage_index = 21
 		_dirty = false
 		_autosave_elapsed = 0.0
+		world_progression_changed.emit()
 
 func is_development_session() -> bool:
 	return development_mode
@@ -556,7 +564,7 @@ func _restore_world(raw_data: Variant) -> void:
 	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3))
 	eva_encounter_seen = bool(data.get("eva_encounter_seen", false))
 	eva_adventure_unlocked = bool(data.get("eva_adventure_unlocked", false))
-	eva_progress_stage_index = clampi(int(data.get("eva_progress_stage_index", eva_progress_stage_index)), 1, 24)
+	eva_progress_stage_index = clampi(int(data.get("eva_progress_stage_index", eva_progress_stage_index)), 1, 21)
 	exploration_islands_unlocked.clear()
 	for area_id in data.get("exploration_islands_unlocked", ["data_city"]):
 		exploration_islands_unlocked.append(StringName(String(area_id)))

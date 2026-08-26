@@ -29,6 +29,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_open.wav" id="26_sfx_open"]
 [ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_levelup.wav" id="27_sfx_levelup"]
 [ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_poop.wav" id="28_sfx_poop"]
+[ext_resource type="PackedScene" path="res://scenes/eva_visual_novel.tscn" id="29_eva_novel"]
 
 [node name="Console Base" type="Sprite2D" unique_id=1879046692]
 texture = ExtResource("1_5l2bk")
@@ -82,6 +83,9 @@ layout_mode = 1
 layout_mode = 1
 
 [node name="BatalharMenu" parent="ScreenContent" instance=ExtResource("19_battle_menu")]
+layout_mode = 1
+
+[node name="EvaVisualNovel" parent="ScreenContent" instance=ExtResource("29_eva_novel")]
 layout_mode = 1
 
 [node name="EvaJourneyManager" type="Node" parent="ScreenContent"]

@@ -1,0 +1,223 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/guarda_roupas_cosmico.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/cosmetics/wardrobe/cosmic_orbit_crown_64.png" id="2_crown"]
+[ext_resource type="Texture2D" path="res://assets/cosmetics/wardrobe/cosmic_star_scarf_64.png" id="3_scarf"]
+[ext_resource type="Texture2D" path="res://assets/cosmetics/wardrobe/nebula_backpack_64.png" id="4_pack"]
+[ext_resource type="Texture2D" path="res://assets/cosmetics/wardrobe/guardian_halo_64.png" id="5_halo"]
+[ext_resource type="Texture2D" path="res://assets/cosmetics/wardrobe/comet_tail_ribbon_64.png" id="6_comet"]
+[ext_resource type="Texture2D" path="res://assets/cosmetics/wardrobe/lunar_cape_64.png" id="7_cape"]
+
+[sub_resource type="StyleBoxFlat" id="WardrobeBack"]
+bg_color = Color(0.018, 0.035, 0.12, 0.98)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.5, 0.38, 0.95, 0.95)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0, 0, 0, 0.7)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="ItemNormal"]
+bg_color = Color(0.045, 0.085, 0.21, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.26, 0.5, 0.8, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="ItemPressed"]
+bg_color = Color(0.16, 0.65, 0.9, 0.46)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.45, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="GuardaRoupasCosmico" type="Control"]
+visible = false
+z_index = 45
+layout_mode = 3
+anchors_preset = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1080.0
+offset_bottom = 650.0
+scale = Vector2(3.174855, 2.857143)
+mouse_filter = 1
+script = ExtResource("1_script")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("WardrobeBack")
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Panel"]
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 1056.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.92, 0.78, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 48
+text = "GUARDA-ROUPAS CÓSMICO"
+horizontal_alignment = 1
+
+[node name="Preview" type="Panel" parent="Panel"]
+offset_left = 28.0
+offset_top = 100.0
+offset_right = 470.0
+offset_bottom = 510.0
+theme_override_styles/panel = SubResource("ItemNormal")
+
+[node name="Caption" type="Label" parent="Panel/Preview"]
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 424.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.6, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "PRÉ-VISUALIZAÇÃO"
+horizontal_alignment = 1
+
+[node name="PetSilhouette" type="ColorRect" parent="Panel/Preview"]
+offset_left = 130.0
+offset_top = 76.0
+offset_right = 306.0
+offset_bottom = 252.0
+color = Color(0.16, 0.2, 0.38, 0.32)
+mouse_filter = 2
+
+[node name="Accessory" type="Sprite2D" parent="Panel/Preview"]
+z_index = 2
+position = Vector2(250, 155)
+scale = Vector2(3, 3)
+texture = ExtResource("2_crown")
+
+[node name="Selected" type="Label" parent="Panel"]
+offset_left = 30.0
+offset_top = 520.0
+offset_right = 1050.0
+offset_bottom = 565.0
+theme_override_colors/font_color = Color(1, 0.82, 0.42, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 27
+text = "COROA ÓRBITA  •  SLOT: CABEÇA"
+horizontal_alignment = 1
+
+[node name="Items" type="GridContainer" parent="Panel"]
+offset_left = 490.0
+offset_top = 100.0
+offset_right = 1050.0
+offset_bottom = 510.0
+theme_override_constants/v_separation = 10
+columns = 1
+
+[node name="Item01" type="Button" parent="Panel/Items"]
+custom_minimum_size = Vector2(550, 58)
+layout_mode = 2
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("ItemNormal")
+theme_override_styles/pressed = SubResource("ItemPressed")
+text = "COROA ÓRBITA"
+
+[node name="Item02" type="Button" parent="Panel/Items"]
+custom_minimum_size = Vector2(550, 58)
+layout_mode = 2
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("ItemNormal")
+theme_override_styles/pressed = SubResource("ItemPressed")
+text = "CACHECOL ESTELAR"
+
+[node name="Item03" type="Button" parent="Panel/Items"]
+custom_minimum_size = Vector2(550, 58)
+layout_mode = 2
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("ItemNormal")
+theme_override_styles/pressed = SubResource("ItemPressed")
+text = "MOCHILA NEBULOSA"
+
+[node name="Item04" type="Button" parent="Panel/Items"]
+custom_minimum_size = Vector2(550, 58)
+layout_mode = 2
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("ItemNormal")
+theme_override_styles/pressed = SubResource("ItemPressed")
+text = "HALO GUARDIÃO"
+
+[node name="Item05" type="Button" parent="Panel/Items"]
+custom_minimum_size = Vector2(550, 58)
+layout_mode = 2
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("ItemNormal")
+theme_override_styles/pressed = SubResource("ItemPressed")
+text = "FITA COMETA"
+
+[node name="Item06" type="Button" parent="Panel/Items"]
+custom_minimum_size = Vector2(550, 58)
+layout_mode = 2
+toggle_mode = true
+focus_mode = 0
+theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("ItemNormal")
+theme_override_styles/pressed = SubResource("ItemPressed")
+text = "CAPA LUNAR"
+
+[node name="Result" type="Label" parent="Panel"]
+offset_left = 30.0
+offset_top = 570.0
+offset_right = 1050.0
+offset_bottom = 612.0
+theme_override_colors/font_color = Color(0.55, 0.95, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+text = "VERDE: EQUIPAR   •   ITEM ATUAL: NENHUM"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="Panel"]
+offset_left = 24.0
+offset_top = 615.0
+offset_right = 1056.0
+offset_bottom = 645.0
+theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.02, 0.08, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 17
+text = "D-PAD: NAVEGAR   •   VERDE: EQUIPAR   •   ROSA: SAIR"
+horizontal_alignment = 1

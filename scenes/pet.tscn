@@ -296,6 +296,12 @@ scale = Vector2(0.30974925, -0.2831536)
 texture = ExtResource("6_ekye6")
 metadata/pet_modular_layer = true
 
+[node name="CosmeticOverlay" type="Sprite2D" parent="." unique_id=2026082801]
+visible = false
+z_index = 5
+position = Vector2(0, -94)
+texture_filter = 1
+
 [node name="PetEvolution" type="Node" parent="." unique_id=622724358]
 script = ExtResource("9_evolution")
 

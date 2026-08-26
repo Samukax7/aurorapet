@@ -13,6 +13,7 @@ signal exit_confirmation_requested
 signal exit_confirmation_cancelled
 signal exit_confirmed
 signal purchase_completed(item_id: StringName, price: int, remaining_points: int, accumulated_value: int)
+signal cosmetic_equipped(item_id: StringName)
 
 var exploration_points := 0
 var shop_total_value := 0
@@ -32,6 +33,7 @@ var _background_visibility: Dictionary = {}
 @onready var system_panel: Panel = $Room/SystemMessage
 @onready var system_label: Label = $Room/SystemMessage/Label
 @onready var shop: LojaCosmica = $LojaCosmica
+@onready var wardrobe: GuardaRoupasCosmico = $GuardaRoupasCosmico
 
 func _ready() -> void:
 	visible = false
@@ -39,6 +41,9 @@ func _ready() -> void:
 	system_panel.visible = false
 	if shop != null:
 		shop.purchase_requested.connect(_on_purchase_requested)
+	if wardrobe != null:
+		wardrobe.wardrobe_closed.connect(_on_wardrobe_closed)
+		wardrobe.cosmetic_equipped.connect(_on_cosmetic_equipped)
 	_update_points()
 
 func configure_progression(level: int, xp: int, total_xp: int) -> void:
@@ -55,6 +60,8 @@ func open_area() -> void:
 	room.visible = true
 	if shop != null:
 		shop.visible = false
+	if wardrobe != null:
+		wardrobe.close_wardrobe()
 	_update_selection_message()
 	_update_points()
 
@@ -62,6 +69,10 @@ func close_area() -> void:
 	if shop != null and shop.visible:
 		shop.close_shop()
 		system_panel.visible = false
+		room.visible = true
+		return
+	if wardrobe != null and wardrobe.visible:
+		wardrobe.close_wardrobe()
 		room.visible = true
 		return
 	exit_confirmation_pending = false
@@ -74,6 +85,9 @@ func handle_direction(direction: Vector2i) -> void:
 	if shop != null and shop.visible:
 		shop.handle_direction(direction)
 		return
+	if wardrobe != null and wardrobe.visible:
+		wardrobe.handle_direction(direction)
+		return
 	if not visible or direction == Vector2i.ZERO or exit_confirmation_pending:
 		return
 	if direction.x < 0 or direction.y < 0:
@@ -83,6 +97,9 @@ func handle_direction(direction: Vector2i) -> void:
 	_update_selection_message()
 
 func confirm() -> void:
+	if wardrobe != null and wardrobe.visible:
+		wardrobe.confirm()
+		return
 	if exit_confirmation_pending:
 		exit_confirmation_pending = false
 		system_panel.visible = false
@@ -97,14 +114,17 @@ func confirm() -> void:
 		_open_shop()
 	else:
 		status_label.text = "GUARDA-ROUPAS"
-		result_label.text = "ÁREA RESERVADA PARA A PRÓXIMA ETAPA"
-		wardrobe_requested.emit()
+		result_label.text = "SELECIONE UM ACESSÓRIO PARA EQUIPAR"
+		_open_wardrobe()
 
 func back() -> void:
 	if shop != null and shop.visible:
 		shop.close_shop()
 		room.visible = true
 		_update_selection_message()
+		return
+	if wardrobe != null and wardrobe.visible:
+		wardrobe.back()
 		return
 	request_exit()
 
@@ -126,6 +146,9 @@ func cancel_exit() -> void:
 
 func is_shop_open() -> bool:
 	return shop != null and shop.visible
+
+func is_wardrobe_open() -> bool:
+	return wardrobe != null and wardrobe.visible
 
 func is_exit_confirmation_pending() -> bool:
 	return exit_confirmation_pending
@@ -173,6 +196,22 @@ func set_owned_items(items: Array) -> void:
 
 func has_owned_item(item_id: StringName) -> bool:
 	return owned_items.has(item_id)
+
+func _open_wardrobe() -> void:
+	if wardrobe == null:
+		return
+	system_panel.visible = false
+	room.visible = false
+	wardrobe.open_wardrobe()
+	wardrobe_requested.emit()
+
+func _on_wardrobe_closed() -> void:
+	room.visible = true
+	_update_selection_message()
+
+func _on_cosmetic_equipped(item_id: StringName) -> void:
+	result_label.text = "EQUIPADO: " + String(item_id).to_upper()
+	cosmetic_equipped.emit(item_id)
 
 func _open_shop() -> void:
 	if shop == null:
