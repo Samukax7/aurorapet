@@ -662,7 +662,7 @@ offset_right = 310.0
 offset_bottom = 190.0
 theme_override_colors/font_color = Color(0.75, 0.7, 0.92, 1)
 theme_override_font_sizes/font_size = 14
-text = "EVA: SOMENTE JORNADA\nSLOT BLOQUEADO"
+text = "ECLIPSE TOTAL • 3 FAIXAS\nDESBLOQUEIA NO NÍVEL 6"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -747,3 +747,61 @@ theme_override_font_sizes/font_size = 58
 text = "BATALHA"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="MoveEffect2" type="TextureRect" parent="BattleCard"]
+visible = false
+offset_left = 400.0
+offset_top = 235.0
+offset_right = 680.0
+offset_bottom = 515.0
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+z_index = 20
+
+[node name="MoveEffect3" type="TextureRect" parent="BattleCard"]
+visible = false
+offset_left = 400.0
+offset_top = 235.0
+offset_right = 680.0
+offset_bottom = 515.0
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+z_index = 20
+
+[node name="ImpactEffect2" type="Label" parent="BattleCard"]
+visible = false
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 96.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.72, 1, 0.82, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.05, 0.12, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 64
+text = "✹"
+horizontal_alignment = 1
+vertical_alignment = 1
+pivot_offset = Vector2(48, 48)
+mouse_filter = 2
+z_index = 21
+
+[node name="ImpactEffect3" type="Label" parent="BattleCard"]
+visible = false
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 96.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.72, 1, 0.82, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.05, 0.12, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 64
+text = "✹"
+horizontal_alignment = 1
+vertical_alignment = 1
+pivot_offset = Vector2(48, 48)
+mouse_filter = 2
+z_index = 21

@@ -101,6 +101,7 @@ func _ready() -> void:
 		jogo_2048.match_completed.connect(_on_2048_completed)
 	if batalha_exploracao != null:
 		batalha_exploracao.configure(pet_stats, pet_skills, pet_identity, pet_randomizer)
+		_sync_battle_development_mode()
 		batalha_exploracao.points_changed.connect(_on_exploration_points_changed)
 		batalha_exploracao.battle_completed.connect(_on_exploration_battle_completed)
 		batalha_exploracao.battle_started.connect(_on_exploration_battle_started)
@@ -933,6 +934,7 @@ func _on_eva_stage_selected(stage_id: StringName) -> void:
 	eva_novel_pending_stage_id = stage_id
 	if batalha_exploracao != null:
 		batalha_exploracao.configure_mode(&"eva")
+		_sync_battle_development_mode()
 	var encounters: Dictionary = {
 		&"eva_ch1_01": ["ECO INICIAL", 0, false],
 		&"eva_ch1_02": ["FRAGMENTO INSTÁVEL", 1, false],
@@ -1078,11 +1080,18 @@ func _open_exploration() -> void:
 		return
 	if batalha_exploracao == null:
 		return
+	_sync_battle_development_mode()
 	if pet_ui != null:
 		pet_ui.visible = false
 	if deepworld_controller != null:
 		deepworld_controller.show_battle_stage()
 	batalha_exploracao.open_area()
+
+func _sync_battle_development_mode() -> void:
+	if batalha_exploracao == null:
+		return
+	var dev_active := aurora_pet_save != null and aurora_pet_save.is_development_session()
+	batalha_exploracao.set_development_mode(dev_active)
 
 func _close_exploration() -> void:
 	if batalha_exploracao != null:

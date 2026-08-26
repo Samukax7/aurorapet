@@ -19,9 +19,26 @@ const INTRO_DURATION := 1.5
 const INTRO_FLICK_SPEED := 18.0
 const TOP_LEVEL_ACTIONS: Array[StringName] = [&"golpes", &"tecnica", &"defesa", &"fugir"]
 const MOVE_ACTIONS: Array[StringName] = [&"golpe_fraco", &"golpe_forte"]
-const TECHNIQUE_ACTIONS: Array[StringName] = [&"intuicao_cosmica"]
+const TECHNIQUE_ACTIONS: Array[StringName] = [&"intuicao_cosmica", &"duplo_prisma", &"corte_bifurcado", &"eclipse_total"]
+const DEV_SPECIAL_ACTION: StringName = &"pulso_dev"
 const DEFENSE_ACTIONS: Array[StringName] = [&"escudo", &"golpe_status"]
 const LANE_NAMES: Array[String] = ["SUPERIOR", "CENTRAL", "INFERIOR"]
+const LANE_Y: Array[float] = [211.0, 280.0, 349.0]
+const BATTLE_ACTION_UNLOCK_LEVELS: Dictionary = {
+	&"intuicao_cosmica": 2,
+	&"duplo_prisma": 3,
+	&"corte_bifurcado": 4,
+	&"eclipse_total": 6,
+}
+const ULTIMATE_MIN_ENERGY := 30
+const ULTIMATE_ENERGY_SCALE := 0.55
+const TECHNIQUE_DEFINITIONS: Dictionary = {
+	&"intuicao_cosmica": {"en_cost": 10, "power": 20, "accuracy": 0.82},
+	&"duplo_prisma": {"en_cost": 18, "power": 24, "accuracy": 0.80},
+	&"corte_bifurcado": {"en_cost": 24, "power": 28, "accuracy": 0.76},
+}
+const ULTIMATE_DEFINITION: Dictionary = {"en_cost": 0, "power": 34, "accuracy": 0.78}
+const DEV_SPECIAL_DEFINITION: Dictionary = {"en_cost": 0, "power": 52, "accuracy": 0.98}
 const ACTION_LABELS: Dictionary = {
 	&"golpes": "ATAQUE",
 	&"tecnica": "S. ATTACK",
@@ -30,15 +47,25 @@ const ACTION_LABELS: Dictionary = {
 	&"golpe_fraco": "PULSO AURORA",
 	&"golpe_forte": "IMPACTO ESTELAR",
 	&"golpe_status": "SELO DO VAZIO",
-	&"intuicao_cosmica": "ÓRBITA DA INTUIÇÃO",
-	&"escudo": "ESCUDO",
+&"intuicao_cosmica": "ÓRBITA DA INTUIÇÃO",
+&"duplo_prisma": "PRISMA DUPLO",
+&"corte_bifurcado": "CORTE BIFURCADO",
+&"eclipse_total": "ECLIPSE TOTAL",
+&"pulso_dev": "PULSO DEV • TESTE RÁPIDO",
+&"escudo": "ESCUDO",
+
 }
 const MOVE_EFFECT_TEXTURES: Dictionary = {
 	&"golpe_fraco": "res://assets/battle/effects/pulso_aurora_64.png",
 	&"golpe_forte": "res://assets/battle/effects/impacto_estelar_64.png",
 	&"golpe_status": "res://assets/battle/effects/selo_vazio_64.png",
 	&"intuicao_cosmica": "res://assets/battle/effects/mare_plasma_64.png",
-	&"enemy": "res://assets/battle/effects/fragmento_nebular_64.png",
+&"duplo_prisma": "res://assets/battle/effects/mare_plasma_64.png",
+&"corte_bifurcado": "res://assets/battle/effects/impacto_estelar_64.png",
+&"eclipse_total": "res://assets/battle/effects/selo_vazio_64.png",
+&"pulso_dev": "res://assets/battle/effects/impacto_estelar_64.png",
+&"enemy": "res://assets/battle/effects/fragmento_nebular_64.png",
+
 }
 const TECHNIQUE_COST := 10
 const PLAYER_PROJECTILE_ORIGIN := Vector2(160, 262)
@@ -48,6 +75,7 @@ const ENEMY_PROJECTILE_TARGET := Vector2(160, 262)
 const PROJECTILE_TRAVEL_DURATION := 0.28
 
 var exploration_points := 0
+var development_mode := false
 var selected_index := 0
 var menu_level: StringName = &"root"
 var phase: StringName = &"lobby"
@@ -86,6 +114,8 @@ var encounter_is_boss := false
 var encounter_xp_reward := BATTLE_XP_REWARD
 var encounter_point_reward := BATTLE_POINT_REWARD
 var battle_turn := 0
+var ultimate_energy_used := 0
+var current_attack_lanes: Array[int] = []
 var battle_logs: Array[String] = []
 var _last_d20 := 0
 var _intro_elapsed := 0.0
@@ -132,6 +162,7 @@ var _player_pet_source: PetRandomizer
 ]
 @onready var move_effect: TextureRect = $BattleCard/MoveEffect
 @onready var impact_effect: Label = $BattleCard/ImpactEffect
+@onready var impact_effects: Array[Label] = [$BattleCard/ImpactEffect, $BattleCard/ImpactEffect2, $BattleCard/ImpactEffect3]
 @onready var player_card: Panel = $BattleCard/PlayerCard
 @onready var enemy_card: Panel = $BattleCard/EnemyCard
 @onready var victory_audio: AudioStreamPlayer = $VictoryAudio
@@ -159,6 +190,13 @@ func _process(delta: float) -> void:
 
 func configure_mode(context: StringName) -> void:
 	mode_context = context
+
+func set_development_mode(active: bool) -> void:
+	development_mode = active
+	_update_battle_ui()
+
+func is_development_mode() -> bool:
+	return development_mode
 
 func get_mode_context() -> StringName:
 	return mode_context
@@ -301,6 +339,8 @@ func _start_battle() -> void:
 	battle_turn = 1
 	battle_logs.clear()
 	_last_d20 = 0
+	ultimate_energy_used = 0
+	current_attack_lanes.clear()
 
 	var strength := _get_attribute(&"forca", 10)
 	var defense := _get_attribute(&"defesa", 10)
@@ -380,6 +420,9 @@ func _confirm_battle_step() -> void:
 		if action == &"escudo":
 			battle_step = &"defense_lane"
 			_add_log("PREPARE O ESCUDO • ESCOLHA A FAIXA")
+		elif action == &"eclipse_total":
+			battle_step = &"defense_lane"
+			_add_log("ECLIPSE TOTAL COBRE AS 3 FAIXAS • PREPARE A DEFESA")
 		else:
 			battle_step = &"attack_lane"
 			_add_log("ESCOLHA A TRAJETÓRIA DO ATAQUE")
@@ -412,37 +455,61 @@ func _resolve_player_action() -> void:
 			_queue_enemy_turn()
 			return
 	var skill: Dictionary = _pet_skills.get_skill(action) if _pet_skills != null else {}
-	var en_cost := int(skill.get("en_cost", skill.get("cost", 8)))
-	if action == &"intuicao_cosmica":
-		en_cost = TECHNIQUE_COST
-	if player_en < en_cost:
-		_add_log("EN INSUFICIENTE")
-		_update_battle_ui()
-		_queue_enemy_turn()
-		return
-	player_en -= en_cost
+	var technique: Dictionary = TECHNIQUE_DEFINITIONS.get(action, {})
+	if action == DEV_SPECIAL_ACTION:
+		technique = DEV_SPECIAL_DEFINITION.duplicate(true)
+	var ultimate := action == &"eclipse_total"
+	var en_cost := int(technique.get("en_cost", skill.get("en_cost", skill.get("cost", 8))))
+	if ultimate:
+		if not _is_action_available(action) or player_en < ULTIMATE_MIN_ENERGY:
+			_add_log("ULTIMATE BLOQUEADA • EN MÍNIMO %d" % ULTIMATE_MIN_ENERGY)
+			_update_battle_ui()
+			_queue_enemy_turn()
+			return
+		ultimate_energy_used = player_en
+		player_en = 0
+	else:
+		if player_en < en_cost:
+			_add_log("EN INSUFICIENTE")
+			_update_battle_ui()
+			_queue_enemy_turn()
+			return
+		player_en -= en_cost
 	var d20 := _roll_d20()
-	var lane_bonus := _lane_multiplier(player_attack_lane, enemy_defense_lane)
-	var accuracy := clampf(float(skill.get("accuracy", 0.82)) + float(_get_attribute(&"agilidade", 10) - 10) * 0.005, 0.45, 0.98)
+	var accuracy := clampf(float(technique.get("accuracy", skill.get("accuracy", 0.82))) + float(_get_attribute(&"agilidade", 10) - 10) * 0.005, 0.45, 0.98)
 	if d20 <= 2 or (d20 != 20 and _rng.randf() > accuracy):
+		ultimate_energy_used = 0
 		_add_log("PET ATACA • %s • FALHOU" % String(ACTION_LABELS.get(action, action)))
 		_update_battle_ui()
 		_queue_enemy_turn()
 		return
-	var power := int(skill.get("power", 12))
-	if action == &"intuicao_cosmica":
-		power = 20
-	var multiplier := _faction_multiplier(_player_faction(), enemy_faction)
-	var damage := maxi(4, int(float((_get_attribute(&"forca", 10) + (_pet_skills.level if _pet_skills != null else 1)) * power) / float(enemy_defense * 0.7 + 10.0) * multiplier * lane_bonus))
+	var power := int(technique.get("power", skill.get("power", 12)))
+	var attack_lanes := _get_attack_lanes(action, player_attack_lane)
+	current_attack_lanes = attack_lanes.duplicate()
+	var total_damage := 0
+	for lane in attack_lanes:
+		var lane_bonus := _lane_multiplier(lane, enemy_defense_lane)
+		var lane_power := power
+		if ultimate:
+			var energy_ratio := clampf(float(ultimate_energy_used) / float(maxi(1, player_max_en)), 0.0, 1.0)
+			lane_power = int(float(power) * (1.0 + energy_ratio * ULTIMATE_ENERGY_SCALE))
+		var damage := _calculate_player_hit_damage(lane_power, lane_bonus)
+		if d20 == 20:
+			damage = int(float(damage) * 1.50)
+		total_damage += damage
 	if enemy_guarding:
-		damage = maxi(2, int(float(damage) * 0.40))
+		total_damage = maxi(2, int(float(total_damage) * 0.40))
 		enemy_guarding = false
-		_add_log("ECO EM GUARDA")
-	if d20 == 20:
-		damage = int(float(damage) * 1.50)
-	enemy_hp = maxi(0, enemy_hp - damage)
-	_play_move_effect(action, d20 == 20)
-	_add_log("PET ATACA • %s • -%d HP" % [String(ACTION_LABELS.get(action, action)), damage])
+		_add_log("ECO EM GUARDA • DANO REDUZIDO")
+	enemy_hp = maxi(0, enemy_hp - total_damage)
+	_play_move_effect(action, d20 == 20, attack_lanes)
+	if ultimate:
+		_add_log("PET USA ECLIPSE TOTAL • 3 FAIXAS • -%d HP • EN %d" % [total_damage, ultimate_energy_used])
+		ultimate_energy_used = 0
+	else:
+		_add_log("PET ATACA • %s • %d IMPACTO(S) • -%d HP" % [String(ACTION_LABELS.get(action, action)), attack_lanes.size(), total_damage])
+	if attack_lanes.size() > 1:
+		_add_log("TRAJETÓRIA MÚLTIPLA • %s" % _lanes_as_text(attack_lanes))
 	if d20 == 20:
 		_add_log("D20: 20 • CRÍTICO")
 	if action == &"golpe_status":
@@ -454,6 +521,35 @@ func _resolve_player_action() -> void:
 		_finish_battle(true)
 		return
 	_queue_enemy_turn()
+
+func _get_attack_lanes(action: StringName, selected_lane: int) -> Array[int]:
+	var safe_lane := clampi(selected_lane, 0, LANE_NAMES.size() - 1)
+	match action:
+		&"duplo_prisma":
+			# Dois impactos simultâneos: a faixa escolhida e a faixa adjacente.
+			var adjacent := 1 if safe_lane == 0 else (1 if safe_lane == 2 else 0)
+			return [safe_lane, adjacent]
+		&"corte_bifurcado":
+			# Sequência 2+1: dois cortes na faixa escolhida e um corte aleatório
+			# em outra faixa, preservando a leitura tática do D20.
+			var other_lanes: Array[int] = [0, 1, 2]
+			other_lanes.erase(safe_lane)
+			var random_lane := other_lanes[_rng.randi_range(0, other_lanes.size() - 1)]
+			return [safe_lane, safe_lane, random_lane]
+		&"eclipse_total":
+			return [0, 1, 2]
+		_:
+			return [safe_lane]
+
+func _calculate_player_hit_damage(power: int, lane_bonus: float) -> int:
+	var multiplier := _faction_multiplier(_player_faction(), enemy_faction)
+	return maxi(4, int(float((_get_attribute(&"forca", 10) + (_pet_skills.level if _pet_skills != null else 1)) * power) / float(enemy_defense * 0.7 + 10.0) * multiplier * lane_bonus))
+
+func _lanes_as_text(lanes: Array[int]) -> String:
+	var labels: Array[String] = []
+	for lane in lanes:
+		labels.append(LANE_NAMES[clampi(lane, 0, LANE_NAMES.size() - 1)])
+	return " + ".join(labels)
 
 func _queue_enemy_turn() -> void:
 	if _resolution_tween != null:
@@ -504,9 +600,10 @@ func _apply_enemy_action() -> void:
 	if damage <= 0:
 		_add_log("ECO USA %s • SEM DANO" % String(ACTION_LABELS.get(action, action)))
 	else:
-		player_hp = maxi(0, player_hp - damage)
-		_play_move_effect(&"enemy", d20 == 20)
-		_add_log("ECO USA %s • -%d HP" % [String(ACTION_LABELS.get(action, action)), damage])
+			player_hp = maxi(0, player_hp - damage)
+			_play_move_effect(&"enemy", d20 == 20, [player_defense_lane])
+			_add_log("ECO USA %s • -%d HP" % [String(ACTION_LABELS.get(action, action)), damage])
+
 	if d20 == 20:
 		_add_log("D20: 20 • CRÍTICO DO ECO")
 	if action == &"golpe_status" and damage > 0:
@@ -521,6 +618,10 @@ func _apply_enemy_action() -> void:
 func _begin_next_round() -> void:
 	if phase != &"battle" or battle_over:
 		return
+	var energy_recovered := mini(EN_RECOVERY_PER_TURN, maxi(0, player_max_en - player_en))
+	if energy_recovered > 0:
+		player_en += energy_recovered
+		_add_log("EN RECUPERADA • +%d" % energy_recovered)
 	battle_turn += 1
 	is_player_turn = true
 	battle_step = &"action_select"
@@ -566,44 +667,71 @@ func _finish_battle(victory: bool) -> void:
 	battle_completed.emit(victory, xp_reward, point_reward, "Encontro contra %s" % enemy_name)
 	_update_result_ui()
 
-func _play_move_effect(action: StringName, critical: bool = false) -> void:
+func _play_move_effect(action: StringName, critical: bool = false, target_lanes: Array = []) -> void:
 	if move_effect == null:
 		return
 	var texture_path := String(MOVE_EFFECT_TEXTURES.get(action, ""))
 	if texture_path.is_empty():
 		return
-	move_effect.texture = load(texture_path) as Texture2D
-	if move_effect.texture == null:
+	var texture := load(texture_path) as Texture2D
+	if texture == null:
 		return
 	var target_is_player := action == &"enemy"
-	var start_position := ENEMY_PROJECTILE_ORIGIN if target_is_player else PLAYER_PROJECTILE_ORIGIN
-	var target_position := ENEMY_PROJECTILE_TARGET if target_is_player else PLAYER_PROJECTILE_TARGET
-	move_effect.pivot_offset = move_effect.size * 0.5
-	move_effect.position = start_position - move_effect.size * 0.5
-	move_effect.rotation = 0.0
-	move_effect.visible = true
-	move_effect.modulate = Color(1.0, 0.45, 0.62, 1.0) if target_is_player else Color(0.48, 0.94, 1.0, 1.0)
-	move_effect.scale = Vector2(0.34, 0.34) if not critical else Vector2(0.46, 0.46)
-	var travel_tween := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	travel_tween.tween_property(move_effect, "position", target_position - move_effect.size * 0.5, PROJECTILE_TRAVEL_DURATION)
-	travel_tween.parallel().tween_property(move_effect, "rotation", -0.35 if target_is_player else 0.35, PROJECTILE_TRAVEL_DURATION)
-	travel_tween.parallel().tween_property(move_effect, "scale", Vector2(0.66, 0.66) if not critical else Vector2(0.82, 0.82), PROJECTILE_TRAVEL_DURATION)
-	travel_tween.tween_callback(func(): _show_impact(target_position, target_is_player, critical))
-	travel_tween.tween_interval(0.22)
-	travel_tween.tween_callback(move_effect.hide)
+	var lanes: Array[int] = []
+	for lane_value in target_lanes:
+		lanes.append(int(lane_value))
+	if lanes.is_empty():
+		lanes = [player_defense_lane if target_is_player else enemy_defense_lane]
+	for impact_index in lanes.size():
+		var lane := clampi(lanes[impact_index], 0, LANE_NAMES.size() - 1)
+		var origin_lane := enemy_attack_lane if target_is_player else player_attack_lane
+		var origin_x := ENEMY_PROJECTILE_ORIGIN.x if target_is_player else PLAYER_PROJECTILE_ORIGIN.x
+		var target_x := ENEMY_PROJECTILE_TARGET.x if target_is_player else PLAYER_PROJECTILE_TARGET.x
+		var start_position := Vector2(origin_x, LANE_Y[clampi(origin_lane, 0, LANE_NAMES.size() - 1)])
+		var target_position := Vector2(target_x, LANE_Y[lane])
+		var projectile: TextureRect = move_effect if impact_index == 0 else _get_projectile_slot(impact_index)
+		if projectile == null:
+			continue
+		projectile.texture = texture
+		projectile.pivot_offset = projectile.size * 0.5
+		projectile.position = start_position - projectile.size * 0.5
+		projectile.rotation = 0.0
+		projectile.visible = true
+		projectile.modulate = Color(1.0, 0.45, 0.62, 1.0) if target_is_player else Color(0.48, 0.94, 1.0, 1.0)
+		projectile.scale = Vector2(0.34, 0.34) if not critical else Vector2(0.46, 0.46)
+		var travel_tween := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		var sequence_delay := float(impact_index) * (0.10 if action == &"corte_bifurcado" else 0.0)
+		if sequence_delay > 0.0:
+			travel_tween.tween_interval(sequence_delay)
+		travel_tween.tween_property(projectile, "position", target_position - projectile.size * 0.5, PROJECTILE_TRAVEL_DURATION)
+		travel_tween.parallel().tween_property(projectile, "rotation", -0.35 if target_is_player else 0.35, PROJECTILE_TRAVEL_DURATION)
+		travel_tween.parallel().tween_property(projectile, "scale", Vector2(0.66, 0.66) if not critical else Vector2(0.82, 0.82), PROJECTILE_TRAVEL_DURATION)
+		travel_tween.tween_callback(_show_impact.bind(target_position, target_is_player, critical, impact_index))
+		travel_tween.tween_interval(0.22)
+		travel_tween.tween_callback(projectile.hide)
 
-func _show_impact(target_position: Vector2, target_is_player: bool, critical: bool) -> void:
-	if impact_effect == null:
+func _get_projectile_slot(index: int) -> TextureRect:
+	if index == 1:
+		return get_node_or_null(^"BattleCard/MoveEffect2") as TextureRect
+	if index == 2:
+		return get_node_or_null(^"BattleCard/MoveEffect3") as TextureRect
+	return move_effect
+
+func _show_impact(target_position: Vector2, target_is_player: bool, critical: bool, impact_index: int = 0) -> void:
+	var impact := impact_effect
+	if impact_index >= 0 and impact_index < impact_effects.size() and impact_effects[impact_index] != null:
+		impact = impact_effects[impact_index]
+	if impact == null:
 		return
-	impact_effect.position = target_position - impact_effect.size * 0.5
-	impact_effect.rotation = -0.08 if target_is_player else 0.08
-	impact_effect.scale = Vector2(0.45, 0.45) if not critical else Vector2(0.62, 0.62)
-	impact_effect.modulate = Color(1.0, 0.36, 0.52, 1.0) if target_is_player else Color(0.42, 1.0, 0.78, 1.0)
-	impact_effect.visible = true
+	impact.position = target_position - impact.size * 0.5
+	impact.rotation = -0.08 if target_is_player else 0.08
+	impact.scale = Vector2(0.45, 0.45) if not critical else Vector2(0.62, 0.62)
+	impact.modulate = Color(1.0, 0.36, 0.52, 1.0) if target_is_player else Color(0.42, 1.0, 0.78, 1.0)
+	impact.visible = true
 	var impact_tween := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	impact_tween.tween_property(impact_effect, "scale", Vector2(1.18, 1.18) if critical else Vector2.ONE, 0.10)
-	impact_tween.parallel().tween_property(impact_effect, "modulate:a", 0.0, 0.24 if critical else 0.20)
-	impact_tween.tween_callback(impact_effect.hide)
+	impact_tween.tween_property(impact, "scale", Vector2(1.18, 1.18) if critical else Vector2.ONE, 0.10)
+	impact_tween.parallel().tween_property(impact, "modulate:a", 0.0, 0.24 if critical else 0.20)
+	impact_tween.tween_callback(impact.hide)
 	var target_card: Panel = player_card if target_is_player else enemy_card
 	if target_card != null:
 		var original_modulate := target_card.modulate
@@ -712,7 +840,16 @@ func _update_battle_ui() -> void:
 	_update_battle_bars()
 	_update_lane_marker()
 	hint_label.text = "D-PAD: NAVEGAR   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR"
-	ultimate_status.text = "EVA: SOMENTE JORNADA   •   SLOT BLOQUEADO"
+	ultimate_status.text = _get_ultimate_status()
+
+func _get_ultimate_status() -> String:
+	var required_level := int(BATTLE_ACTION_UNLOCK_LEVELS[&"eclipse_total"])
+	var current_level := _pet_skills.level if _pet_skills != null else 1
+	if current_level < required_level:
+		return "ECLIPSE TOTAL • 3 FAIXAS\nDESBLOQUEIA NO NÍVEL %d" % required_level
+	if player_en < ULTIMATE_MIN_ENERGY:
+		return "ECLIPSE TOTAL • 3 FAIXAS\nCARREGUE EN • %d / %d" % [player_en, ULTIMATE_MIN_ENERGY]
+	return "ECLIPSE TOTAL • 3 FAIXAS\nPRONTA • CONSUME TODA A ENERGIA"
 
 func _update_action_button(index: int, menu_actions: Array[StringName]) -> void:
 	if index >= action_buttons.size():
@@ -735,7 +872,8 @@ func _update_lane_marker() -> void:
 	lane_marker.visible = lane_active
 	if not lane_active:
 		return
-	lane_marker.position.y = 171.0 + lane_cursor * 76.0
+		lane_marker.position.y = LANE_Y[lane_cursor] - 35.0
+
 	lane_readout.text = ("TRAJETÓRIA: " if battle_step == &"attack_lane" else "DEFESA: ") + LANE_NAMES[lane_cursor]
 
 func _update_battle_bars() -> void:
@@ -788,13 +926,21 @@ func _choose_enemy_action() -> StringName:
 func _get_menu_actions() -> Array[StringName]:
 	match menu_level:
 		&"moves": return MOVE_ACTIONS.duplicate()
-		&"techniques": return TECHNIQUE_ACTIONS.duplicate()
+		&"techniques":
+			var techniques: Array[StringName] = TECHNIQUE_ACTIONS.duplicate()
+			if development_mode:
+				techniques.push_front(DEV_SPECIAL_ACTION)
+			return techniques
 		&"defense": return DEFENSE_ACTIONS.duplicate()
 		_: return TOP_LEVEL_ACTIONS.duplicate()
 
 func _is_action_available(action: StringName) -> bool:
+	if action == DEV_SPECIAL_ACTION:
+		return development_mode
 	if action in [&"golpes", &"tecnica", &"defesa", &"fugir", &"escudo"]:
 		return true
+	if BATTLE_ACTION_UNLOCK_LEVELS.has(action):
+		return _pet_skills == null or _pet_skills.level >= int(BATTLE_ACTION_UNLOCK_LEVELS[action])
 	return _pet_skills == null or _pet_skills.is_unlocked(action)
 
 func _get_attribute(attribute: StringName, fallback: int) -> int:
