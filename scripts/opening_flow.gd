@@ -113,11 +113,15 @@ const STATUS_EVA_EXIT_X := 1242.905
 @onready var status_sprite: Sprite2D = $StatusSprite
 @onready var welcome_audio: AudioStreamPlayer = $WelcomeAudio
 @onready var intro_eva_audio: AudioStreamPlayer = $IntroEvaAudio
+var welcome_loop_watchdog: Timer
+var welcome_loop_duration := 0.0
+const WELCOME_LOOP_GUARD_SECONDS := 0.25
 
 func _ready() -> void:
 	_connect_buttons()
 	_hide_all_panels()
 	_configure_welcome_audio_loop()
+	_setup_welcome_audio_watchdog()
 	if welcome_audio != null and not welcome_audio.finished.is_connected(_on_welcome_audio_finished):
 		welcome_audio.finished.connect(_on_welcome_audio_finished)
 	_show_user_logo()
@@ -641,23 +645,54 @@ func _configure_welcome_audio_loop() -> void:
 		# Reforço em runtime para builds locais e web, independentemente do
 		# estado do arquivo .import gerado pelo editor.
 		wav_stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		welcome_loop_duration = wav_stream.get_length()
+	else:
+		welcome_loop_duration = welcome_audio.stream.get_length()
+
+func _setup_welcome_audio_watchdog() -> void:
+	if welcome_loop_watchdog != null:
+		return
+	welcome_loop_watchdog = Timer.new()
+	welcome_loop_watchdog.name = "WelcomeAudioLoopWatchdog"
+	welcome_loop_watchdog.one_shot = true
+	welcome_loop_watchdog.process_callback = Timer.TIMER_PROCESS_IDLE
+	add_child(welcome_loop_watchdog)
+	welcome_loop_watchdog.timeout.connect(_on_welcome_audio_watchdog_timeout)
+
+func _arm_welcome_audio_watchdog() -> void:
+	if welcome_loop_watchdog == null or welcome_loop_duration <= 0.0:
+		return
+	# O atraso curto evita cortar um loop nativo saudável e cobre exportações
+	# web em que o AudioStreamWAV perde o loop importado.
+	welcome_loop_watchdog.start(welcome_loop_duration + WELCOME_LOOP_GUARD_SECONDS)
+
+func _on_welcome_audio_watchdog_timeout() -> void:
+	if not active or not presentation_audio_active or welcome_audio == null:
+		return
+	if not welcome_audio.playing:
+		welcome_audio.play()
+	_arm_welcome_audio_watchdog()
 
 func _on_welcome_audio_finished() -> void:
 	# Fallback para exportações que ignoram o loop do WAV: o evento de término
 	# reinicia a faixa apenas enquanto a apresentação ainda estiver ativa.
 	if active and presentation_audio_active and welcome_audio != null:
 		welcome_audio.play()
+		_arm_welcome_audio_watchdog()
 
 func _start_intro_eva_loop() -> void:
 	# O loop nasce uma única vez ao confirmar START. As telas intermediárias
 	# não devem reiniciar nem disputar o mesmo AudioStreamPlayer.
-	if not presentation_audio_active:
+	if not presentation_audio_active or welcome_audio == null:
 		return
-	if welcome_audio != null and not welcome_audio.playing:
+	if not welcome_audio.playing:
 		welcome_audio.play()
+	_arm_welcome_audio_watchdog()
 
 func _stop_intro_eva_loop() -> void:
 	presentation_audio_active = false
+	if welcome_loop_watchdog != null:
+		welcome_loop_watchdog.stop()
 	if welcome_audio != null and welcome_audio.playing:
 		welcome_audio.stop()
 
