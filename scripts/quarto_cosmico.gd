@@ -34,6 +34,7 @@ var _background_visibility: Dictionary = {}
 @onready var system_label: Label = $Room/SystemMessage/Label
 @onready var shop: LojaCosmica = $LojaCosmica
 @onready var wardrobe: GuardaRoupasCosmico = $GuardaRoupasCosmico
+@onready var selection_frame: Panel = $Room/AreaCard/SelectionFrame
 
 func _ready() -> void:
 	visible = false
@@ -45,6 +46,7 @@ func _ready() -> void:
 		wardrobe.wardrobe_closed.connect(_on_wardrobe_closed)
 		wardrobe.cosmetic_equipped.connect(_on_cosmetic_equipped)
 	_update_points()
+	_update_selection_frame()
 
 func configure_progression(level: int, xp: int, total_xp: int) -> void:
 	player_level = maxi(level, 1)
@@ -237,6 +239,15 @@ func _update_selection_message() -> void:
 	var options := ["LOJA CÓSMICA", "GUARDA-ROUPAS"]
 	status_label.text = options[selected_index]
 	result_label.text = "PRESSIONE VERDE PARA CONFIRMAR"
+	_update_selection_frame()
+
+func _update_selection_frame() -> void:
+	if selection_frame == null:
+		return
+	var is_shop_selected := selected_index == 0
+	selection_frame.position = Vector2(54.0, 20.0) if is_shop_selected else Vector2(518.0, 20.0)
+	selection_frame.size = Vector2(320.0, 330.0) if is_shop_selected else Vector2(340.0, 330.0)
+	selection_frame.visible = room != null and room.visible
 
 func _update_points() -> void:
 	if points_label != null:

@@ -47,6 +47,20 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
+[sub_resource type="StyleBoxFlat" id="StyleBox_SelectionFrame"]
+bg_color = Color(0.08, 0.9, 1, 0.08)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.22, 0.95, 1, 0.96)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+shadow_color = Color(0.05, 0.9, 1, 0.36)
+shadow_size = 10
+
 [node name="QuartoCosmico" type="Node2D" unique_id=181147157]
 visible = false
 position = Vector2(-1714.423, -928.571)
@@ -138,6 +152,15 @@ offset_top = 140.0
 offset_right = 1035.0
 offset_bottom = 520.0
 theme_override_styles/panel = SubResource("StyleBox_Card")
+
+[node name="SelectionFrame" type="Panel" parent="Room/AreaCard" unique_id=1368370258]
+z_index = 2
+mouse_filter = 2
+offset_left = 54.0
+offset_top = 20.0
+offset_right = 374.0
+offset_bottom = 350.0
+theme_override_styles/panel = SubResource("StyleBox_SelectionFrame")
 
 [node name="StoreIcon" type="TextureButton" parent="Room/AreaCard" unique_id=2107354885]
 texture_filter = 1
