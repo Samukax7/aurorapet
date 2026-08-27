@@ -2,13 +2,14 @@
 
 [ext_resource type="Script" uid="uid://n5tyn5cckano" path="res://scripts/pet_ui.gd" id="1_ui"]
 [ext_resource type="Texture2D" uid="uid://cvmg5uans406f" path="res://assets/UI/comer.png" id="2_comer"]
-[ext_resource type="Texture2D" uid="uid://cjk82jx1eb4rl" path="res://assets/UI/cuidar.png" id="3_cuidar"]
-[ext_resource type="Texture2D" uid="uid://bxf5tg17rwquh" path="res://assets/UI/jogar.png" id="4_jogar"]
+[ext_resource type="Shader" uid="uid://bs0j6gpxvjl35" path="res://shaders/menu_selection_glow.gdshader" id="2_obixm"]
+[ext_resource type="Texture2D" uid="uid://bhc2w88150blp" path="res://assets/UI/cuidar.png" id="3_cuidar"]
+[ext_resource type="Texture2D" uid="uid://bxb6n4wusg480" path="res://assets/UI/jogar.png" id="4_jogar"]
 [ext_resource type="Texture2D" uid="uid://b616on3rnuhim" path="res://assets/UI/treinar.png" id="5_treinar"]
-[ext_resource type="Texture2D" uid="uid://byainbmdrdplr" path="res://assets/UI/batalhar.png" id="6_batalhar"]
-[ext_resource type="Texture2D" uid="uid://cb7bo57wq3csc" path="res://assets/UI/submenus/fruta_estelar.png" id="7_fruta"]
-[ext_resource type="Texture2D" uid="uid://btag64xau7p04" path="res://assets/UI/submenus/nectar_cosmico.png" id="8_nectar"]
-[ext_resource type="Texture2D" uid="uid://dtvo88jy0l27e" path="res://assets/UI/submenus/banquete_nebulosa.png" id="9_banquete"]
+[ext_resource type="Texture2D" uid="uid://byvf2tgws8lxk" path="res://assets/UI/batalhar.png" id="6_batalhar"]
+[ext_resource type="Texture2D" uid="uid://qkyveockai3" path="res://assets/UI/submenus/fruta_estelar.png" id="7_fruta"]
+[ext_resource type="Texture2D" uid="uid://b0bnerxapvt33" path="res://assets/UI/submenus/nectar_cosmico.png" id="8_nectar"]
+[ext_resource type="Texture2D" uid="uid://qdtywqmvxefl" path="res://assets/UI/submenus/banquete_nebulosa.png" id="9_banquete"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_StatusTrack"]
 content_margin_left = 4.0
@@ -54,6 +55,12 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sre0y"]
+shader = ExtResource("2_obixm")
+shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
+shader_parameter/glow_strength = 0.0
+shader_parameter/outline_size = 0.035
+
 [sub_resource type="StyleBoxFlat" id="StyleBox_SelectionFrame"]
 bg_color = Color(0.08, 0.9, 1, 0.12)
 border_width_left = 4
@@ -67,6 +74,30 @@ corner_radius_bottom_right = 22
 corner_radius_bottom_left = 22
 shadow_color = Color(0.05, 0.9, 1, 0.36)
 shadow_size = 10
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tygv7"]
+shader = ExtResource("2_obixm")
+shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
+shader_parameter/glow_strength = 0.0
+shader_parameter/outline_size = 0.035
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q68sd"]
+shader = ExtResource("2_obixm")
+shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
+shader_parameter/glow_strength = 0.0
+shader_parameter/outline_size = 0.035
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yqg5s"]
+shader = ExtResource("2_obixm")
+shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
+shader_parameter/glow_strength = 0.0
+shader_parameter/outline_size = 0.035
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3pt2o"]
+shader = ExtResource("2_obixm")
+shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
+shader_parameter/glow_strength = 0.0
+shader_parameter/outline_size = 0.035
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_SubmenuPanel"]
 bg_color = Color(0.027, 0.075, 0.145, 0.98)
@@ -148,8 +179,6 @@ corner_radius_bottom_left = 14
 
 [node name="PetUI" type="Control" unique_id=1024974957]
 z_index = 5
-menu_visible = true
-status_visible = true
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -162,10 +191,10 @@ script = ExtResource("1_ui")
 [node name="StatusBar" type="Control" parent="." unique_id=1289660194]
 layout_mode = 1
 anchors_preset = 0
-offset_left = 62.748603
-offset_top = 17.546012
-offset_right = 1037.765363
-offset_bottom = 224.907975
+offset_left = 62.748604
+offset_top = 17.546013
+offset_right = 1037.7654
+offset_bottom = 224.90797
 mouse_filter = 2
 
 [node name="StatusItems" type="GridContainer" parent="StatusBar" unique_id=299215686]
@@ -272,10 +301,10 @@ show_percentage = false
 
 [node name="Hint" type="Label" parent="StatusBar" unique_id=2077971116]
 layout_mode = 0
-offset_left = 193.072626
-offset_top = 173.865031
-offset_right = 781.944134
-offset_bottom = 197.791411
+offset_left = 193.07263
+offset_top = 173.86504
+offset_right = 781.94415
+offset_bottom = 197.79141
 theme_override_colors/font_color = Color(0.92, 0.97, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "D-PAD: NAVEGAR  •  VERDE: CONFIRMAR"
@@ -283,10 +312,10 @@ horizontal_alignment = 1
 
 [node name="NeedsSummary" type="Label" parent="StatusBar" unique_id=1951745154]
 layout_mode = 0
-offset_left = 108.603352
-offset_top = 199.386503
-offset_right = 866.413408
-offset_bottom = 221.717791
+offset_left = 108.603355
+offset_top = 199.3865
+offset_right = 866.4134
+offset_bottom = 221.71779
 theme_override_colors/font_color = Color(0.92, 0.97, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "HIGIENE 86%  •  DISCIPLINA 62%"
@@ -297,8 +326,8 @@ z_index = 6
 layout_mode = 1
 anchors_preset = 0
 offset_left = 28.960894
-offset_top = 470.552147
-offset_right = 1051.039106
+offset_top = 470.55215
+offset_right = 1051.0391
 offset_bottom = 642.02454
 mouse_filter = 2
 
@@ -315,6 +344,7 @@ alignment = 1
 
 [node name="Comer" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=1010274878]
 texture_filter = 1
+material = SubResource("ShaderMaterial_sre0y")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Comer"
@@ -323,14 +353,14 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="SelectionFrame" type="Panel" parent="ActionBar/ActionMenu/Comer" unique_id=1819911055]
-z_index = -1
 show_behind_parent = true
-visible = true
+z_index = -1
 layout_mode = 0
-offset_left = 7.240223
-offset_top = 3.190184
-offset_right = 190.659218
-offset_bottom = 168.282209
+offset_left = 7.0391083
+offset_top = 33.75714
+offset_right = 159.03911
+offset_bottom = 227.75714
+scale = Vector2(0.9959301, 0.83886963)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_SelectionFrame")
 
@@ -340,7 +370,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -30.306748
+offset_top = -30.306747
 offset_bottom = -3.190184
 grow_horizontal = 2
 grow_vertical = 0
@@ -355,6 +385,7 @@ vertical_alignment = 1
 [node name="Cuidar" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=905983093]
 modulate = Color(1, 1, 1, 0.62)
 texture_filter = 1
+material = SubResource("ShaderMaterial_tygv7")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Cuidar"
@@ -368,7 +399,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -30.306748
+offset_top = -30.306747
 offset_bottom = -3.190184
 grow_horizontal = 2
 grow_vertical = 0
@@ -383,6 +414,7 @@ vertical_alignment = 1
 [node name="Jogar" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=2135963042]
 modulate = Color(1, 1, 1, 0.62)
 texture_filter = 1
+material = SubResource("ShaderMaterial_q68sd")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Jogar"
@@ -396,7 +428,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -30.306748
+offset_top = -30.306747
 offset_bottom = -3.190184
 grow_horizontal = 2
 grow_vertical = 0
@@ -411,6 +443,7 @@ vertical_alignment = 1
 [node name="Treinar" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=1441713749]
 modulate = Color(1, 1, 1, 0.62)
 texture_filter = 1
+material = SubResource("ShaderMaterial_yqg5s")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Treinar"
@@ -424,7 +457,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -30.306748
+offset_top = -30.306747
 offset_bottom = -3.190184
 grow_horizontal = 2
 grow_vertical = 0
@@ -439,6 +472,7 @@ vertical_alignment = 1
 [node name="Batalhar" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=73932228]
 modulate = Color(1, 1, 1, 0.62)
 texture_filter = 1
+material = SubResource("ShaderMaterial_3pt2o")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Batalhar"
@@ -452,7 +486,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -30.306748
+offset_top = -30.306747
 offset_bottom = -3.190184
 grow_horizontal = 2
 grow_vertical = 0
@@ -466,10 +500,10 @@ vertical_alignment = 1
 
 [node name="SelectedAction" type="Label" parent="." unique_id=1147113359]
 layout_mode = 0
-offset_left = 337.877095
-offset_top = 437.055215
-offset_right = 736.089385
-offset_bottom = 460.981595
+offset_left = 337.8771
+offset_top = 437.0552
+offset_right = 736.08936
+offset_bottom = 460.9816
 theme_override_colors/font_color = Color(1, 0.83, 0.35, 1)
 theme_override_font_sizes/font_size = 24
 text = "COMER"
@@ -497,10 +531,10 @@ color = Color(0.008, 0.016, 0.055, 0.8)
 
 [node name="Panel" type="Panel" parent="SubmenuOverlay" unique_id=1304595034]
 layout_mode = 0
-offset_left = 48.268156
-offset_top = 127.607362
-offset_right = 1031.731844
-offset_bottom = 458.588957
+offset_left = 48.268154
+offset_top = 68.0
+offset_right = 1031.7318
+offset_bottom = 580.0
 theme_override_styles/panel = SubResource("StyleBox_SubmenuPanel")
 
 [node name="Margin" type="MarginContainer" parent="SubmenuOverlay/Panel" unique_id=27283120]
@@ -553,9 +587,11 @@ stretch_mode = 5
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.97, 1, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 21
 text = "Fruta Estelar"
 horizontal_alignment = 1
+autowrap_mode = 2
+clip_text = true
 
 [node name="Option2" type="VBoxContainer" parent="SubmenuOverlay/Panel/Margin/Content/Options" unique_id=821547623]
 custom_minimum_size = Vector2(0, 230)
@@ -575,9 +611,11 @@ stretch_mode = 5
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.97, 1, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 21
 text = "Néctar Cósmico"
 horizontal_alignment = 1
+autowrap_mode = 2
+clip_text = true
 
 [node name="Option3" type="VBoxContainer" parent="SubmenuOverlay/Panel/Margin/Content/Options" unique_id=732098601]
 custom_minimum_size = Vector2(0, 230)
@@ -597,16 +635,20 @@ stretch_mode = 5
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.97, 1, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 21
 text = "Banquete Nebulosa"
 horizontal_alignment = 1
+autowrap_mode = 2
+clip_text = true
 
 [node name="Hint" type="Label" parent="SubmenuOverlay/Panel/Margin/Content" unique_id=1990221616]
 custom_minimum_size = Vector2(0, 38)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBox_SubmenuHint")
+autowrap_mode = 2
+clip_text = true
 text = "SEM OPÇÕES DISPONÍVEIS"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -614,10 +656,10 @@ vertical_alignment = 1
 [node name="ProgressionFeedback" type="Label" parent="." unique_id=678843354]
 visible = false
 layout_mode = 0
-offset_left = 265.47486
-offset_top = 100.490798
-offset_right = 810.905028
-offset_bottom = 138.773006
+offset_left = 265.47485
+offset_top = 100.4908
+offset_right = 810.905
+offset_bottom = 138.77301
 theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
 theme_override_colors/font_shadow_color = Color(0.02, 0.04, 0.1, 0.95)
 theme_override_constants/shadow_offset_x = 2
@@ -626,22 +668,23 @@ theme_override_font_sizes/font_size = 24
 text = "NÍVEL 1"
 horizontal_alignment = 1
 
-[node name="SystemMessagePanel" type="Panel" parent="."]
+[node name="SystemMessagePanel" type="Panel" parent="." unique_id=177528707]
 visible = false
 z_index = 20
-offset_left = 174.972067
-offset_top = 232.883436
-offset_right = 905.027933
-offset_bottom = 287.116564
+layout_mode = 0
+offset_left = 128.0
+offset_top = 226.0
+offset_right = 952.0
+offset_bottom = 306.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_SystemMessage")
 
-[node name="Label" type="Label" parent="SystemMessagePanel"]
+[node name="Label" type="Label" parent="SystemMessagePanel" unique_id=1903086242]
 layout_mode = 0
-offset_left = 21.72067
-offset_top = 9.570552
-offset_right = 708.335196
-offset_bottom = 44.662577
+offset_left = 24.0
+offset_top = 10.0
+offset_right = 800.0
+offset_bottom = 70.0
 theme_override_colors/font_color = Color(0.92, 0.98, 1, 1)
 theme_override_colors/font_shadow_color = Color(0.01, 0.03, 0.08, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -650,40 +693,46 @@ theme_override_font_sizes/font_size = 24
 text = "SISTEMA"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
 
-[node name="PetMessageBubble" type="Panel" parent="."]
+[node name="PetMessageBubble" type="Panel" parent="." unique_id=1908835742]
 visible = false
 z_index = 21
-offset_left = 69.988827
-offset_top = 173.865031
-offset_right = 488.715084
-offset_bottom = 232.883436
+layout_mode = 0
+offset_left = 70.0
+offset_top = 292.0
+offset_right = 520.0
+offset_bottom = 388.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_PetSpeech")
 
-[node name="Label" type="Label" parent="PetMessageBubble"]
+[node name="Label" type="Label" parent="PetMessageBubble" unique_id=1029326868]
 layout_mode = 0
-offset_left = 19.307263
-offset_top = 10.368098
-offset_right = 399.418994
-offset_bottom = 47.852761
+offset_left = 20.0
+offset_top = 12.0
+offset_right = 430.0
+offset_bottom = 84.0
 theme_override_colors/font_color = Color(0.08, 0.12, 0.23, 1)
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 24
 text = "..."
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
 
-[node name="PoopMarker" type="Panel" parent="."]
+[node name="PoopMarker" type="Panel" parent="." unique_id=1006983416]
 visible = false
 z_index = 8
-offset_left = 512.849162
-offset_top = 437.055215
-offset_right = 570.77095
-offset_bottom = 472.147239
+layout_mode = 0
+offset_left = 503.0
+offset_top = 287.0
+offset_right = 560.92175
+offset_bottom = 322.09204
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_NeedIndicator")
 
-[node name="Label" type="Label" parent="PoopMarker"]
+[node name="Label" type="Label" parent="PoopMarker" unique_id=829203607]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -696,47 +745,49 @@ text = "●"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SpecialNeedIndicator" type="Panel" parent="."]
+[node name="SpecialNeedIndicator" type="Panel" parent="." unique_id=1022012923]
 visible = false
 z_index = 22
-offset_left = 669.72067
-offset_top = 151.533742
-offset_right = 820.558659
-offset_bottom = 204.171779
+layout_mode = 0
+offset_left = 454.0
+offset_top = 261.0
+offset_right = 604.838
+offset_bottom = 313.63806
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_NeedIndicator")
 
-[node name="NeedIcon" type="Label" parent="SpecialNeedIndicator"]
+[node name="NeedIcon" type="Label" parent="SpecialNeedIndicator" unique_id=878262825]
 layout_mode = 0
 offset_left = 12.067039
 offset_top = 7.97546
-offset_right = 62.748603
-offset_bottom = 44.662577
+offset_right = 62.748604
+offset_bottom = 44.66258
 theme_override_colors/font_color = Color(1, 0.42, 0.52, 1)
 theme_override_font_sizes/font_size = 32
 text = "!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WishIcon" type="Label" parent="SpecialNeedIndicator"]
+[node name="WishIcon" type="Label" parent="SpecialNeedIndicator" unique_id=1885364157]
 layout_mode = 0
-offset_left = 69.988827
+offset_left = 69.98883
 offset_top = 7.97546
-offset_right = 137.564246
-offset_bottom = 44.662577
+offset_right = 137.56424
+offset_bottom = 44.66258
 theme_override_colors/font_color = Color(0.35, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 31
 text = "✦"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SleepIndicator" type="Label" parent="."]
+[node name="SleepIndicator" type="Label" parent="." unique_id=101077964]
 visible = false
 z_index = 22
-offset_left = 464.581006
-offset_top = 141.96319
-offset_right = 615.418994
-offset_bottom = 175.460123
+layout_mode = 0
+offset_left = 464.581
+offset_top = 141.9632
+offset_right = 615.419
+offset_bottom = 175.46013
 theme_override_colors/font_color = Color(0.63, 0.8, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Z  z  z"

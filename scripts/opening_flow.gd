@@ -345,7 +345,7 @@ func _show_logo() -> void:
 	intro_tween.tween_callback(_show_menu)
 
 func _show_menu() -> void:
-	presentation_audio_active = false
+	_stop_intro_eva_loop()
 	if intro_tween != null:
 		intro_tween.kill()
 	state = &"menu"
@@ -621,6 +621,9 @@ func _shake_egg() -> void:
 	egg_shake_tween.tween_property(egg_image, "position", egg_base_position, 0.06)
 
 func _show_pet_status() -> void:
+	# A faixa de apresentação termina ao abrir a ficha; o ConsoleController
+	# assume o lobby somente depois da confirmação/encerramento do fluxo.
+	_stop_intro_eva_loop()
 	state = &"status"
 	intro_anim_time = 0.0
 	background.color = Color("#FFFFFF")

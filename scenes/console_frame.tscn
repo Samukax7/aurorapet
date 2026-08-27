@@ -30,6 +30,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_levelup.wav" id="27_sfx_levelup"]
 [ext_resource type="AudioStream" path="res://assets/audio/aurorapet_sfx_poop.wav" id="28_sfx_poop"]
 [ext_resource type="PackedScene" path="res://scenes/eva_visual_novel.tscn" id="29_eva_novel"]
+[ext_resource type="Theme" path="res://aurorapet_readable_theme.tres" id="30_readable_theme"]
 
 [node name="Console Base" type="Sprite2D" unique_id=1879046692]
 texture = ExtResource("1_5l2bk")
@@ -47,6 +48,7 @@ position = Vector2(-560.0, -651.0)
 scale = Vector2(1.022, 1.498)
 mouse_filter = 2
 script = ExtResource("20_screen_content")
+theme = ExtResource("30_readable_theme")
 
 [node name="Deepworld" parent="ScreenContent" unique_id=152526842 instance=ExtResource("2_jiilt")]
 editable_children = true
