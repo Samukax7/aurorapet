@@ -55,7 +55,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_sre0y"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_obixm"]
 shader = ExtResource("2_obixm")
 shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
 shader_parameter/glow_strength = 0.0
@@ -75,6 +75,12 @@ corner_radius_bottom_left = 22
 shadow_color = Color(0.05, 0.9, 1, 0.36)
 shadow_size = 10
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sre0y"]
+shader = ExtResource("2_obixm")
+shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
+shader_parameter/glow_strength = 0.0
+shader_parameter/outline_size = 0.035
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tygv7"]
 shader = ExtResource("2_obixm")
 shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
@@ -88,12 +94,6 @@ shader_parameter/glow_strength = 0.0
 shader_parameter/outline_size = 0.035
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yqg5s"]
-shader = ExtResource("2_obixm")
-shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
-shader_parameter/glow_strength = 0.0
-shader_parameter/outline_size = 0.035
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3pt2o"]
 shader = ExtResource("2_obixm")
 shader_parameter/glow_color = Color(0.35, 0.95, 1, 1)
 shader_parameter/glow_strength = 0.0
@@ -344,7 +344,7 @@ alignment = 1
 
 [node name="Comer" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=1010274878]
 texture_filter = 1
-material = SubResource("ShaderMaterial_sre0y")
+material = SubResource("ShaderMaterial_obixm")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Comer"
@@ -356,11 +356,11 @@ stretch_mode = 5
 show_behind_parent = true
 z_index = -1
 layout_mode = 0
-offset_left = 7.0391083
-offset_top = 33.75714
-offset_right = 159.03911
-offset_bottom = 227.75714
-scale = Vector2(0.9959301, 0.83886963)
+offset_left = 10.039108
+offset_top = 37.195435
+offset_right = 162.03911
+offset_bottom = 231.19543
+scale = Vector2(0.96536756, 0.80570275)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_SelectionFrame")
 
@@ -385,7 +385,7 @@ vertical_alignment = 1
 [node name="Cuidar" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=905983093]
 modulate = Color(1, 1, 1, 0.62)
 texture_filter = 1
-material = SubResource("ShaderMaterial_tygv7")
+material = SubResource("ShaderMaterial_sre0y")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Cuidar"
@@ -414,7 +414,7 @@ vertical_alignment = 1
 [node name="Jogar" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=2135963042]
 modulate = Color(1, 1, 1, 0.62)
 texture_filter = 1
-material = SubResource("ShaderMaterial_q68sd")
+material = SubResource("ShaderMaterial_tygv7")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Jogar"
@@ -443,7 +443,7 @@ vertical_alignment = 1
 [node name="Treinar" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=1441713749]
 modulate = Color(1, 1, 1, 0.62)
 texture_filter = 1
-material = SubResource("ShaderMaterial_yqg5s")
+material = SubResource("ShaderMaterial_q68sd")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Treinar"
@@ -472,7 +472,7 @@ vertical_alignment = 1
 [node name="Batalhar" type="TextureButton" parent="ActionBar/ActionMenu" unique_id=73932228]
 modulate = Color(1, 1, 1, 0.62)
 texture_filter = 1
-material = SubResource("ShaderMaterial_3pt2o")
+material = SubResource("ShaderMaterial_yqg5s")
 custom_minimum_size = Vector2(164, 202)
 layout_mode = 2
 tooltip_text = "Batalhar"
@@ -511,7 +511,7 @@ horizontal_alignment = 1
 
 [node name="SubmenuOverlay" type="Control" parent="." unique_id=644358891]
 visible = false
-z_index = 10
+z_index = 30
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -647,11 +647,11 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBox_SubmenuHint")
-autowrap_mode = 2
-clip_text = true
 text = "SEM OPÇÕES DISPONÍVEIS"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
 
 [node name="ProgressionFeedback" type="Label" parent="." unique_id=678843354]
 visible = false
@@ -672,10 +672,11 @@ horizontal_alignment = 1
 visible = false
 z_index = 20
 layout_mode = 0
-offset_left = 128.0
-offset_top = 226.0
-offset_right = 952.0
-offset_bottom = 306.0
+offset_left = 73.0
+offset_top = 289.00003
+offset_right = 897.0
+offset_bottom = 369.00003
+scale = Vector2(0.39628118, 0.8103739)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_SystemMessage")
 
@@ -700,10 +701,11 @@ clip_text = true
 visible = false
 z_index = 21
 layout_mode = 0
-offset_left = 70.0
-offset_top = 292.0
-offset_right = 520.0
-offset_bottom = 388.0
+offset_left = 678.0
+offset_top = 295.0
+offset_right = 1128.0
+offset_bottom = 391.0
+scale = Vector2(0.4917987, 0.7318658)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_PetSpeech")
 
@@ -722,13 +724,12 @@ autowrap_mode = 2
 clip_text = true
 
 [node name="PoopMarker" type="Panel" parent="." unique_id=1006983416]
-visible = false
 z_index = 8
 layout_mode = 0
-offset_left = 503.0
-offset_top = 287.0
-offset_right = 560.92175
-offset_bottom = 322.09204
+offset_left = 640.0
+offset_top = 446.0
+offset_right = 697.92175
+offset_bottom = 481.09204
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_NeedIndicator")
 
@@ -747,7 +748,7 @@ vertical_alignment = 1
 
 [node name="SpecialNeedIndicator" type="Panel" parent="." unique_id=1022012923]
 visible = false
-z_index = 22
+z_index = 8
 layout_mode = 0
 offset_left = 454.0
 offset_top = 261.0

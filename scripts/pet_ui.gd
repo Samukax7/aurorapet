@@ -81,6 +81,7 @@ var _pet_message_tween: Tween
 var _system_message_token := 0
 var _pet_message_token := 0
 var _sleeping := false
+var _special_need_active := false
 var _glow_materials: Array[ShaderMaterial] = []
 var _glow_tween: Tween
 var _selected_bob_tween: Tween
@@ -393,15 +394,16 @@ func set_poop_visible(value: bool) -> void:
 		_poop_marker.visible = value
 
 func set_special_need(need: StringName, wish: StringName, active: bool) -> void:
-	if _special_need_indicator == null:
-		return
-	_special_need_indicator.visible = active
-	if not active:
-		return
+	_special_need_active = active
 	if _special_need_icon != null:
 		_special_need_icon.text = "!"
 	if _special_need_wish_icon != null:
 		_special_need_wish_icon.text = "✦" if wish == &"jogo_da_velha" else "▲"
+	_refresh_special_need_visibility()
+
+func _refresh_special_need_visibility() -> void:
+	if _special_need_indicator != null:
+		_special_need_indicator.visible = _special_need_active and not submenu_visible
 
 func set_sleeping(value: bool) -> void:
 	_sleeping = value
@@ -562,4 +564,5 @@ func _set_submenu_visibility(value: bool) -> void:
 	var overlay := get_node_or_null(^"SubmenuOverlay") as Control
 	if overlay != null:
 		overlay.visible = value
+	_refresh_special_need_visibility()
 	submenu_visibility_changed.emit(value, active_category)
