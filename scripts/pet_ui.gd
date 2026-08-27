@@ -246,6 +246,20 @@ func close_submenu() -> void:
 	submenu_selected_index = 0
 	_refresh_selection()
 
+## Restaura o submenu de origem depois de uma tela modal, sem reaplicar
+## bloqueios de progressão a uma opção que já estava acessível ao jogador.
+func restore_submenu(category: StringName) -> void:
+	if not SUBMENU_DEFINITIONS.has(category):
+		return
+	menu_visible = true
+	active_category = category
+	submenu_selected_index = 0
+	_set_menu_visibility(true)
+	_set_submenu_visibility(true)
+	_refresh_submenu()
+	if not _submenu_options.is_empty():
+		_submenu_options[0].grab_focus()
+
 func _move_submenu_selection(direction: Vector2i) -> void:
 	var entries: Array = SUBMENU_DEFINITIONS.get(active_category, [])
 	if entries.is_empty():

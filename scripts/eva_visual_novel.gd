@@ -142,7 +142,7 @@ var _chapter_frame_style: StyleBox
 @onready var choice_audio: AudioStreamPlayer = $ChoiceAudio
 @onready var encounter_background: TextureRect = $EncounterBackground
 @onready var encounter_frame: TextureRect = $EncounterFrame
-@onready var encounter_eva: TextureRect = $EncounterEva
+@onready var encounter_eva: Sprite2D = $EncounterEva
 @onready var dialogue_box_artwork: TextureRect = $DialogueBoxArtwork
 @onready var choice_art: TextureRect = $ChoiceArt
 @onready var blackout: ColorRect = $Blackout
@@ -260,9 +260,9 @@ func _process(delta: float) -> void:
 		return
 	elapsed += delta
 	if not awaiting_choice:
-		eva_sprite.frame = 0 if int(elapsed * 3.0) % 2 == 0 else 1
+		eva_sprite.frame = [0, 1, 2][int(elapsed * 3.0) % 3]
 	else:
-		eva_sprite.frame = 2 if int(elapsed * 2.0) % 2 == 0 else 3
+		eva_sprite.frame = 2 if int(elapsed * 2.0) % 2 == 0 else 1
 
 func _process_encounter(delta: float) -> void:
 	match encounter_phase:
@@ -277,7 +277,8 @@ func _process_encounter(delta: float) -> void:
 		PHASE_DIALOGUE:
 			encounter_elapsed += delta
 			if encounter_eva != null and encounter_eva.visible:
-				encounter_eva.position = Vector2(350.0, 50.0 + sin(encounter_elapsed * 2.2) * 2.0)
+				encounter_eva.position = Vector2(540.0, 220.0 + sin(encounter_elapsed * 2.2) * 2.0)
+
 		PHASE_CHOICE:
 			encounter_elapsed += delta
 			if not choice_emphasis_complete:
@@ -486,8 +487,9 @@ func _render_encounter() -> void:
 		dialogue_box_artwork.texture = load("res://assets/eva/encounter/dialogue_box_crop.png") as Texture2D
 		var lines: Array[Dictionary] = REFUSAL_LINES if encounter_refusal_count > 0 else ENCOUNTER_LINES
 		var line: Dictionary = lines[clampi(encounter_line_index, 0, maxi(0, lines.size() - 1))]
-		encounter_eva.texture = load(String(EVA_POSES.get(line.get("pose", &"neutral"), EVA_POSES[&"neutral"]))) as Texture2D
+		encounter_eva.frame = _baby_eva_frame_for_pose(line.get("pose", &"neutral"))
 		encounter_eva.visible = encounter_eva.texture != null
+
 		dialogue_box_artwork.visible = true
 		dialogue_frame_for_encounter()
 		speaker_label.text = String(line.get("speaker", "EVA"))
@@ -531,7 +533,8 @@ func dialogue_frame_for_encounter() -> void:
 	$DialogueFrame.add_theme_stylebox_override("panel", encounter_style)
 	$DialogueFrame.position = Vector2(52, 420)
 	$DialogueFrame.size = Vector2(976, 190)
-	encounter_eva.position = Vector2(350.0, 50.0)
+	encounter_eva.position = Vector2(540.0, 220.0)
+
 	chapter_label.visible = true
 	region_label.visible = false
 	speaker_label.visible = true
@@ -582,6 +585,17 @@ func choice_frame_for_encounter() -> void:
 	$DialogueFrame/ChoicePanel/Help.size = Vector2(400, 72)
 	$DialogueFrame/ChoicePanel/Wait.position = Vector2(534, 76)
 	$DialogueFrame/ChoicePanel/Wait.size = Vector2(400, 72)
+
+func _baby_eva_frame_for_pose(pose_value: Variant) -> int:
+	if pose_value is StringName:
+		match pose_value:
+			&"cry": return 0
+			&"suspicious": return 1
+			&"confident": return 2
+			&"happy": return 2
+			&"neutral": return 1
+			&"angry": return 0
+	return 1
 
 func _load_encounter_background() -> Texture2D:
 	var texture := load(String(ENCOUNTER_BACKGROUNDS.get(encounter_background_id, ENCOUNTER_BACKGROUNDS[&"field"]))) as Texture2D

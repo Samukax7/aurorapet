@@ -30,6 +30,9 @@ const BATTLE_ACTION_UNLOCK_LEVELS: Dictionary = {
 	&"corte_bifurcado": 4,
 	&"eclipse_total": 6,
 }
+const BOSS_BATTLE_BACKGROUND_TEXTURES: Dictionary = {
+	"gorgon glitch": "res://assets/bosses/gorgon_glitch/gorgon_glitch_battle_background.jpg",
+}
 const ULTIMATE_MIN_ENERGY := 30
 const ULTIMATE_ENERGY_SCALE := 0.55
 const TECHNIQUE_DEFINITIONS: Dictionary = {
@@ -123,6 +126,8 @@ var _boss_animation_time := 0.0
 var _boss_origin := Vector2.ZERO
 var _boss_tween: Tween
 var _resolution_tween: Tween
+var _result_return_tween: Tween
+var _using_boss_intro := false
 var _rng := RandomNumberGenerator.new()
 var _pet_stats: PetStats
 var _pet_skills: PetSkills
@@ -166,12 +171,18 @@ var _player_pet_source: PetRandomizer
 @onready var player_card: Panel = $BattleCard/PlayerCard
 @onready var enemy_card: Panel = $BattleCard/EnemyCard
 @onready var victory_audio: AudioStreamPlayer = $VictoryAudio
+@onready var boss_battle_background: TextureRect = $BossBattleBackground
+@onready var boss_intro_controller: Control = $BossIntroController
 
 func _ready() -> void:
 	visible = false
+	if boss_intro_controller != null and not boss_intro_controller.is_connected("presentation_finished", Callable(self, "_on_boss_presentation_finished")):
+		boss_intro_controller.connect("presentation_finished", Callable(self, "_on_boss_presentation_finished"))
 	_show_lobby()
 
 func _process(delta: float) -> void:
+	if phase == &"intro" and _using_boss_intro:
+		return
 	if phase == &"intro":
 		_intro_elapsed += delta
 		var flick: float = 0.86 + abs(sin(_intro_elapsed * INTRO_FLICK_SPEED)) * 0.14
@@ -183,10 +194,6 @@ func _process(delta: float) -> void:
 		return
 	if phase != &"battle":
 		return
-	_boss_animation_time += delta
-	var boss_sprite: Control = get_node_or_null(^"BattleCard/BossSprite") as Control
-	if boss_sprite != null and boss_sprite.visible:
-		boss_sprite.position.y += sin(_boss_animation_time * 2.4) * 0.08
 
 func configure_mode(context: StringName) -> void:
 	mode_context = context
@@ -230,10 +237,17 @@ func open_area() -> void:
 
 func close_area() -> void:
 	visible = false
+	if boss_intro_controller != null:
+		boss_intro_controller.call("skip")
+	_using_boss_intro = false
+	if boss_battle_background != null:
+		boss_battle_background.visible = false
 	phase = &"lobby"
 	battle_step = &"action_select"
 	if _resolution_tween != null:
 		_resolution_tween.kill()
+	if _result_return_tween != null:
+		_result_return_tween.kill()
 	if victory_audio != null:
 		victory_audio.stop()
 	area_closed.emit()
@@ -272,7 +286,7 @@ func confirm() -> void:
 		&"battle":
 			_confirm_battle_step()
 		&"result":
-			_start_battle()
+			close_area()
 
 func back() -> void:
 	if not visible:
@@ -375,16 +389,42 @@ func _start_battle() -> void:
 	blackout_text.modulate.a = 1.0
 	_intro_elapsed = 0.0
 	_update_battle_ui()
+	if _start_boss_presentation():
+		return
 
 func _begin_battle_after_intro() -> void:
 	if phase != &"intro":
 		return
+	_using_boss_intro = false
+	if boss_intro_controller != null:
+		boss_intro_controller.call("skip")
+	if boss_battle_background != null:
+		boss_battle_background.visible = encounter_is_boss and not String(BOSS_BATTLE_BACKGROUND_TEXTURES.get(enemy_name.strip_edges().to_lower(), "")).is_empty()
 	blackout_panel.visible = false
 	phase = &"battle"
 	battle_step = &"action_select"
 	is_player_turn = true
 	_add_log("SUA VEZ")
 	_update_battle_ui()
+
+func _start_boss_presentation() -> bool:
+	_using_boss_intro = false
+	if not encounter_is_boss or mode_context != &"eva" or boss_intro_controller == null:
+		return false
+	if not bool(boss_intro_controller.call("has_package", enemy_name)):
+		return false
+	var background_path := String(BOSS_BATTLE_BACKGROUND_TEXTURES.get(enemy_name.strip_edges().to_lower(), ""))
+	var background_texture := load(background_path) as Texture2D if not background_path.is_empty() else null
+	if boss_battle_background != null:
+		boss_battle_background.texture = background_texture
+		boss_battle_background.visible = false
+	_using_boss_intro = bool(boss_intro_controller.call("play_for_boss", enemy_name))
+	return _using_boss_intro
+
+func _on_boss_presentation_finished() -> void:
+	if phase != &"intro" or not _using_boss_intro:
+		return
+	_begin_battle_after_intro()
 
 func _confirm_battle_step() -> void:
 	if battle_over or not is_player_turn:
@@ -450,12 +490,14 @@ func _resolve_player_action() -> void:
 		else:
 			player_en -= 5
 			player_guarding = true
+			_play_stage_animation(&"player", &"defend")
 			_add_log("PET ATIVA ESCUDO")
 			_update_battle_ui()
 			_queue_enemy_turn()
 			return
 	var skill: Dictionary = _pet_skills.get_skill(action) if _pet_skills != null else {}
 	var technique: Dictionary = TECHNIQUE_DEFINITIONS.get(action, {})
+	_play_stage_animation(&"player", &"attack_charged" if action in TECHNIQUE_ACTIONS or action == DEV_SPECIAL_ACTION or action == &"golpe_forte" else &"attack_basic")
 	if action == DEV_SPECIAL_ACTION:
 		technique = DEV_SPECIAL_DEFINITION.duplicate(true)
 	var ultimate := action == &"eclipse_total"
@@ -503,6 +545,8 @@ func _resolve_player_action() -> void:
 		_add_log("ECO EM GUARDA • DANO REDUZIDO")
 	enemy_hp = maxi(0, enemy_hp - total_damage)
 	_play_move_effect(action, d20 == 20, attack_lanes)
+	if total_damage > 0:
+		_play_stage_animation(&"enemy", &"hurt")
 	if ultimate:
 		_add_log("PET USA ECLIPSE TOTAL • 3 FAIXAS • -%d HP • EN %d" % [total_damage, ultimate_energy_used])
 		ultimate_energy_used = 0
@@ -563,6 +607,7 @@ func _resolve_enemy_turn() -> void:
 		return
 	pending_enemy_action = _choose_enemy_action()
 	enemy_attack_lane = _rng.randi_range(0, 2)
+	_play_stage_animation(&"enemy", &"attack_charged" if pending_enemy_action == &"golpe_forte" else &"attack_basic")
 	enemy_defense_lane = _rng.randi_range(0, 2)
 	_add_log("ECO PREPARA • %s • FAIXA %s" % [String(ACTION_LABELS.get(pending_enemy_action, pending_enemy_action)), LANE_NAMES[enemy_attack_lane]])
 	_update_battle_ui()
@@ -600,10 +645,10 @@ func _apply_enemy_action() -> void:
 	if damage <= 0:
 		_add_log("ECO USA %s • SEM DANO" % String(ACTION_LABELS.get(action, action)))
 	else:
-			player_hp = maxi(0, player_hp - damage)
-			_play_move_effect(&"enemy", d20 == 20, [player_defense_lane])
-			_add_log("ECO USA %s • -%d HP" % [String(ACTION_LABELS.get(action, action)), damage])
-
+		player_hp = maxi(0, player_hp - damage)
+		_play_stage_animation(&"player", &"hurt")
+		_play_move_effect(&"enemy", d20 == 20, [player_defense_lane])
+		_add_log("ECO USA %s • -%d HP" % [String(ACTION_LABELS.get(action, action)), damage])
 	if d20 == 20:
 		_add_log("D20: 20 • CRÍTICO DO ECO")
 	if action == &"golpe_status" and damage > 0:
@@ -664,8 +709,18 @@ func _finish_battle(victory: bool) -> void:
 	else:
 		_add_log("DERROTA")
 		result_label.text = "DERROTA CONTRA %s" % enemy_name
+	_play_stage_animation(&"enemy" if victory else &"player", &"defeat")
 	battle_completed.emit(victory, xp_reward, point_reward, "Encontro contra %s" % enemy_name)
 	_update_result_ui()
+	if _result_return_tween != null:
+		_result_return_tween.kill()
+	_result_return_tween = create_tween()
+	_result_return_tween.tween_interval(1.4)
+	_result_return_tween.tween_callback(_return_from_result)
+
+func _return_from_result() -> void:
+	if phase == &"result" and visible:
+		close_area()
 
 func _play_move_effect(action: StringName, critical: bool = false, target_lanes: Array = []) -> void:
 	if move_effect == null:
@@ -740,32 +795,18 @@ func _show_impact(target_position: Vector2, target_is_player: bool, critical: bo
 		card_tween.tween_property(target_card, "modulate", original_modulate, 0.18)
 
 func _update_boss_sprite() -> void:
-	var boss_sprite := get_node_or_null(^"BattleCard/BossSprite") as TextureRect
-	if boss_sprite == null:
+	# A renderização do Boss pertence ao BattleStage/BossBattleActor.
+	# O nó estático legado da UI não participa mais da composição.
+	return
+
+func _play_stage_animation(actor: StringName, animation_name: StringName) -> void:
+	var stage := get_node_or_null(^"../Deepworld/BattleStage") as Node2D
+	if stage == null:
 		return
-	boss_sprite.visible = false
-	if mode_context != &"eva" or not encounter_is_boss:
-		return
-	var asset_name := ""
-	var normalized_name := enemy_name.to_lower()
-	if normalized_name.contains("gorgon"):
-		asset_name = "gorgon_glitch"
-	elif normalized_name.contains("prisma"):
-		asset_name = "prisma_guard"
-	elif normalized_name.contains("core"):
-		asset_name = "core_overlord"
-	elif normalized_name.contains("ignis"):
-		asset_name = "ignis_vectis"
-	elif normalized_name.contains("arquiteto"):
-		asset_name = "arquiteto_do_esquecimento"
-	elif normalized_name.contains("absoluto"):
-		asset_name = "eco_absoluto"
-	if asset_name.is_empty():
-		return
-	var texture := load("res://assets/bosses/%s.png" % asset_name) as Texture2D
-	if texture != null:
-		boss_sprite.texture = texture
-		boss_sprite.visible = true
+	if actor == &"player":
+		stage.call("play_player_battle_animation", animation_name)
+	else:
+		stage.call("play_enemy_battle_animation", animation_name)
 
 func _show_lobby() -> void:
 	phase = &"lobby"
@@ -777,6 +818,11 @@ func _show_lobby() -> void:
 	lobby_card.visible = true
 	battle_card.visible = false
 	blackout_panel.visible = false
+	if boss_intro_controller != null:
+		boss_intro_controller.call("skip")
+	_using_boss_intro = false
+	if boss_battle_background != null:
+		boss_battle_background.visible = false
 	result_label.visible = false
 	hint_label.visible = false
 	_update_lobby_ui()
@@ -871,9 +917,11 @@ func _update_lane_marker() -> void:
 	var lane_active := phase == &"battle" and battle_step in [&"attack_lane", &"defense_lane"]
 	lane_marker.visible = lane_active
 	if not lane_active:
+		lane_readout.visible = false
 		return
-		lane_marker.position.y = LANE_Y[lane_cursor] - 35.0
-
+	lane_marker.position.y = LANE_Y[lane_cursor] - 35.0
+	lane_readout.visible = true
+	lane_readout.position.y = LANE_Y[lane_cursor] - 50.0
 	lane_readout.text = ("TRAJETÓRIA: " if battle_step == &"attack_lane" else "DEFESA: ") + LANE_NAMES[lane_cursor]
 
 func _update_battle_bars() -> void:

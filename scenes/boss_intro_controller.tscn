@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/boss_intro_controller.gd" id="1_intro"]
+
+[node name="BossIntroController" type="Control"]
+visible = false
+z_index = 120
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_intro")
+
+[node name="Backdrop" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 6
+mouse_filter = 2
+
+[node name="Tint" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.01, 0.12, 0.18)
+mouse_filter = 2
+
+[node name="BossSprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(540, 325)
+scale = Vector2(2.35, 2.35)
+texture_filter = 1
+centered = true
+
+[node name="IntroAudio" type="AudioStreamPlayer" parent="."]
+volume_db = -2.0

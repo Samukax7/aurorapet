@@ -1,0 +1,66 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/battle_pet_actor.gd" id="1_actor"]
+[ext_resource type="Texture2D" path="res://assets/pet_modular/base/aurorapet-neutral-pet-base.png" id="2_base"]
+[ext_resource type="Texture2D" path="res://assets/pet_modular/modulos/caudas/tail_02.png" id="3_tail"]
+[ext_resource type="Texture2D" path="res://assets/pet_modular/modulos/asas/wing_01.png" id="4_wings"]
+[ext_resource type="Texture2D" path="res://assets/pet_modular/modulos/orelhas/ear_02.png" id="5_ears"]
+[ext_resource type="Texture2D" path="res://assets/pet_modular/modulos/olhos/eye_04.png" id="6_eyes"]
+
+[node name="BattlePetActor" type="Node2D"]
+z_index = 6
+script = ExtResource("1_actor")
+randomize_on_ready = false
+randomize_each_run = false
+randomize_palette_on_ready = false
+randomize_in_editor = false
+randomize_palette_in_editor = false
+apply_tail_variant_scales = true
+
+[node name="CorpoBase" type="Sprite2D" parent="."]
+z_index = 3
+position = Vector2(0, -0.04484)
+scale = Vector2(0.12, 0.12)
+texture = ExtResource("2_base")
+
+[node name="Cauda" type="Sprite2D" parent="."]
+z_index = 2
+position = Vector2(-8, 21)
+rotation = -1.2740904
+scale = Vector2(-0.5620271, 0.5347036)
+texture = ExtResource("3_tail")
+metadata/pet_modular_layer = true
+
+[node name="Asas" type="Sprite2D" parent="."]
+z_index = 1
+position = Vector2(-3, 26)
+scale = Vector2(0.56, 0.57)
+texture = ExtResource("4_wings")
+metadata/pet_modular_layer = true
+
+[node name="Orelhas" type="Sprite2D" parent="."]
+z_index = 2
+position = Vector2(-1, -81)
+scale = Vector2(0.45806456, 0.41090906)
+texture = ExtResource("5_ears")
+metadata/pet_modular_layer = true
+
+[node name="Olhos" type="Sprite2D" parent="."]
+z_index = 4
+position = Vector2(-13, -49)
+rotation = 3.1346195
+scale = Vector2(0.30974925, -0.2831536)
+texture = ExtResource("6_eyes")
+metadata/pet_modular_layer = true
+
+[node name="CosmeticOverlay" type="Sprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(0, -94)
+texture_filter = 1
+
+[node name="BattleAnimatedSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+texture_filter = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

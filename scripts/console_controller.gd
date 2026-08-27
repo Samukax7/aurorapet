@@ -105,6 +105,8 @@ func _ready() -> void:
 		batalha_exploracao.points_changed.connect(_on_exploration_points_changed)
 		batalha_exploracao.battle_completed.connect(_on_exploration_battle_completed)
 		batalha_exploracao.battle_started.connect(_on_exploration_battle_started)
+		if not batalha_exploracao.area_closed.is_connected(_on_exploration_area_closed):
+			batalha_exploracao.area_closed.connect(_on_exploration_area_closed)
 	if batalhar_menu != null:
 		batalhar_menu.mode_selected.connect(_on_battle_mode_selected)
 	if eva_visual_novel != null:
@@ -1084,7 +1086,9 @@ func _open_exploration() -> void:
 	if pet_ui != null:
 		pet_ui.visible = false
 	if deepworld_controller != null:
-		deepworld_controller.show_battle_stage()
+		# O palco só aparece depois da confirmação de partida; a notificação
+		# pré-combate deve ficar limpa, sem os dois atores nas laterais.
+		deepworld_controller.hide_battle_stage()
 	batalha_exploracao.open_area()
 
 func _sync_battle_development_mode() -> void:
@@ -1094,13 +1098,38 @@ func _sync_battle_development_mode() -> void:
 	batalha_exploracao.set_development_mode(dev_active)
 
 func _close_exploration() -> void:
-	if batalha_exploracao != null:
+	if batalha_exploracao != null and batalha_exploracao.visible:
 		batalha_exploracao.close_area()
+	else:
+		_on_exploration_area_closed()
+
+func _on_exploration_area_closed() -> void:
+	if eva_exploration_encounter_active:
+		return
+	var battle_mode := batalha_exploracao.get_mode_context() if batalha_exploracao != null else &"training"
+	match battle_mode:
+		&"exploration":
+			_open_exploration_map()
+		&"eva":
+			_open_eva_campaign_map_after_battle()
+		_:
+			_restore_lobby_after_battle()
+
+func _open_eva_campaign_map_after_battle() -> void:
+	if mapa_campanha_eva != null:
+		mapa_campanha_eva.open_map()
+	if pet_ui != null:
+		pet_ui.visible = false
+	if deepworld_controller != null:
+		deepworld_controller.hide_battle_stage()
+
+func _restore_lobby_after_battle() -> void:
 	if deepworld_controller != null:
 		deepworld_controller.hide_battle_stage()
 		deepworld_controller.visible = true
 	if pet_ui != null:
 		pet_ui.visible = true
+		pet_ui.restore_submenu(&"batalhar")
 
 func _on_exploration_battle_started(enemy_name: String, enemy_faction: StringName) -> void:
 	if deepworld_controller != null:
@@ -1112,36 +1141,27 @@ func _on_exploration_points_changed(total_points: int) -> void:
 
 func _on_exploration_battle_completed(victory: bool, xp_reward: int, _point_reward: int, _log_text: String) -> void:
 	var battle_mode := batalha_exploracao.get_mode_context() if batalha_exploracao != null else &"training"
-	var launch_eva_encounter := false
 	if aurora_pet_save != null and battle_mode == &"exploration":
 		aurora_pet_save.register_exploration_battle(victory)
 		if victory:
 			aurora_pet_save.unlock_next_exploration_island()
-			launch_eva_encounter = aurora_pet_save.consume_eva_encounter_trigger()
 	if pet_skills != null and xp_reward > 0:
 		pet_skills.add_xp(xp_reward)
 	if pet_stats != null and victory:
 		pet_stats.perform_action(&"batalhar", true)
-	if launch_eva_encounter:
-		_open_exploration_eva_encounter()
-		return
-	if battle_mode == &"eva" and batalha_exploracao != null:
-		if victory:
-			if mapa_campanha_eva != null and not current_eva_stage_id.is_empty():
-				mapa_campanha_eva.advance_to_stage(current_eva_stage_id)
-				if aurora_pet_save != null:
-					aurora_pet_save.eva_progress_stage_index = mapa_campanha_eva.get_unlocked_stage_index()
-					aurora_pet_save.mark_dirty()
-			if batalha_exploracao.is_boss_encounter():
-				if eva_journey_manager != null:
-					eva_journey_manager.complete_current_chapter()
-				_close_exploration()
-		elif not victory:
-			_close_exploration()
-			if pet_ui != null:
-				pet_ui.show_system_message("EVA TROUXE VOCÊ DE VOLTA AO LOBBY")
+	# O encontro intermediário da EVA fica suspenso até a nova cena de evolução.
+	# A conclusão permanece na tela de resultado e o fechamento roteia para o mapa.
+	if battle_mode == &"eva" and victory and mapa_campanha_eva != null and not current_eva_stage_id.is_empty():
+		mapa_campanha_eva.advance_to_stage(current_eva_stage_id)
+		if aurora_pet_save != null:
+			aurora_pet_save.eva_progress_stage_index = mapa_campanha_eva.get_unlocked_stage_index()
+			aurora_pet_save.mark_dirty()
+		if batalha_exploracao.is_boss_encounter() and eva_journey_manager != null:
+			eva_journey_manager.complete_current_chapter()
 	if pet_ui != null:
 		pet_ui.show_progression_message("BATALHA %s: +%d XP" % ["VENCIDA" if victory else "ENCERRADA", xp_reward])
+	# A tela de resultado permanece disponível; ao sair, close_area emite area_closed
+	# e o roteador devolve o jogador ao mapa ou ao lobby conforme o modo.
 
 func _on_skill_unlocked(skill_id: StringName) -> void:
 	if pet_ui != null and pet_skills != null:

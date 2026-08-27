@@ -1,31 +1,31 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/battle_stage.gd" id="1_stage"]
-[ext_resource type="PackedScene" path="res://scenes/pet.tscn" id="2_pet"]
+[ext_resource type="PackedScene" path="res://scenes/battle_pet_actor.tscn" id="2_pet_actor"]
+[ext_resource type="PackedScene" path="res://scenes/battle_echo_actor.tscn" id="3_echo_actor"]
+[ext_resource type="PackedScene" path="res://scenes/battle_boss_actor.tscn" id="4_boss_actor"]
 
 [node name="BattleStage" type="Node2D"]
 z_index = 45
 script = ExtResource("1_stage")
 
-[node name="PlayerCombatant" parent="." instance=ExtResource("2_pet")]
+[node name="PlayerBattleActor" parent="." instance=ExtResource("2_pet_actor")]
 z_index = 6
 position = Vector2(-1180, -65)
 scale = Vector2(-1.8, 1.8)
-randomize_on_ready = false
-randomize_each_run = false
-randomize_palette_on_ready = false
-randomize_in_editor = false
-randomize_palette_in_editor = false
 
-[node name="EcoCombatant" parent="." instance=ExtResource("2_pet")]
+[node name="EchoBattleActor" parent="." instance=ExtResource("3_echo_actor")]
 z_index = 6
 position = Vector2(1180, -85)
 scale = Vector2(1.8, 1.8)
-randomize_on_ready = false
-randomize_each_run = false
-randomize_palette_on_ready = false
-randomize_in_editor = false
-randomize_palette_in_editor = false
+mirror_horizontal = true
+mirror_vertical = false
+
+[node name="BossBattleActor" parent="." instance=ExtResource("4_boss_actor")]
+visible = false
+z_index = 7
+position = Vector2(1180, -85)
+scale = Vector2(2.15, 2.15)
 
 [node name="PlayerCaption" type="Label" parent="."]
 visible = false

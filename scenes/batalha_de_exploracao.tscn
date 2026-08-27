@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/batalha_de_exploracao.gd" id="1_battle"]
 [ext_resource type="AudioStream" path="res://assets/audio/battle_victory_sting.wav" id="2_victory"]
+[ext_resource type="PackedScene" path="res://scenes/boss_intro_controller.tscn" id="3_boss_intro"]
 
 [sub_resource type="StyleBoxFlat" id="Style_Back"]
 bg_color = Color(0.015, 0.012, 0.075, 0.26)
@@ -200,6 +201,22 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("Style_Back")
 mouse_filter = 2
+
+[node name="BossBattleBackground" type="TextureRect" parent="."]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 6
+mouse_filter = 2
+
+[node name="BossIntroController" parent="." instance=ExtResource("3_boss_intro")]
 
 [node name="LobbyCard" type="Panel" parent="."]
 offset_left = 190.0
@@ -530,6 +547,7 @@ horizontal_alignment = 1
 z_index = 6
 
 [node name="ActionLabel" type="Label" parent="BattleCard"]
+visible = false
 offset_left = 270.0
 offset_top = 398.0
 offset_right = 810.0
