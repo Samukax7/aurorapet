@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dmd8r5gcws3kf" path="res://scripts/quarto_cosmico.gd" id="1_room"]
 [ext_resource type="Texture2D" uid="uid://cser6rya6vynd" path="res://assets/fundo/aurorapet-deepworld-landscape.png" id="2_standard"]
-[ext_resource type="Texture2D" uid="uid://duulckilo3r6j" path="res://assets/UI/loja_cosmica.svg" id="3_shop_icon"]
-[ext_resource type="Texture2D" uid="uid://ckmucr6qdfave" path="res://assets/UI/guarda_roupas.svg" id="4_wardrobe_icon"]
+[ext_resource type="Texture2D" path="res://assets/UI/loja_cosmica.png" id="3_shop_icon"]
+[ext_resource type="Texture2D" path="res://assets/UI/guardaroupas_cosmico.png" id="4_wardrobe_icon"]
 [ext_resource type="PackedScene" path="res://scenes/loja_cosmica.tscn" id="5_shop"]
 [ext_resource type="PackedScene" path="res://scenes/guarda_roupas_cosmico.tscn" id="6_wardrobe"]
 

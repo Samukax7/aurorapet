@@ -50,9 +50,9 @@ const SUBMENU_DEFINITIONS: Dictionary = {
 		{"action": &"2048", "label": "2048", "icon": "res://assets/UI/submenus/2048.png"},
 	],
 	&"batalhar": [
-		{"action": &"sala_treinos", "label": "Sala de Treinos", "icon": "res://assets/UI/placeholders/icon_battle.svg"},
-		{"action": &"explorar_deepworld", "label": "Explorar Deepworld", "icon": "res://assets/UI/placeholders/icon_exploration.svg"},
-		{"action": &"aventura_eva", "label": "Aventura com EVA", "icon": "res://assets/UI/placeholders/icon_pet.svg"},
+		{"action": &"sala_treinos", "label": "Sala de Treinos", "icon": "res://assets/UI/submenus/sala_de_treinos.png"},
+		{"action": &"explorar_deepworld", "label": "Explorar Deepworld", "icon": "res://assets/UI/submenus/explorar_deepworld.png"},
+		{"action": &"aventura_eva", "label": "Aventura com EVA", "icon": "res://assets/UI/submenus/jornada_eva.png"},
 	],
 }
 
