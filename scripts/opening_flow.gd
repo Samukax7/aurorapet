@@ -726,23 +726,11 @@ func _continue_saved_pet() -> void:
 	_finish_flow()
 
 func _save_new_pet() -> void:
-	if pet_save != null and pet_save.save_now():
-		return
-	if pet_identity == null:
-		return
-	var data := {
-		"version": 1,
-		"has_pet": true,
-		"identity_seed": pet_identity.identity_seed,
-		"access_code": pet_identity.get_access_code(),
-		"faction": String(pet_identity.faction_id),
-		"name": pet_identity.pet_name,
-		"lineage": String(pet_identity.lineage_id),
-		"created_at": Time.get_datetime_string_from_system(),
-	}
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	if file != null:
-		file.store_string(JSON.stringify(data))
+	# O save central é o único formato gravado pelo jogo. O fallback antigo
+	# usava o mesmo caminho com uma estrutura incompleta e podia sobrescrever
+	# o progresso moderno.
+	if pet_save != null:
+		pet_save.save_now()
 
 func _finish_flow() -> void:
 	_stop_intro_eva_loop()
