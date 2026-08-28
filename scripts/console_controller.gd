@@ -1141,16 +1141,20 @@ func _on_exploration_points_changed(total_points: int) -> void:
 
 func _on_exploration_battle_completed(victory: bool, xp_reward: int, _point_reward: int, _log_text: String) -> void:
 	var battle_mode := batalha_exploracao.get_mode_context() if batalha_exploracao != null else &"training"
-	if aurora_pet_save != null and battle_mode == &"exploration":
-		aurora_pet_save.register_exploration_battle(victory)
+	# A chegada da EVA pertence à ilha inicial; outras regiões não podem
+	# avançar este contador mesmo depois de terem sido desbloqueadas.
+	var is_first_exploration_island := batalha_exploracao != null and batalha_exploracao.exploration_area_id == &"data_city"
+	if aurora_pet_save != null and battle_mode == &"exploration" and is_first_exploration_island:
+		aurora_pet_save.register_exploration_battle()
 		if victory:
 			aurora_pet_save.unlock_next_exploration_island()
+		if aurora_pet_save.consume_eva_encounter_trigger():
+			_open_exploration_eva_encounter()
+			return
 	if pet_skills != null and xp_reward > 0:
 		pet_skills.add_xp(xp_reward)
 	if pet_stats != null and victory:
 		pet_stats.perform_action(&"batalhar", true)
-	# O encontro intermediário da EVA fica suspenso até a nova cena de evolução.
-	# A conclusão permanece na tela de resultado e o fechamento roteia para o mapa.
 	if battle_mode == &"eva" and victory and mapa_campanha_eva != null and not current_eva_stage_id.is_empty():
 		mapa_campanha_eva.advance_to_stage(current_eva_stage_id)
 		if aurora_pet_save != null:
