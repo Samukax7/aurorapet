@@ -62,6 +62,7 @@ func new_game() -> void:
 	selected_cell = Vector2i(1, 1)
 	_spawn_tile()
 	_spawn_tile()
+	_update_best_tile()
 	status_label.text = "FORME O BLOCO 2048"
 	result_label.text = ""
 	hint_label.text = "D-PAD: MOVER   •   VERDE: NOVA PARTIDA   •   ROSA: SAIR"
