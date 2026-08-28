@@ -594,10 +594,10 @@ func _restore_world(raw_data: Variant) -> void:
 		return
 	var data: Dictionary = raw_data
 	exploration_battles_completed = maxi(0, int(data.get("exploration_battles_completed", exploration_battles_completed)))
-	eva_encounter_battle_counter = clampi(int(data.get("eva_encounter_battle_counter", exploration_battles_completed % 3)), 0, 2)
-	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3 and not eva_encounter_seen))
 	eva_encounter_seen = bool(data.get("eva_encounter_seen", false))
 	eva_adventure_unlocked = bool(data.get("eva_adventure_unlocked", false))
+	eva_encounter_battle_counter = clampi(int(data.get("eva_encounter_battle_counter", exploration_battles_completed % 3)), 0, 2)
+	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3 and not eva_encounter_seen and not eva_adventure_unlocked))
 	eva_progress_stage_index = clampi(int(data.get("eva_progress_stage_index", eva_progress_stage_index)), 1, 21)
 	exploration_islands_unlocked.clear()
 	for area_id in data.get("exploration_islands_unlocked", ["data_city"]):
