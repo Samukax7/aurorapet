@@ -369,13 +369,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			if pet_ui != null:
 				pet_ui.set_menu_visibility(true)
 			get_viewport().set_input_as_handled()
-		return
+			return
 	if not _is_lobby_active():
+		return
+	if pet_stats != null and pet_stats.is_sleeping:
 		return
 	if event.is_action_pressed("ui_left"):
 		if pet_ui.menu_visible or pet_ui.submenu_visible:
 			pet_ui.move_selection(Vector2i.LEFT)
 		get_viewport().set_input_as_handled()
+
 	elif event.is_action_pressed("ui_right"):
 		if pet_ui.menu_visible or pet_ui.submenu_visible:
 			pet_ui.move_selection(Vector2i.RIGHT)
@@ -524,7 +527,6 @@ func _on_pink_pressed() -> void:
 	if mapa_exploracao != null and mapa_exploracao.visible:
 		_close_exploration_map()
 		return
-
 	if mapa_campanha_eva != null and mapa_campanha_eva.visible:
 		_close_eva_campaign_map()
 		return
@@ -538,11 +540,13 @@ func _on_pink_pressed() -> void:
 		skill_tree.close_tree()
 		if pet_ui != null:
 			pet_ui.set_menu_visibility(true)
-
 	elif pet_ui != null and pet_ui.submenu_visible:
 		pet_ui.close_submenu()
+	elif pet_stats != null and pet_stats.is_sleeping:
+		return
 	else:
 		pet_ui.toggle_menu()
+
 
 func _move_active_selection(direction: Vector2i) -> void:
 	if quarto_entry_pending:
@@ -574,10 +578,12 @@ func _move_active_selection(direction: Vector2i) -> void:
 		quarto_cosmico.handle_direction(direction)
 	elif skill_tree != null and skill_tree.visible:
 		skill_tree.move_selection(direction)
-	elif pet_ui != null and _is_lobby_active() and (pet_ui.menu_visible or pet_ui.submenu_visible):
+	elif pet_ui != null and _is_lobby_active() and pet_stats != null and not pet_stats.is_sleeping and (pet_ui.menu_visible or pet_ui.submenu_visible):
 		pet_ui.move_selection(direction)
 
 func _confirm_active_selection() -> void:
+	if pet_stats != null and pet_stats.is_sleeping:
+		return
 	if jogo_da_velha != null and jogo_da_velha.visible:
 		jogo_da_velha.confirm()
 	elif jokenpo != null and jokenpo.visible:
@@ -623,6 +629,9 @@ func _show_identity_intro() -> void:
 	pet_ui.show_progression_message("NASCEU: %s • %s" % [pet_identity.pet_name.to_upper(), pet_identity.lineage_label.to_upper()])
 
 func _on_action_requested(action: StringName) -> void:
+	if pet_stats != null and pet_stats.is_sleeping:
+		pet_stats.perform_action(action)
+		return
 	if action == &"sala_treinos":
 		if batalha_exploracao != null:
 			batalha_exploracao.configure_mode(&"training")
@@ -634,12 +643,10 @@ func _on_action_requested(action: StringName) -> void:
 	if action == &"aventura_eva":
 		_open_eva_campaign_map()
 		return
-	if pet_stats != null and pet_stats.is_sleeping:
-		pet_stats.perform_action(action)
-		return
 	if action == &"treinar":
 		_open_skill_tree()
 		return
+
 	if action == &"batalhar":
 		if pet_stats != null and not pet_stats.report_action_check(&"batalhar"):
 			return
@@ -792,7 +799,11 @@ func _is_lobby_active() -> bool:
 func _is_quarto_global_access_available() -> bool:
 	if not _is_lobby_active():
 		return false
+	if pet_stats != null and pet_stats.is_sleeping:
+		return false
+
 	# O quarto só é acessível com o menu principal e os submenus fechados.
+
 	if pet_ui.menu_visible or pet_ui.submenu_visible:
 		return false
 	return quarto_cosmico != null and not quarto_cosmico.visible
@@ -1141,20 +1152,16 @@ func _on_exploration_points_changed(total_points: int) -> void:
 
 func _on_exploration_battle_completed(victory: bool, xp_reward: int, _point_reward: int, _log_text: String) -> void:
 	var battle_mode := batalha_exploracao.get_mode_context() if batalha_exploracao != null else &"training"
-	# A chegada da EVA pertence à ilha inicial; outras regiões não podem
-	# avançar este contador mesmo depois de terem sido desbloqueadas.
-	var is_first_exploration_island := batalha_exploracao != null and batalha_exploracao.exploration_area_id == &"data_city"
-	if aurora_pet_save != null and battle_mode == &"exploration" and is_first_exploration_island:
-		aurora_pet_save.register_exploration_battle()
+	if aurora_pet_save != null and battle_mode == &"exploration":
+		aurora_pet_save.register_exploration_battle(victory)
 		if victory:
 			aurora_pet_save.unlock_next_exploration_island()
-		if aurora_pet_save.consume_eva_encounter_trigger():
-			_open_exploration_eva_encounter()
-			return
 	if pet_skills != null and xp_reward > 0:
 		pet_skills.add_xp(xp_reward)
 	if pet_stats != null and victory:
 		pet_stats.perform_action(&"batalhar", true)
+	# O encontro intermediário da EVA fica suspenso até a nova cena de evolução.
+	# A conclusão permanece na tela de resultado e o fechamento roteia para o mapa.
 	if battle_mode == &"eva" and victory and mapa_campanha_eva != null and not current_eva_stage_id.is_empty():
 		mapa_campanha_eva.advance_to_stage(current_eva_stage_id)
 		if aurora_pet_save != null:

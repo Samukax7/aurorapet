@@ -79,12 +79,13 @@ const ENCOUNTER_BACKGROUNDS: Dictionary = {
 }
 
 const EVA_POSES: Dictionary = {
-	&"cry": "res://assets/eva/encounter/restored/eva_cry_restored.png",
-	&"suspicious": "res://assets/eva/encounter/restored/eva_suspicious_restored.png",
-	&"confident": "res://assets/eva/encounter/restored/eva_confident_restored.png",
-	&"happy": "res://assets/eva/encounter/restored/eva_happy_restored.png",
-	&"neutral": "res://assets/eva/encounter/restored/eva_neutral_restored.png",
-	&"angry": "res://assets/eva/encounter/restored/eva_angry_restored.png",
+	&"cry": "res://assets/eva/encounter/cry.webp",
+	&"suspicious": "res://assets/eva/encounter/desconfiada.webp",
+	&"confident": "res://assets/eva/encounter/confiante.webp",
+	&"happy": "res://assets/eva/encounter/alegre.webp",
+	&"neutral": "res://assets/eva/encounter/neutra.webp",
+
+	&"angry": "res://assets/eva/encounter/brava.webp",
 }
 
 const ENCOUNTER_LINES: Array[Dictionary] = [
@@ -172,9 +173,10 @@ func open_chapter(chapter_id: int = 1, include_choice: bool = true) -> void:
 	_stop_all_narrative_music()
 	if campaign_music != null:
 		campaign_music.play()
-	eva_sprite.visible = true
-	eva_sprite.frame = 0
+		eva_sprite.visible = true
+	_set_eva_pose(eva_sprite, &"neutral")
 	_hide_encounter_layers()
+
 	_render()
 	grab_focus()
 
@@ -259,10 +261,8 @@ func _process(delta: float) -> void:
 		_process_encounter(delta)
 		return
 	elapsed += delta
-	if not awaiting_choice:
-		eva_sprite.frame = [0, 1, 2][int(elapsed * 3.0) % 3]
-	else:
-		eva_sprite.frame = 2 if int(elapsed * 2.0) % 2 == 0 else 1
+	if eva_sprite != null and eva_sprite.visible:
+		eva_sprite.position = Vector2(540.0, 220.0 + sin(elapsed * 2.0) * 2.0)
 
 func _process_encounter(delta: float) -> void:
 	match encounter_phase:
@@ -418,22 +418,26 @@ func _render() -> void:
 
 func _render_chapter() -> void:
 	_hide_encounter_layers()
-	$Dimmer.visible = true
-	dialogue_frame_for_chapter()
-	if _chapter_frame_style != null:
-		$DialogueFrame.add_theme_stylebox_override("panel", _chapter_frame_style)
+	$Dimmer.visible = false
 	$DialogueFrame.visible = true
+	encounter_background.texture = load(String(ENCOUNTER_BACKGROUNDS[&"field"])) as Texture2D
+	encounter_background.visible = encounter_background.texture != null
+	dialogue_box_artwork.texture = load("res://assets/eva/encounter/dialogue_box_crop.png") as Texture2D
+	dialogue_box_artwork.visible = dialogue_box_artwork.texture != null
+	dialogue_frame_for_encounter()
 	var data := _current_data()
 	var lines := _current_lines()
 	eva_sprite.visible = true
+	_set_eva_pose(eva_sprite, &"neutral")
 	chapter_label.text = String(data.get("title", "CAMPANHA DA EVA"))
 	region_label.text = "REGIÃO: " + String(data.get("region", "DEEPWORLD"))
 	progress_label.text = "%02d / %02d" % [mini(line_index + 1, lines.size()), lines.size()]
 	if awaiting_choice:
 		speaker_label.text = "EVA"
 		dialogue_label.text = "O sinal está à frente. Você vem comigo?"
+		_set_eva_pose(eva_sprite, &"confident")
 		choice_panel.visible = true
-		choice_frame_for_chapter()
+		choice_frame_for_encounter()
 		choice_help.button_pressed = choice_index == 0
 		choice_wait.button_pressed = choice_index == 1
 		hint_label.text = "D-PAD: ESCOLHER   •   VERDE: CONFIRMAR   •   ROSA: VOLTAR"
@@ -487,7 +491,7 @@ func _render_encounter() -> void:
 		dialogue_box_artwork.texture = load("res://assets/eva/encounter/dialogue_box_crop.png") as Texture2D
 		var lines: Array[Dictionary] = REFUSAL_LINES if encounter_refusal_count > 0 else ENCOUNTER_LINES
 		var line: Dictionary = lines[clampi(encounter_line_index, 0, maxi(0, lines.size() - 1))]
-		encounter_eva.frame = _baby_eva_frame_for_pose(line.get("pose", &"neutral"))
+		_set_eva_pose(encounter_eva, line.get("pose", &"neutral"))
 		encounter_eva.visible = encounter_eva.texture != null
 
 		dialogue_box_artwork.visible = true
@@ -534,6 +538,7 @@ func dialogue_frame_for_encounter() -> void:
 	$DialogueFrame.position = Vector2(52, 420)
 	$DialogueFrame.size = Vector2(976, 190)
 	encounter_eva.position = Vector2(540.0, 220.0)
+	eva_sprite.position = Vector2(540.0, 220.0)
 
 	chapter_label.visible = true
 	region_label.visible = false
@@ -586,16 +591,17 @@ func choice_frame_for_encounter() -> void:
 	$DialogueFrame/ChoicePanel/Wait.position = Vector2(534, 76)
 	$DialogueFrame/ChoicePanel/Wait.size = Vector2(400, 72)
 
-func _baby_eva_frame_for_pose(pose_value: Variant) -> int:
-	if pose_value is StringName:
-		match pose_value:
-			&"cry": return 0
-			&"suspicious": return 1
-			&"confident": return 2
-			&"happy": return 2
-			&"neutral": return 1
-			&"angry": return 0
-	return 1
+func _set_eva_pose(target: Sprite2D, pose_value: Variant) -> void:
+	if target == null:
+		return
+	var pose := StringName(pose_value) if pose_value is StringName else StringName(String(pose_value))
+	var texture_path := String(EVA_POSES.get(pose, EVA_POSES[&"neutral"]))
+	target.texture = load(texture_path) as Texture2D
+	target.hframes = 1
+	target.vframes = 1
+	target.frame = 0
+
+
 
 func _load_encounter_background() -> Texture2D:
 	var texture := load(String(ENCOUNTER_BACKGROUNDS.get(encounter_background_id, ENCOUNTER_BACKGROUNDS[&"field"]))) as Texture2D

@@ -90,7 +90,6 @@ var battle_over := false
 var player_guarding := false
 var enemy_guarding := false
 var enemy_weakened := false
-var enemy_status: StringName = &""
 var enemy_status_turns := 0
 var pending_player_action: StringName = &""
 var pending_enemy_action: StringName = &""
@@ -343,7 +342,7 @@ func _start_battle() -> void:
 	player_guarding = false
 	enemy_guarding = false
 	enemy_weakened = false
-	enemy_status = &""
+	
 	enemy_status_turns = 0
 	pending_player_action = &""
 	pending_enemy_action = &""
@@ -497,7 +496,6 @@ func _resolve_player_action() -> void:
 			return
 	var skill: Dictionary = _pet_skills.get_skill(action) if _pet_skills != null else {}
 	var technique: Dictionary = TECHNIQUE_DEFINITIONS.get(action, {})
-	_play_stage_animation(&"player", &"attack_charged" if action in TECHNIQUE_ACTIONS or action == DEV_SPECIAL_ACTION or action == &"golpe_forte" else &"attack_basic")
 	if action == DEV_SPECIAL_ACTION:
 		technique = DEV_SPECIAL_DEFINITION.duplicate(true)
 	var ultimate := action == &"eclipse_total"
@@ -517,7 +515,9 @@ func _resolve_player_action() -> void:
 			_queue_enemy_turn()
 			return
 		player_en -= en_cost
+	_play_stage_animation(&"player", &"attack_charged" if action in TECHNIQUE_ACTIONS or action == DEV_SPECIAL_ACTION or action == &"golpe_forte" else &"attack_basic")
 	var d20 := _roll_d20()
+
 	var accuracy := clampf(float(technique.get("accuracy", skill.get("accuracy", 0.82))) + float(_get_attribute(&"agilidade", 10) - 10) * 0.005, 0.45, 0.98)
 	if d20 <= 2 or (d20 != 20 and _rng.randf() > accuracy):
 		ultimate_energy_used = 0
@@ -557,7 +557,7 @@ func _resolve_player_action() -> void:
 	if d20 == 20:
 		_add_log("D20: 20 • CRÍTICO")
 	if action == &"golpe_status":
-		enemy_status = &"enfraquecido"
+		enemy_weakened = true
 		enemy_status_turns = 2 if d20 == 20 else 1
 		_add_log("ECO ENFRAQUECIDO")
 	_update_battle_ui()
@@ -607,7 +607,7 @@ func _resolve_enemy_turn() -> void:
 		return
 	pending_enemy_action = _choose_enemy_action()
 	enemy_attack_lane = _rng.randi_range(0, 2)
-	_play_stage_animation(&"enemy", &"attack_charged" if pending_enemy_action == &"golpe_forte" else &"attack_basic")
+	_play_enemy_action_animation(pending_enemy_action)
 	enemy_defense_lane = _rng.randi_range(0, 2)
 	_add_log("ECO PREPARA • %s • FAIXA %s" % [String(ACTION_LABELS.get(pending_enemy_action, pending_enemy_action)), LANE_NAMES[enemy_attack_lane]])
 	_update_battle_ui()
@@ -620,8 +620,14 @@ func _resolve_enemy_turn() -> void:
 func _apply_enemy_action() -> void:
 	if battle_over or phase != &"battle":
 		return
-	var d20 := _roll_d20()
 	var action := pending_enemy_action
+	if action == &"escudo":
+		enemy_guarding = true
+		_add_log("ECO ATIVA ESCUDO")
+		_update_battle_ui()
+		_begin_next_round()
+		return
+	var d20 := _roll_d20()
 	var lane_gap: int = abs(player_defense_lane - enemy_attack_lane)
 	var defense_multiplier := 1.0 if lane_gap >= 2 else (0.62 if lane_gap == 1 else 0.0)
 	if action == &"golpe_status":
@@ -652,7 +658,6 @@ func _apply_enemy_action() -> void:
 	if d20 == 20:
 		_add_log("D20: 20 • CRÍTICO DO ECO")
 	if action == &"golpe_status" and damage > 0:
-		enemy_weakened = false
 		_add_log("PET SOB PRESSÃO")
 	_update_battle_ui()
 	if player_hp <= 0:
@@ -709,13 +714,20 @@ func _finish_battle(victory: bool) -> void:
 	else:
 		_add_log("DERROTA")
 		result_label.text = "DERROTA CONTRA %s" % enemy_name
-	_play_stage_animation(&"enemy" if victory else &"player", &"defeat")
+	var result_delay := 1.4
+	if victory:
+		_play_stage_animation(&"enemy", &"defeat")
+		var stage := get_node_or_null(^"../Deepworld/BattleStage") as Node2D
+		if stage != null and stage.has_method("get_enemy_battle_animation_duration"):
+			result_delay = maxf(result_delay, float(stage.call("get_enemy_battle_animation_duration", &"defeat")) + 0.25)
+	else:
+		_play_stage_animation(&"player", &"defeat")
 	battle_completed.emit(victory, xp_reward, point_reward, "Encontro contra %s" % enemy_name)
 	_update_result_ui()
 	if _result_return_tween != null:
 		_result_return_tween.kill()
 	_result_return_tween = create_tween()
-	_result_return_tween.tween_interval(1.4)
+	_result_return_tween.tween_interval(result_delay)
 	_result_return_tween.tween_callback(_return_from_result)
 
 func _return_from_result() -> void:
@@ -807,6 +819,14 @@ func _play_stage_animation(actor: StringName, animation_name: StringName) -> voi
 		stage.call("play_player_battle_animation", animation_name)
 	else:
 		stage.call("play_enemy_battle_animation", animation_name)
+
+func _play_enemy_action_animation(action: StringName) -> void:
+	var stage := get_node_or_null(^"../Deepworld/BattleStage") as Node2D
+	if stage != null and stage.has_method("play_enemy_action_animation"):
+		stage.call("play_enemy_action_animation", action)
+		return
+	var animation_name: StringName = &"attack_charged" if action == &"golpe_forte" else (&"defend" if action == &"escudo" else &"attack_basic")
+	_play_stage_animation(&"enemy", animation_name)
 
 func _show_lobby() -> void:
 	phase = &"lobby"
@@ -966,6 +986,8 @@ func _lane_multiplier(attacker_lane: int, defender_lane: int) -> float:
 	return 0.82
 
 func _choose_enemy_action() -> StringName:
+	if encounter_is_boss and _rng.randf() < 0.18:
+		return &"escudo"
 	var options: Array[StringName] = [&"golpe_fraco", &"golpe_forte", &"golpe_status"]
 	if encounter_is_boss and _rng.randf() < 0.25:
 		return &"golpe_status"

@@ -90,9 +90,9 @@ func is_development_session() -> bool:
 func has_save() -> bool:
 	return FileAccess.file_exists(save_path)
 
-func register_exploration_battle() -> void:
-	# O primeiro encontro da EVA acontece após três confrontos concluídos,
-	# não apenas vitórias. Derrota também é parte da jornada até encontrá-la.
+func register_exploration_battle(victory: bool) -> void:
+	if not victory:
+		return
 	if development_mode:
 		return
 	exploration_battles_completed += 1
@@ -594,10 +594,10 @@ func _restore_world(raw_data: Variant) -> void:
 		return
 	var data: Dictionary = raw_data
 	exploration_battles_completed = maxi(0, int(data.get("exploration_battles_completed", exploration_battles_completed)))
+	eva_encounter_battle_counter = clampi(int(data.get("eva_encounter_battle_counter", exploration_battles_completed % 3)), 0, 2)
+	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3 and not eva_encounter_seen))
 	eva_encounter_seen = bool(data.get("eva_encounter_seen", false))
 	eva_adventure_unlocked = bool(data.get("eva_adventure_unlocked", false))
-	eva_encounter_battle_counter = clampi(int(data.get("eva_encounter_battle_counter", exploration_battles_completed % 3)), 0, 2)
-	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3 and not eva_encounter_seen and not eva_adventure_unlocked))
 	eva_progress_stage_index = clampi(int(data.get("eva_progress_stage_index", eva_progress_stage_index)), 1, 21)
 	exploration_islands_unlocked.clear()
 	for area_id in data.get("exploration_islands_unlocked", ["data_city"]):

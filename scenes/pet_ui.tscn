@@ -357,10 +357,10 @@ show_behind_parent = true
 z_index = -1
 layout_mode = 0
 offset_left = 10.039108
-offset_top = 37.195435
+offset_top = 32.407654
 offset_right = 162.03911
-offset_bottom = 231.19543
-scale = Vector2(0.96536756, 0.80570275)
+offset_bottom = 226.40765
+scale = Vector2(0.96536756, 0.83750665)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_SelectionFrame")
 

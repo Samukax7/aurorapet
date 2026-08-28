@@ -64,6 +64,23 @@ func play_enemy_battle_animation(animation_name: StringName = &"idle") -> void:
 	elif eco_combatant != null:
 		eco_combatant.call("play_battle_animation", animation_name)
 
+func get_enemy_battle_animation_duration(animation_name: StringName = &"idle") -> float:
+	if boss_actor != null and boss_actor.visible and boss_actor.has_method("get_battle_animation_duration"):
+		return float(boss_actor.call("get_battle_animation_duration", animation_name))
+	return 0.0
+
+func play_enemy_action_animation(action: StringName) -> StringName:
+	var animation_name: StringName = &"attack_basic"
+	match action:
+		&"golpe_forte":
+			animation_name = &"attack_charged"
+		&"escudo", &"defesa":
+			animation_name = &"defend"
+		&"golpe_fraco", &"golpe_status":
+			animation_name = &"attack_basic"
+	play_enemy_battle_animation(animation_name)
+	return animation_name
+
 func _apply_battle_transforms() -> void:
 	if player_combatant != null:
 		player_combatant.position = PLAYER_BATTLE_POSITION
