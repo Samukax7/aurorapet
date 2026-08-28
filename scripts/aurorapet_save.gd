@@ -90,9 +90,9 @@ func is_development_session() -> bool:
 func has_save() -> bool:
 	return FileAccess.file_exists(save_path)
 
-func register_exploration_battle(victory: bool) -> void:
-	if not victory:
-		return
+func register_exploration_battle() -> void:
+	# O primeiro encontro da EVA acontece após três confrontos concluídos,
+	# não apenas vitórias. Derrota também é parte da jornada até encontrá-la.
 	if development_mode:
 		return
 	exploration_battles_completed += 1
