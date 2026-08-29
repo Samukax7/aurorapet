@@ -13,6 +13,7 @@ const AREAS: Array[Dictionary] = [
 ]
 
 var selected_index := 4
+var mobile_presentation := false
 var _world_progression: AuroraPetSave
 @onready var selection_label: Label = $SelectionPanel/SelectionLabel
 @onready var hint_label: Label = $Hint
@@ -21,8 +22,22 @@ var _world_progression: AuroraPetSave
 
 func _ready() -> void:
 	visible = false
+	for index in area_buttons.size():
+		area_buttons[index].pressed.connect(_on_area_button_pressed.bind(index))
 	_configure_music_loop()
 	_update_selection()
+
+func set_mobile_presentation(active_mobile: bool) -> void:
+	mobile_presentation = active_mobile
+	_update_selection()
+
+func _on_area_button_pressed(index: int) -> void:
+	if not visible:
+		return
+	selected_index = clampi(index, 0, AREAS.size() - 1)
+	_update_selection()
+	if mobile_presentation:
+		confirm()
 
 func set_world_progression(world: AuroraPetSave) -> void:
 	_world_progression = world
@@ -77,7 +92,8 @@ func _update_selection() -> void:
 		return
 	var area: Dictionary = AREAS[selected_index]
 	selection_label.text = "%s\n%s" % [area.title, area.subtitle] if _is_area_unlocked(area.id) else "%s\nÁREA BLOQUEADA" % area.title
-	hint_label.text = "D-PAD: NAVEGAR   •   VERDE: EXPLORAR   •   ROSA: VOLTAR"
+	hint_label.text = ("TOQUE EM UMA ILHA PARA EXPLORAR   •   ←: VOLTAR" if mobile_presentation
+		else "D-PAD: NAVEGAR   •   VERDE: EXPLORAR   •   ROSA: VOLTAR")
 	for i in range(area_buttons.size()):
 		var button := area_buttons[i]
 		var unlocked := _is_area_unlocked(AREAS[i].id)

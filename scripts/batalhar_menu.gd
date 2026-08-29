@@ -5,13 +5,27 @@ signal mode_selected(mode_id: StringName)
 signal menu_closed
 
 var selected_index := 0
+var mobile_presentation := false
 @onready var selection_label: Label = $Card/SelectionLabel
 @onready var exploration_button: Button = $Card/ExplorationButton
 @onready var campaign_button: Button = $Card/CampaignButton
 
 func _ready() -> void:
 	visible = false
+	exploration_button.pressed.connect(_on_mode_button_pressed.bind(0))
+	campaign_button.pressed.connect(_on_mode_button_pressed.bind(1))
 	_update_selection()
+
+func set_mobile_presentation(active_mobile: bool) -> void:
+	mobile_presentation = active_mobile
+
+func _on_mode_button_pressed(index: int) -> void:
+	if not visible:
+		return
+	selected_index = clampi(index, 0, 1)
+	_update_selection()
+	if mobile_presentation:
+		confirm()
 
 func open_menu() -> void:
 	visible = true

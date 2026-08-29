@@ -33,6 +33,7 @@ var selected_index := 0
 var unlocked_stage_index := 1
 var time := 0.0
 var _initial_scroll_pending := false
+var mobile_presentation := false
 @onready var map_content: Control = $MapScroll/MapContent
 @onready var selection_panel: Panel = $SelectionPanel
 @onready var selection_label: Label = $SelectionPanel/SelectionLabel
@@ -46,7 +47,21 @@ func _ready() -> void:
 	for child in map_content.get_children():
 		if child is Button and child.name.begins_with("Stage"):
 			stage_buttons.append(child)
+	for index in stage_buttons.size():
+		stage_buttons[index].pressed.connect(_on_stage_button_pressed.bind(index))
 	_update_selection()
+
+func set_mobile_presentation(active_mobile: bool) -> void:
+	mobile_presentation = active_mobile
+	_update_selection()
+
+func _on_stage_button_pressed(index: int) -> void:
+	if not visible:
+		return
+	selected_index = clampi(index, 0, STAGES.size() - 1)
+	_update_selection()
+	if mobile_presentation:
+		confirm()
 
 func _process(delta: float) -> void:
 	if not visible:
@@ -143,7 +158,7 @@ func _update_selection() -> void:
 	var display_title := "PLATAFORMA NEUTRA" if bool(stage.base) else String(stage.title)
 	selection_label.text = "%s\n%s%s" % [stage.chapter, display_title, availability]
 	_position_selection_panel(stage.position)
-	hint_label.text = ""
+	hint_label.text = "TOQUE EM UMA FASE   •   ←: VOLTAR" if mobile_presentation else ""
 	for i in range(stage_buttons.size()):
 		var button := stage_buttons[i]
 		button.text = "◆" if i == selected_index else ("★" if STAGES[i].boss else "·")

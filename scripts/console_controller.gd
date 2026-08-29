@@ -901,6 +901,9 @@ func set_mobile_presentation(active_mobile: bool) -> void:
 		opening_flow.call("set_mobile_presentation", active_mobile)
 	if quarto_cosmico != null and quarto_cosmico.has_method("set_mobile_presentation"):
 		quarto_cosmico.call("set_mobile_presentation", active_mobile)
+	for mobile_screen in [batalhar_menu, mapa_exploracao, mapa_campanha_eva, batalha_exploracao]:
+		if mobile_screen != null and mobile_screen.has_method("set_mobile_presentation"):
+			mobile_screen.call("set_mobile_presentation", active_mobile)
 
 func mobile_toggle_status() -> void:
 	if pet_ui == null or not _is_lobby_active():

@@ -132,6 +132,7 @@ var _pet_stats: PetStats
 var _pet_skills: PetSkills
 var _pet_identity: PetIdentity
 var _player_pet_source: PetRandomizer
+var mobile_presentation := false
 
 @onready var blackout_panel: Panel = $BlackoutPanel
 @onready var blackout_text: Label = $BlackoutPanel/Text
@@ -175,9 +176,22 @@ var _player_pet_source: PetRandomizer
 
 func _ready() -> void:
 	visible = false
+	for index in action_buttons.size():
+		action_buttons[index].pressed.connect(_on_touch_action_pressed.bind(index))
 	if boss_intro_controller != null and not boss_intro_controller.is_connected("presentation_finished", Callable(self, "_on_boss_presentation_finished")):
 		boss_intro_controller.connect("presentation_finished", Callable(self, "_on_boss_presentation_finished"))
 	_show_lobby()
+
+func set_mobile_presentation(active_mobile: bool) -> void:
+	mobile_presentation = active_mobile
+
+func _on_touch_action_pressed(index: int) -> void:
+	if not visible or phase != &"battle" or battle_step == &"resolving":
+		return
+	selected_index = clampi(index, 0, action_buttons.size() - 1)
+	_update_battle_ui()
+	if mobile_presentation:
+		confirm()
 
 func _process(delta: float) -> void:
 	if phase == &"intro" and _using_boss_intro:
