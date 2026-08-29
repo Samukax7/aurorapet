@@ -8,7 +8,7 @@
 
 Este documento define o espaço lógico que deve ser usado por todas as cenas exibidas dentro da tela do console. A regra principal é separar **coordenadas internas de design** das dimensões físicas da janela. As cenas não devem ser redimensionadas manualmente para cada monitor, resolução ou modo de execução.
 
-> Toda interface interna do AuroraPet deve ser desenhada em coordenadas locais de **1080 × 650 pixels**. O ajuste para a janela física é responsabilidade da cadeia `main_responsive.gd → Console Base → ScreenContent`.
+> Toda interface interna do AuroraPet deve ser desenhada em coordenadas locais de **1080 × 650 pixels**. O ajuste para a janela física é responsabilidade da casca ativa: `main_responsive.gd → Console Base → GameplayRoot` no principal ou `mobile_main.gd → GameplayRoot` no mobile.
 
 ## Medidas oficiais
 
@@ -44,7 +44,9 @@ A escala deve ser uniforme. Não aplicar uma escala horizontal diferente da vert
 | `scripts/main_responsive.gd` | `DESIGN_VIEWPORT = Vector2(1080, 650)` e centro `(540, 325)` |
 | `scripts/screen_content.gd` | `LOGICAL_SIZE = Vector2(1080, 650)` e `LOGICAL_CENTER = Vector2(540, 325)` |
 | `scenes/main.tscn` | `Console Base` posicionado em `(540, 325)` com escala-base `0.3` |
-| `scenes/console_frame.tscn` | `ScreenContent` é o espaço interno comum das telas |
+| `scenes/gameplay_root.tscn` | `ScreenContent` é o espaço lógico compartilhado das telas |
+| `scenes/console_frame.tscn` | Casca principal com moldura e controles físicos |
+| `scenes/mobile_main.tscn` | Casca paralela com interface touchscreen |
 
 ## Regras para cenas internas
 

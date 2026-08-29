@@ -1,0 +1,120 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://di6o1ryyui4dn" path="res://scenes/deepworld.tscn" id="1_deepworld"]
+[ext_resource type="Script" uid="uid://c34ak1fbc3rme" path="res://scripts/console_controller.gd" id="2_controller"]
+[ext_resource type="PackedScene" uid="uid://cyqc3gwawa3at" path="res://scenes/pet_ui.tscn" id="3_pet_ui"]
+[ext_resource type="PackedScene" path="res://scenes/arvore_de_habilidades.tscn" id="4_skill_tree"]
+[ext_resource type="PackedScene" uid="uid://byuwmehk7mxl6" path="res://scenes/opening_flow.tscn" id="5_opening"]
+[ext_resource type="PackedScene" path="res://scenes/jogo_da_velha.tscn" id="6_ttt"]
+[ext_resource type="PackedScene" path="res://scenes/jokenpo.tscn" id="7_rps"]
+[ext_resource type="PackedScene" uid="uid://buomkgjf4ao18" path="res://scenes/jogo_2048.tscn" id="8_2048"]
+[ext_resource type="PackedScene" path="res://scenes/batalha_de_exploracao.tscn" id="9_exploration"]
+[ext_resource type="Script" uid="uid://cf7gohqv2vx6r" path="res://scripts/aurorapet_save.gd" id="10_save"]
+[ext_resource type="Script" uid="uid://ung8irkpk27" path="res://scripts/eva_journey_manager.gd" id="11_eva_journey"]
+[ext_resource type="PackedScene" path="res://scenes/mapa_exploracao.tscn" id="12_exploration_map"]
+[ext_resource type="PackedScene" path="res://scenes/mapa_campanha_eva.tscn" id="13_eva_map"]
+[ext_resource type="PackedScene" path="res://scenes/batalhar_menu.tscn" id="14_battle_menu"]
+[ext_resource type="Script" uid="uid://s0ueeau4m3xm" path="res://scripts/screen_content.gd" id="15_screen_content"]
+[ext_resource type="PackedScene" uid="uid://42m7tdhf8lw" path="res://scenes/eva_visual_novel.tscn" id="16_eva_novel"]
+[ext_resource type="Theme" path="res://aurorapet_readable_theme.tres" id="17_theme"]
+[ext_resource type="AudioStream" uid="uid://c7xts6gxiqosn" path="res://assets/audio/aurorapet_lobby_theme.wav" id="18_lobby"]
+[ext_resource type="AudioStream" uid="uid://whg2eetf7xd6" path="res://assets/audio/aurorapet_confirm_beep.wav" id="19_confirm"]
+[ext_resource type="AudioStream" uid="uid://bqtibppbhougr" path="res://assets/audio/aurorapet_sfx_green_button.wav" id="20_dpad"]
+[ext_resource type="AudioStream" uid="uid://7rqcignwtwvr" path="res://assets/audio/aurorapet_sfx_positive.wav" id="21_positive"]
+[ext_resource type="AudioStream" uid="uid://dqb8cyt75s73f" path="res://assets/audio/aurorapet_sfx_refusal.wav" id="22_refusal"]
+[ext_resource type="AudioStream" uid="uid://ctv1ts8v2hea4" path="res://assets/audio/aurorapet_sfx_open.wav" id="23_open"]
+[ext_resource type="AudioStream" uid="uid://bonqipwqw7yi5" path="res://assets/audio/aurorapet_sfx_levelup.wav" id="24_levelup"]
+[ext_resource type="AudioStream" uid="uid://cv7mncl7rftru" path="res://assets/audio/aurorapet_sfx_poop.wav" id="25_poop"]
+
+[node name="GameplayRoot" type="Node2D"]
+script = ExtResource("2_controller")
+
+[node name="ScreenContent" type="Control" parent="."]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -560.0
+offset_top = -651.0
+offset_right = 520.0
+offset_bottom = -1.0
+scale = Vector2(1.022, 1.498)
+mouse_filter = 2
+theme = ExtResource("17_theme")
+script = ExtResource("15_screen_content")
+
+[node name="Deepworld" parent="ScreenContent" instance=ExtResource("1_deepworld")]
+position = Vector2(540, 325)
+scale = Vector2(0.31497505, 0.35)
+
+[node name="PetUI" parent="ScreenContent" instance=ExtResource("3_pet_ui")]
+layout_mode = 1
+offset_left = -4.8731008
+offset_right = -4.873108
+
+[node name="ArvoreDeHabilidades" parent="ScreenContent" instance=ExtResource("4_skill_tree")]
+layout_mode = 1
+
+[node name="OpeningFlow" parent="ScreenContent" instance=ExtResource("5_opening")]
+layout_mode = 1
+
+[node name="JogoDaVelha" parent="ScreenContent" instance=ExtResource("6_ttt")]
+layout_mode = 1
+
+[node name="Jokenpo" parent="ScreenContent" instance=ExtResource("7_rps")]
+layout_mode = 1
+
+[node name="Jogo2048" parent="ScreenContent" instance=ExtResource("8_2048")]
+layout_mode = 1
+
+[node name="BatalhaDeExploracao" parent="ScreenContent" instance=ExtResource("9_exploration")]
+layout_mode = 1
+
+[node name="MapaExploracao" parent="ScreenContent" instance=ExtResource("12_exploration_map")]
+layout_mode = 1
+
+[node name="MapaCampanhaEva" parent="ScreenContent" instance=ExtResource("13_eva_map")]
+layout_mode = 1
+
+[node name="BatalharMenu" parent="ScreenContent" instance=ExtResource("14_battle_menu")]
+layout_mode = 1
+
+[node name="EvaVisualNovel" parent="ScreenContent" instance=ExtResource("16_eva_novel")]
+layout_mode = 1
+
+[node name="EvaJourneyManager" type="Node" parent="ScreenContent"]
+script = ExtResource("11_eva_journey")
+
+[node name="AuroraPetSave" type="Node" parent="ScreenContent"]
+script = ExtResource("10_save")
+
+[node name="LobbyMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("18_lobby")
+volume_db = -12.0
+
+[node name="ConfirmAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("19_confirm")
+volume_db = -8.0
+
+[node name="DPadAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("20_dpad")
+volume_db = -17.0
+
+[node name="PositiveAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("21_positive")
+volume_db = -9.0
+
+[node name="RefusalAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("22_refusal")
+volume_db = -9.0
+
+[node name="OpenOptionsAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("23_open")
+volume_db = -9.0
+
+[node name="LevelUpAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("24_levelup")
+volume_db = -8.0
+
+[node name="PoopAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("25_poop")
+volume_db = -9.0

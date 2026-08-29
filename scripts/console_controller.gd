@@ -41,9 +41,9 @@ var current_eva_stage_id: StringName = &""
 var eva_novel_pending_stage_id: StringName = &""
 var eva_exploration_encounter_active := false
 var _last_poop_count := 0
+var _mobile_quarto_entry := false
 
 func _ready() -> void:
-	_connect_console_buttons()
 	if aurora_pet_save != null:
 		aurora_pet_save.configure(pet_identity, pet_stats, pet_skills, pet_evolution, pet_randomizer, quarto_cosmico, batalha_exploracao, eva_journey_manager)
 		if mapa_exploracao != null:
@@ -448,14 +448,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			pet_ui.toggle_menu()
 		get_viewport().set_input_as_handled()
 
-func _connect_console_buttons() -> void:
-	$ButtonGreen.pressed.connect(_on_green_pressed)
-	$ButtonYellow.pressed.connect(_on_yellow_pressed)
-	$ButtonPink.pressed.connect(_on_pink_pressed)
-	$DPadUp.pressed.connect(func(): _move_active_selection(Vector2i.UP))
-	$DPadDown.pressed.connect(func(): _move_active_selection(Vector2i.DOWN))
-	$DPadLeft.pressed.connect(func(): _move_active_selection(Vector2i.LEFT))
-	$DPadRight.pressed.connect(func(): _move_active_selection(Vector2i.RIGHT))
+func input_confirm() -> void:
+	_on_green_pressed()
+
+func input_status() -> void:
+	_on_yellow_pressed()
+
+func input_back() -> void:
+	_on_pink_pressed()
+
+func input_navigate(direction: Vector2i) -> void:
+	_move_active_selection(direction)
 
 func _on_green_pressed() -> void:
 	_play_confirm_sound()
@@ -886,7 +889,74 @@ func _close_quarto() -> void:
 		deepworld.visible = true
 	if pet_ui != null:
 		pet_ui.visible = true
+		if _mobile_quarto_entry:
+			pet_ui.set_menu_visibility(true)
+	_mobile_quarto_entry = false
 	quarto_entry_pending = false
+
+## API da casca mobile. Mantém o controlador como roteador interno sem expor
+## ao jogador os botões físicos do console.
+func set_mobile_presentation(active_mobile: bool) -> void:
+	if opening_flow != null and opening_flow.has_method("set_mobile_presentation"):
+		opening_flow.call("set_mobile_presentation", active_mobile)
+
+func mobile_toggle_status() -> void:
+	if pet_ui == null or not _is_lobby_active():
+		return
+	pet_ui.toggle_status()
+
+func mobile_open_quarto() -> void:
+	if not _is_lobby_active() or quarto_cosmico == null:
+		return
+	if pet_stats != null and pet_stats.is_sleeping:
+		pet_ui.show_system_message("O PET ESTÁ DORMINDO")
+		return
+	if pet_ui != null:
+		pet_ui.close_submenu()
+		pet_ui.set_menu_visibility(false)
+	_mobile_quarto_entry = true
+	_open_quarto()
+
+func mobile_back() -> void:
+	if pet_ui != null and pet_ui.status_visible:
+		pet_ui.toggle_status()
+		return
+	if quarto_cosmico != null and quarto_cosmico.visible:
+		if quarto_cosmico.is_shop_open() or quarto_cosmico.is_wardrobe_open():
+			quarto_cosmico.back()
+		else:
+			_close_quarto()
+		return
+	_on_pink_pressed()
+
+func mobile_confirm() -> void:
+	_on_green_pressed()
+
+func mobile_navigate(direction: Vector2i) -> void:
+	_move_active_selection(direction)
+
+func get_mobile_ui_state() -> Dictionary:
+	var lobby_active := _is_lobby_active()
+	var status_open := pet_ui != null and pet_ui.status_visible
+	var submenu_open := pet_ui != null and pet_ui.submenu_visible
+	var room_open := quarto_cosmico != null and quarto_cosmico.visible
+	var contextual_navigation := room_open
+	contextual_navigation = contextual_navigation or (batalhar_menu != null and batalhar_menu.visible)
+	contextual_navigation = contextual_navigation or (mapa_exploracao != null and mapa_exploracao.visible)
+	contextual_navigation = contextual_navigation or (mapa_campanha_eva != null and mapa_campanha_eva.visible)
+	contextual_navigation = contextual_navigation or (eva_visual_novel != null and eva_visual_novel.visible)
+	contextual_navigation = contextual_navigation or (batalha_exploracao != null and batalha_exploracao.visible)
+	return {
+		"lobby": lobby_active,
+		"status_open": status_open,
+		"submenu_open": submenu_open,
+		"room_open": room_open,
+		"show_status": lobby_active,
+		"show_room": lobby_active and not status_open,
+		"show_back": status_open or submenu_open or room_open or not lobby_active,
+		"show_confirm": contextual_navigation,
+		"allow_swipe_navigation": contextual_navigation,
+	}
 
 func _on_quarto_exit_confirmed() -> void:
 	_close_quarto()

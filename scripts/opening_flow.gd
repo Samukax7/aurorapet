@@ -33,6 +33,7 @@ var egg_selection_index := 0
 var selected_faction: StringName = &"neutro"
 var development_mode_active := false
 var presentation_audio_active := false
+var mobile_presentation := false
 var hatch_hits := 0
 var hatching := false
 var hatch_animation_elapsed := 0.0
@@ -109,6 +110,14 @@ const EGG_SELECTION_ICON_MAX_WIDTH := 64
 @onready var controls_panel: Panel = $ControlsPanel
 @onready var controls_back: Button = $ControlsPanel/Back
 @onready var controls_next: Button = $ControlsPanel/Next
+@onready var controls_dpad_icon: TextureRect = $ControlsPanel/DPadIcon
+@onready var controls_dpad_label: Label = $ControlsPanel/DPadLabel
+@onready var controls_green_icon: TextureRect = $ControlsPanel/GreenIcon
+@onready var controls_green_label: Label = $ControlsPanel/GreenLabel
+@onready var controls_pink_icon: TextureRect = $ControlsPanel/PinkIcon
+@onready var controls_pink_label: Label = $ControlsPanel/PinkLabel
+@onready var controls_yellow_icon: TextureRect = $ControlsPanel/YellowIcon
+@onready var controls_yellow_label: Label = $ControlsPanel/YellowLabel
 @onready var controls_speech_bubble: Panel = $ControlsSpeechBubble
 @onready var controls_speech_body: Label = $ControlsSpeechBubble/Body
 @onready var presenter_sprite: Sprite2D = $PresenterSprite
@@ -129,6 +138,28 @@ func _ready() -> void:
 		welcome_audio.finished.connect(_on_welcome_audio_finished)
 	_show_user_logo()
 	set_process(true)
+
+func set_mobile_presentation(active_mobile: bool) -> void:
+	mobile_presentation = active_mobile
+	if not is_node_ready():
+		return
+	var control_icons: Array[TextureRect] = [controls_dpad_icon, controls_green_icon, controls_pink_icon, controls_yellow_icon]
+	for control_icon in control_icons:
+		control_icon.visible = not mobile_presentation
+	if mobile_presentation:
+		controls_dpad_label.text = "DESLIZE\nNavegar e escolher"
+		controls_green_label.text = "TOQUE\nConfirmar e interagir"
+		controls_yellow_label.text = "ÍCONE ♥\nAbrir ou fechar status"
+		controls_pink_label.text = "ÍCONE ←\nVoltar"
+	else:
+		controls_dpad_label.text = "D-PAD\nNavegar e escolher"
+		controls_green_label.text = "VERDE\nConfirmar"
+		controls_yellow_label.text = "AMARELO\nVoltar em áreas compatíveis"
+		controls_pink_label.text = "ROSA\nVoltar"
+	if mobile_presentation:
+		for control_label: Label in [controls_dpad_label, controls_green_label, controls_yellow_label, controls_pink_label]:
+			control_label.offset_left = 55.0
+			control_label.offset_right = 625.0
 
 func _process(delta: float) -> void:
 	if not active:
@@ -374,7 +405,8 @@ func _show_menu() -> void:
 	background.color = Color("#FFFFFF")
 	_hide_all_panels()
 	menu_panel.visible = true
-	menu_notice.text = "V 0.1 • PROTÓTIPO EM DESENVOLVIMENTO • ÁUDIO ATIVO\nD-PAD: NAVEGAR   •   VERDE: CONFIRMAR"
+	menu_notice.text = ("V 0.1 • PROTÓTIPO EM DESENVOLVIMENTO • ÁUDIO ATIVO\nTOQUE PARA ESCOLHER E CONFIRMAR" if mobile_presentation
+		else "V 0.1 • PROTÓTIPO EM DESENVOLVIMENTO • ÁUDIO ATIVO\nD-PAD: NAVEGAR   •   VERDE: CONFIRMAR")
 	menu_options = [&"start", &"options"]
 	if _has_save():
 		menu_options = [&"start", &"continue", &"options"]
@@ -480,7 +512,8 @@ func _show_story(page: int) -> void:
 		controls_speech_bubble.visible = true
 		guide_sprite.position.y = CONTROLS_EVA_Y
 
-		controls_speech_body.text = "Olá!\n\nUse os controles para explorar o Deepworld.\n\nEscolha uma opção e confirme quando estiver pronto."
+		controls_speech_body.text = ("Olá!\n\nUse toques, gestos e os ícones da tela para explorar o Deepworld.\n\nEscolha uma opção quando estiver pronto." if mobile_presentation
+			else "Olá!\n\nUse os controles para explorar o Deepworld.\n\nEscolha uma opção e confirme quando estiver pronto.")
 		guide_sprite.visible = true
 		guide_sprite.frame = 1
 		controls_next.text = "PRÓXIMA"
@@ -530,7 +563,8 @@ func _refresh_egg_selection() -> void:
 		egg_selection_buttons[index].modulate = Color.WHITE if index == egg_selection_index else Color(0.5, 0.58, 0.75, 1.0)
 		egg_selection_buttons[index].scale = Vector2(1.08, 1.08) if index == egg_selection_index else Vector2.ONE
 	selected_faction = factions[egg_selection_index]
-	egg_selection_hint.text = "AURA %s\n%s\n\nVERDE: ESCOLHER   •   ROSA: VOLTAR" % [labels[egg_selection_index], aura_descriptions[egg_selection_index]]
+	var action_hint := "TOQUE: ESCOLHER   •   ←: VOLTAR" if mobile_presentation else "VERDE: ESCOLHER   •   ROSA: VOLTAR"
+	egg_selection_hint.text = "AURA %s\n%s\n\n%s" % [labels[egg_selection_index], aura_descriptions[egg_selection_index], action_hint]
 
 func _confirm_egg_selection() -> void:
 	var factions: Array[StringName] = [&"luz", &"trevas", &"neutro"]
@@ -559,7 +593,8 @@ func _show_egg() -> void:
 		pet_node.visible = false
 	egg_panel.visible = true
 	controls_speech_bubble.visible = true
-	controls_speech_body.text = "Agora é sua vez!\n\nPressione o botão verde para ajudar o ovo a chocar.\n\nCada toque aproxima o nascimento do seu Deepmon."
+	controls_speech_body.text = ("Agora é sua vez!\n\nToque no ícone ✓ para ajudar o ovo a chocar.\n\nCada toque aproxima o nascimento do seu Deepmon." if mobile_presentation
+		else "Agora é sua vez!\n\nPressione o botão verde para ajudar o ovo a chocar.\n\nCada toque aproxima o nascimento do seu Deepmon.")
 	guide_sprite.visible = true
 	guide_sprite.frame = 2
 	egg_image.visible = true
@@ -571,7 +606,8 @@ func _show_egg() -> void:
 	hatch_hits = 0
 	egg_label.text = ""
 	egg_progress.value = 0.0
-	egg_hint.text = "AJUDE O OVO A CHOCAR\nPRESSIONE VERDE  •  0 / %d" % HATCH_HITS_REQUIRED
+	egg_hint.text = ("AJUDE O OVO A CHOCAR\nTOQUE EM ✓  •  0 / %d" if mobile_presentation
+		else "AJUDE O OVO A CHOCAR\nPRESSIONE VERDE  •  0 / %d") % HATCH_HITS_REQUIRED
 
 func _hatch_step() -> void:
 	if hatching or hatch_hits >= HATCH_HITS_REQUIRED:

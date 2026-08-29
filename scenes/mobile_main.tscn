@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/console_frame.tscn" id="1_console"]
+[ext_resource type="PackedScene" path="res://scenes/gameplay_root.tscn" id="1_gameplay"]
 [ext_resource type="Script" path="res://scripts/mobile_main.gd" id="2_mobile"]
 [ext_resource type="Script" path="res://scripts/mobile_touch_controls.gd" id="3_touch"]
 
@@ -14,7 +14,7 @@ mouse_filter = 2
 color = Color(0.027, 0.075, 0.145, 1)
 z_index = -100
 
-[node name="Console Base" parent="." instance=ExtResource("1_console")]
+[node name="GameplayRoot" parent="." instance=ExtResource("1_gameplay")]
 position = Vector2(540, 325)
 scale = Vector2(1, 1)
 

@@ -1,103 +1,129 @@
 extends Control
 class_name AuroraPetMobileTouchControls
 
+const SWIPE_MIN_DISTANCE := 54.0
+
 var controller: Node
 var _buttons: Dictionary = {}
 var _base_style: StyleBoxFlat
-var _pressed_styles: Dictionary = {}
+var _accent_styles: Dictionary = {}
+var _touch_start := Vector2.ZERO
+var _tracking_touch := false
 
 func _ready() -> void:
-	mouse_filter = Control.MOUSE_FILTER_PASS
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_styles()
 	_build_controls()
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
 	_on_viewport_size_changed()
+	set_process(true)
 
 func set_controller(value: Node) -> void:
 	controller = value
+	_refresh_context()
+
+func _process(_delta: float) -> void:
+	_refresh_context()
 
 func _build_styles() -> void:
 	_base_style = StyleBoxFlat.new()
-	_base_style.bg_color = Color(0.025, 0.075, 0.16, 0.72)
-	_base_style.border_width_left = 2
-	_base_style.border_width_top = 2
-	_base_style.border_width_right = 2
-	_base_style.border_width_bottom = 2
-	_base_style.border_color = Color(0.35, 0.85, 1.0, 0.75)
-	_base_style.corner_radius_top_left = 14
-	_base_style.corner_radius_top_right = 14
-	_base_style.corner_radius_bottom_left = 14
-	_base_style.corner_radius_bottom_right = 14
-	_base_style.shadow_color = Color(0.05, 0.45, 0.8, 0.35)
-	_base_style.shadow_size = 4
-	for key in [&"green", &"pink", &"yellow"]:
+	_base_style.bg_color = Color(0.025, 0.075, 0.16, 0.88)
+	_base_style.set_border_width_all(2)
+	_base_style.border_color = Color(0.35, 0.85, 1.0, 0.88)
+	_base_style.set_corner_radius_all(14)
+	_base_style.shadow_color = Color(0.0, 0.0, 0.0, 0.42)
+	_base_style.shadow_size = 6
+	for key in [&"status", &"room", &"back", &"confirm"]:
 		var style := _base_style.duplicate() as StyleBoxFlat
 		style.bg_color = {
-			&"green": Color(0.14, 0.72, 0.36, 0.78),
-			&"pink": Color(0.86, 0.24, 0.52, 0.78),
-			&"yellow": Color(0.88, 0.66, 0.18, 0.78),
+			&"status": Color(0.88, 0.20, 0.46, 0.92),
+			&"room": Color(0.35, 0.20, 0.62, 0.92),
+			&"back": Color(0.08, 0.16, 0.30, 0.92),
+			&"confirm": Color(0.12, 0.65, 0.32, 0.92),
 		}[key]
-		style.border_color = Color(1, 1, 1, 0.85)
-		_pressed_styles[key] = style
+		style.border_color = Color(1, 1, 1, 0.90)
+		_accent_styles[key] = style
 
-func _make_button(key: StringName, label: String, action: StringName) -> Button:
+func _make_icon_button(key: StringName, glyph: String, tooltip: String) -> Button:
 	var button := Button.new()
 	button.name = String(key).capitalize()
-	button.text = label
+	button.text = glyph
+	button.tooltip_text = tooltip
 	button.focus_mode = Control.FOCUS_NONE
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", 24 if key in [&"up", &"down", &"left", &"right"] else 16)
-	button.add_theme_color_override("font_color", Color(0.92, 0.98, 1.0, 0.96))
+	button.add_theme_font_size_override("font_size", 30)
+	button.add_theme_color_override("font_color", Color.WHITE)
 	button.add_theme_color_override("font_hover_color", Color.WHITE)
 	button.add_theme_stylebox_override("normal", _base_style)
-	button.add_theme_stylebox_override("hover", _base_style)
-	button.add_theme_stylebox_override("pressed", _pressed_styles.get(key, _base_style))
-	button.pressed.connect(_on_touch_pressed.bind(action))
+	button.add_theme_stylebox_override("hover", _accent_styles[key])
+	button.add_theme_stylebox_override("pressed", _accent_styles[key])
+	button.pressed.connect(_on_icon_pressed.bind(key))
 	add_child(button)
 	_buttons[key] = button
 	return button
 
 func _build_controls() -> void:
-	_make_button(&"up", "▲", &"up")
-	_make_button(&"down", "▼", &"down")
-	_make_button(&"left", "◀", &"left")
-	_make_button(&"right", "▶", &"right")
-	_make_button(&"green", "VERDE", &"green")
-	_make_button(&"pink", "ROSA", &"pink")
-	_make_button(&"yellow", "AMARELO", &"yellow")
+	_make_icon_button(&"status", "♥", "Status")
+	_make_icon_button(&"room", "⌂", "Quarto Cósmico")
+	_make_icon_button(&"back", "←", "Voltar")
+	_make_icon_button(&"confirm", "✓", "Confirmar")
 
 func _on_viewport_size_changed() -> void:
 	var viewport_size := get_viewport_rect().size
 	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0 or _buttons.is_empty():
 		return
-	var unit := clampf(minf(viewport_size.x, viewport_size.y) * 0.115, 42.0, 82.0)
-	var gap := unit * 0.84
-	var dpad_origin := Vector2(unit * 0.55, viewport_size.y - unit * 2.72)
-	_buttons[&"up"].position = dpad_origin + Vector2(gap, 0.0)
-	_buttons[&"down"].position = dpad_origin + Vector2(gap, gap * 2.0)
-	_buttons[&"left"].position = dpad_origin + Vector2(0.0, gap)
-	_buttons[&"right"].position = dpad_origin + Vector2(gap * 2.0, gap)
-	for key in [&"up", &"down", &"left", &"right"]:
-		_buttons[key].size = Vector2(unit, unit)
-	var action_width := clampf(viewport_size.x * 0.13, 92.0, 148.0)
-	var action_height := clampf(unit * 0.78, 48.0, 68.0)
-	var action_gap := clampf(unit * 0.22, 10.0, 18.0)
-	var action_x := viewport_size.x - action_width - unit * 0.55
-	var action_y := viewport_size.y - action_height * 3.0 - action_gap * 2.0 - unit * 0.35
-	_buttons[&"green"].position = Vector2(action_x, action_y)
-	_buttons[&"pink"].position = Vector2(action_x, action_y + action_height + action_gap)
-	_buttons[&"yellow"].position = Vector2(action_x, action_y + (action_height + action_gap) * 2.0)
-	for key in [&"green", &"pink", &"yellow"]:
-		_buttons[key].size = Vector2(action_width, action_height)
+	position = Vector2.ZERO
+	size = viewport_size
+	var safe_margin := clampf(minf(viewport_size.x, viewport_size.y) * 0.035, 14.0, 28.0)
+	var icon_size := clampf(minf(viewport_size.x, viewport_size.y) * 0.105, 52.0, 76.0)
+	var button_size := Vector2(icon_size, icon_size)
+	_buttons[&"status"].position = Vector2(viewport_size.x - icon_size - safe_margin, safe_margin)
+	_buttons[&"room"].position = Vector2(safe_margin, (viewport_size.y - icon_size) * 0.5)
+	_buttons[&"back"].position = Vector2(safe_margin, safe_margin)
+	_buttons[&"confirm"].position = Vector2(viewport_size.x - icon_size - safe_margin, viewport_size.y - icon_size - safe_margin)
+	for button in _buttons.values():
+		(button as Button).size = button_size
 
-func _on_touch_pressed(action: StringName) -> void:
+func _refresh_context() -> void:
+	if controller == null or not is_instance_valid(controller) or not controller.has_method("get_mobile_ui_state"):
+		return
+	var state: Dictionary = controller.call("get_mobile_ui_state")
+	_buttons[&"status"].visible = bool(state.get("show_status", false))
+	_buttons[&"room"].visible = bool(state.get("show_room", false))
+	_buttons[&"back"].visible = bool(state.get("show_back", false))
+	_buttons[&"confirm"].visible = bool(state.get("show_confirm", false))
+
+func _on_icon_pressed(action: StringName) -> void:
 	if controller == null or not is_instance_valid(controller):
 		return
 	match action:
-		&"up": controller.call("_move_active_selection", Vector2i.UP)
-		&"down": controller.call("_move_active_selection", Vector2i.DOWN)
-		&"left": controller.call("_move_active_selection", Vector2i.LEFT)
-		&"right": controller.call("_move_active_selection", Vector2i.RIGHT)
-		&"green": controller.call("_on_green_pressed")
-		&"pink": controller.call("_on_pink_pressed")
-		&"yellow": controller.call("_on_yellow_pressed")
+		&"status": controller.call("mobile_toggle_status")
+		&"room": controller.call("mobile_open_quarto")
+		&"back": controller.call("mobile_back")
+		&"confirm": controller.call("mobile_confirm")
+
+func _input(event: InputEvent) -> void:
+	if controller == null or not is_instance_valid(controller):
+		return
+	if event is InputEventScreenTouch:
+		var touch := event as InputEventScreenTouch
+		if touch.pressed:
+			_touch_start = touch.position
+			_tracking_touch = true
+		elif _tracking_touch:
+			_tracking_touch = false
+			_handle_swipe(touch.position - _touch_start)
+
+func _handle_swipe(delta: Vector2) -> void:
+	if delta.length() < SWIPE_MIN_DISTANCE or not controller.has_method("get_mobile_ui_state"):
+		return
+	var state: Dictionary = controller.call("get_mobile_ui_state")
+	if not bool(state.get("allow_swipe_navigation", false)):
+		return
+	var direction := Vector2i.ZERO
+	if absf(delta.x) > absf(delta.y):
+		direction = Vector2i.RIGHT if delta.x > 0.0 else Vector2i.LEFT
+	else:
+		direction = Vector2i.DOWN if delta.y > 0.0 else Vector2i.UP
+	controller.call("mobile_navigate", direction)

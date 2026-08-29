@@ -19,26 +19,23 @@ A composição principal segue uma cadeia de instâncias. Cada alteração deve 
 ```text
 main.tscn
 └── Console Base        [console_frame.tscn]
-    └── ScreenContent
-        ├── Deepworld    [deepworld.tscn]
-        │   └── Paisagem
-        │       └── Pet  [pet.tscn]
-        │           ├── CorpoBase
-        │           ├── Cauda
-        │           ├── Asas
-        │           ├── Orelhas
-        │           ├── Olhos
-        │           ├── PetStats
-        │           ├── PetSkills
-        │           └── AnimationPlayer
-        └── PetUI        [pet_ui.tscn]
+    ├── Moldura e controles físicos
+    └── GameplayRoot     [gameplay_root.tscn]
+        └── ScreenContent
+            ├── Deepworld [deepworld.tscn]
+            │   └── Pet   [pet.tscn]
+            └── PetUI     [pet_ui.tscn]
+
+mobile_main.tscn
+├── GameplayRoot         [a mesma gameplay_root.tscn]
+└── Interface touch
 ```
 
 ## Sistemas implementados
 
 `pet_randomizer.gd` troca as texturas dos módulos existentes sem criar nós dinamicamente. `pet_stats.gd` mantém fome, energia, humor e saúde entre 0 e 100, aplica decaimento ao longo do tempo e processa as ações comer, brincar, limpar, treinar e dormir. `pet_skills.gd` fornece a base da árvore de habilidades com nível, XP, requisitos e os quatro movimentos iniciais: Golpe Fraco, Golpe Forte, Golpe de Status e Defesa.
 
-A `PetUI` mostra quatro barras coloridas no topo da tela e cinco ícones de ação na parte inferior. O D-pad navega entre ações, o botão verde confirma, o amarelo alterna as barras de status e o rosa alterna o menu inferior.
+A `PetUI` fornece o menu de ações e a ficha de status compartilhados. No console principal, D-pad e botões físicos controlam o jogo. No mobile, os mesmos comandos são acionados por toque direto, atalhos contextuais e gestos.
 
 ## Próximas etapas
 
@@ -46,4 +43,4 @@ A próxima etapa visual é criar a UI da árvore de habilidades no console. Depo
 
 ## Execução
 
-Abra `project.godot` no Godot 4.7 ou superior e execute a cena principal configurada em `scenes/main.tscn`. Durante a prototipagem, prefira editar `pet.tscn`, `deepworld.tscn`, `console_frame.tscn` e `pet_ui.tscn` diretamente, respeitando a cascata de origem.
+Abra `project.godot` no Godot 4.7 ou superior e execute `scenes/main.tscn` para o produto principal. Use `scenes/mobile_main.tscn` para validar a apresentação touchscreen. Regras compartilhadas pertencem a `gameplay_root.tscn` e suas subcenas; mudanças exclusivas de apresentação pertencem à casca correspondente.
