@@ -1,4 +1,4 @@
-extends Sprite2D
+extends Node2D
 
 ## Controla a UI da tela usando teclado ou os botões visuais do console.
 ## O mapeamento pode ser alterado aqui sem mexer na cena Pet ou Deepworld.

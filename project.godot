@@ -15,6 +15,8 @@ config/description="AuroraPet V 0.1 — protótipo web refinado com trilha e con
 config/version="0.1"
 config/tags=PackedStringArray("oficial_github")
 run/main_scene="res://scenes/main.tscn"
+run/main_scene.mobile="res://scenes/mobile_main.tscn"
+config/name.mobile="AuroraPet mobile V 0.1"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://assets/UI/aurorapet_icon.png"
 
