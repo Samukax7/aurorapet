@@ -34,9 +34,11 @@ signal action_refused(action: StringName, system_message: String, pet_message: S
 signal action_info(action: StringName, system_message: String, pet_message: String)
 signal behavior_event(event_id: StringName, system_message: String, pet_message: String)
 signal poop_state_changed(visible: bool)
+signal poop_count_changed(count: int)
 signal special_need_changed(need: StringName, wish: StringName, active: bool)
+signal faint_state_changed(is_fainted: bool)
 
-const NEWBORN_TUTORIAL_FEED_TARGET := 100.0
+const NEWBORN_TUTORIAL_FEED_TARGET := 70.0
 const SPECIAL_NEED_INTERVAL_SECONDS := 45.0
 const FOOD_REFUSAL_HUNGER_THRESHOLD := 95.0
 const TRAIN_MIN_ENERGY := 20.0
@@ -49,6 +51,7 @@ const MEDICINE_REFUSAL_HEALTH := 95.0
 const BEHAVIOR_EVENT_INTERVAL_SECONDS := 90.0
 const TRAIN_REFUSAL_CHANCE := 0.60
 const PLAY_REFUSAL_CHANCE := 0.40
+const MIN_EFFECTIVE_ATTRIBUTE_RATIO := 0.20
 
 var newborn_tutorial_active := false
 var newborn_tutorial_step: StringName = &"inactive"
@@ -57,8 +60,14 @@ var current_reaction: StringName = &"idle"
 var special_need: StringName = &""
 var special_need_wish: StringName = &""
 var poop_visible := false
+@export_range(0, 6, 1) var poop_count := 0
 var _special_need_elapsed := 0.0
 var _meals_since_poop := 0
+var digestion_remaining_seconds := 0.0
+var simulated_day_elapsed_seconds := 0.0
+var is_fainted := false
+var _severe_neglect_elapsed := 0.0
+var _last_meal_day_hour := -1.0
 
 @export_category("Valores iniciais")
 @export_range(0.0, 100.0, 1.0) var hunger := 82.0
@@ -81,6 +90,15 @@ var _meals_since_poop := 0
 @export_range(0.0, 5.0, 0.05) var decay_multiplier := 1.0
 @export_range(0.25, 5.0, 0.25) var decay_tick_interval := 1.0
 
+@export_category("Ciclo diário")
+@export_range(3600.0, 172800.0, 60.0) var simulated_day_duration_seconds := 86400.0
+@export_range(0.0, 100.0, 1.0) var hunger_loss_per_day := 48.0
+@export_range(0.0, 100.0, 1.0) var energy_loss_per_day := 38.0
+@export_range(1.0, 3600.0, 1.0) var digestion_duration_seconds := 300.0
+@export_range(0.0, 24.0, 0.5) var breakfast_hour := 8.0
+@export_range(0.0, 24.0, 0.5) var lunch_hour := 13.0
+@export_range(0.0, 24.0, 0.5) var dinner_hour := 19.0
+
 @export_category("Proteção da saúde")
 @export_range(0.0, 100.0, 1.0) var critical_hunger_threshold := 15.0
 @export_range(0.0, 100.0, 1.0) var critical_energy_threshold := 15.0
@@ -99,6 +117,10 @@ var _meals_since_poop := 0
 @export_range(0.0, 20.0, 0.5) var audacity_gain_per_play := 2.0
 @export_range(0.0, 20.0, 0.5) var obedience_loss_per_care_mistake := 4.0
 @export_range(0.0, 20.0, 0.5) var audacity_gain_per_care_mistake := 3.0
+
+@export_category("Negligência")
+@export_range(1.0, 3600.0, 1.0) var faint_delay_seconds := 300.0
+@export_range(1.0, 3600.0, 1.0) var neglect_illness_delay_seconds := 180.0
 
 @export_category("Sono")
 @export_range(0.0, 20.0, 0.1) var sleep_energy_recovery_per_second := 6.0
@@ -145,6 +167,12 @@ func prepare_development_state() -> void:
 	special_need = &""
 	special_need_wish = &""
 	poop_visible = false
+	poop_count = 0
+	digestion_remaining_seconds = 0.0
+	simulated_day_elapsed_seconds = 0.0
+	is_fainted = false
+	_severe_neglect_elapsed = 0.0
+	_last_meal_day_hour = -1.0
 	hunger = 80.0
 	energy = 100.0
 	mood = 100.0
@@ -169,13 +197,18 @@ func prepare_development_state() -> void:
 	illness_changed.emit(false)
 	attention_changed.emit(false, &"")
 	poop_state_changed.emit(false)
+	poop_count_changed.emit(0)
+	faint_state_changed.emit(false)
 
 func begin_newborn_tutorial() -> void:
 	newborn_tutorial_active = true
 	newborn_tutorial_step = &"feed"
 	newborn_tutorial_fed = false
-	hunger = 20.0
-	energy = 30.0
+	digestion_remaining_seconds = 0.0
+	_set_poop_visible(false)
+	# O recém-nascido demonstra necessidades reais, sem começar em estado crítico.
+	hunger = 35.0
+	energy = 25.0
 	_clamp_values()
 	_emit_all_state()
 	newborn_tutorial_step_changed.emit(newborn_tutorial_step, get_newborn_tutorial_message())
@@ -186,9 +219,11 @@ func is_newborn_tutorial_active() -> bool:
 func get_newborn_tutorial_message() -> String:
 	match newborn_tutorial_step:
 		&"feed":
-			return "A fome está baixa. Escolha uma comida."
+			return "Parece que ele acordou com fome..."
 		&"sleep":
-			return "A energia caiu. Deixe o pet dormir."
+			return "Agora ele está sonolento. Talvez seja hora de descansar."
+		&"clean":
+			return "Depois da digestão, chegou a hora de limpar o ambiente."
 		&"complete":
 			return "Novo jogo disponível: Jogo da Velha"
 	return ""
@@ -199,6 +234,13 @@ func _set_newborn_tutorial_step(step: StringName) -> void:
 
 func _process(delta: float) -> void:
 	if delta <= 0.0:
+		return
+	_update_daily_cycle(delta)
+	_update_digestion(delta)
+	_update_neglect_state(delta)
+	if is_fainted:
+		if is_sleeping:
+			_process_sleep(delta)
 		return
 	if is_sleeping:
 		_process_sleep(delta)
@@ -214,6 +256,57 @@ func _process(delta: float) -> void:
 		_update_special_need(delta)
 		_update_behavior_event(delta)
 
+func _update_daily_cycle(delta: float) -> void:
+	if simulated_day_duration_seconds <= 0.0:
+		return
+	var previous_elapsed := simulated_day_elapsed_seconds
+	simulated_day_elapsed_seconds = fposmod(simulated_day_elapsed_seconds + delta, simulated_day_duration_seconds)
+	if simulated_day_elapsed_seconds < previous_elapsed:
+		_last_meal_day_hour = -1.0
+
+func get_simulated_hour() -> float:
+	if simulated_day_duration_seconds <= 0.0:
+		return 0.0
+	return simulated_day_elapsed_seconds / simulated_day_duration_seconds * 24.0
+
+func apply_offline_elapsed(elapsed_seconds: float) -> void:
+	var elapsed := clampf(elapsed_seconds, 0.0, simulated_day_duration_seconds)
+	if elapsed <= 0.0:
+		return
+	_update_daily_cycle(elapsed)
+	_update_digestion(elapsed)
+	if is_sleeping:
+		_process_sleep(elapsed)
+	elif decay_enabled:
+		_apply_decay(elapsed)
+	_update_neglect_state(elapsed)
+	_update_illness(elapsed)
+	_refresh_attention_after_action()
+
+func _update_digestion(delta: float) -> void:
+	if digestion_remaining_seconds <= 0.0:
+		return
+	digestion_remaining_seconds = maxf(0.0, digestion_remaining_seconds - delta)
+	if digestion_remaining_seconds <= 0.0:
+		_add_poop()
+
+func _update_neglect_state(delta: float) -> void:
+	var severely_neglected := hunger <= 20.0 or energy <= 20.0 or health <= 20.0
+	if severely_neglected:
+		_severe_neglect_elapsed += delta
+		if not is_sick and _severe_neglect_elapsed >= neglect_illness_delay_seconds:
+			_set_illness(true)
+		if not is_fainted and _severe_neglect_elapsed >= faint_delay_seconds:
+			is_fainted = true
+			is_sleeping = false
+			faint_state_changed.emit(true)
+			_emit_all_state()
+	else:
+		_severe_neglect_elapsed = 0.0
+		if is_fainted and hunger > 30.0 and energy > 30.0 and health > 30.0:
+			is_fainted = false
+			faint_state_changed.emit(false)
+
 func _process_sleep(delta: float) -> void:
 	energy += sleep_energy_recovery_per_second * delta
 	mood += sleep_mood_recovery_per_second * delta
@@ -223,7 +316,7 @@ func _process_sleep(delta: float) -> void:
 		is_sleeping = false
 		sleep_state_changed.emit(false)
 		if newborn_tutorial_active and newborn_tutorial_step == &"sleep":
-			call_deferred("_complete_newborn_tutorial")
+			digestion_remaining_seconds = minf(digestion_remaining_seconds, 4.0) if digestion_remaining_seconds > 0.0 else 4.0
 	_emit_all_state()
 
 func _update_behavior_event(delta: float) -> void:
@@ -253,7 +346,7 @@ func _apply_behavior_event(event_id: StringName, system_message: String, pet_mes
 			mood += 4.0
 			audacity += 5.0
 			obedience -= 3.0
-			_set_poop_visible(true)
+			_add_poop()
 		&"desafio":
 			mood -= 3.0
 			audacity += 4.0
@@ -291,8 +384,9 @@ func _update_special_need(delta: float) -> void:
 
 func _apply_decay(elapsed: float) -> void:
 	var effective_multiplier := decay_multiplier * _get_resistance_factor()
-	hunger -= hunger_decay * effective_multiplier * elapsed
-	energy -= energy_decay * effective_multiplier * elapsed
+	var day_seconds := maxf(1.0, simulated_day_duration_seconds)
+	hunger -= hunger_loss_per_day / day_seconds * effective_multiplier * elapsed
+	energy -= energy_loss_per_day / day_seconds * effective_multiplier * elapsed
 	mood -= mood_decay * effective_multiplier * elapsed
 	hygiene -= hygiene_decay * effective_multiplier * elapsed
 	discipline -= discipline_decay * effective_multiplier * elapsed
@@ -341,15 +435,28 @@ func _evaluate_attention_reason() -> StringName:
 		return &""
 	if is_sick:
 		return &"doenca"
-	if hunger <= critical_hunger_threshold:
+	if health < 30.0:
+		return &"saude"
+	if hunger < 50.0 or _is_meal_routine_overdue():
 		return &"fome"
-	if energy <= critical_energy_threshold:
+	if energy < 30.0:
 		return &"sono"
-	if mood <= critical_mood_threshold:
+	if mood < 30.0:
 		return &"humor"
 	if hygiene <= critical_hygiene_threshold:
 		return &"higiene"
 	return &""
+
+func _is_meal_routine_overdue() -> bool:
+	var hour := get_simulated_hour()
+	var expected_meal_hour := -1.0
+	for routine_hour in [breakfast_hour, lunch_hour, dinner_hour]:
+		if hour >= routine_hour:
+			expected_meal_hour = routine_hour
+	if expected_meal_hour < 0.0:
+		return false
+	# Uma refeição feita até duas horas antes conta para a rotina daquele período.
+	return _last_meal_day_hour < expected_meal_hour - 2.0
 
 func _register_care_mistake() -> void:
 	missed_calls += 1
@@ -368,6 +475,8 @@ func get_action_check(action: StringName) -> Dictionary:
 		"system_message": "",
 		"pet_message": "",
 	}
+	if is_fainted and action not in [&"fruta_estelar", &"nectar_cosmico", &"banquete_nebulosa", &"dar_remedio", &"dormir"]:
+		return _action_refusal(&"desmaio", "PET DESMAIADO: CUIDADOS URGENTES", "...")
 	if action.is_empty():
 		return _action_refusal(&"acao_invalida", "AÇÃO INDISPONÍVEL", "Não encontrei essa ação.")
 	if is_sleeping:
@@ -397,8 +506,6 @@ func get_action_check(action: StringName) -> Dictionary:
 	if action in [&"batalhar", &"batalha_exploracao"]:
 		if health < BATTLE_MIN_HEALTH:
 			return _action_refusal(&"saude_batalha", "BATALHA RECUSADA: SAÚDE ABAIXO DE %d%%" % roundi(BATTLE_MIN_HEALTH), "Minha saúde está baixa demais para explorar.")
-		if energy < BATTLE_MIN_ENERGY:
-			return _action_refusal(&"energia_batalha", "BATALHA RECUSADA: ENERGIA ABAIXO DE %d%%" % roundi(BATTLE_MIN_ENERGY), "Preciso dormir antes de enfrentar um Eco.")
 	if action == &"dormir" and energy >= SLEEP_REFUSAL_ENERGY:
 		return _action_refusal(&"energia_cheia", "SONO RECUSADO: ENERGIA JÁ ESTÁ EM %d%%" % roundi(energy), "Estou superelétrico; ainda não preciso dormir.")
 	return accepted
@@ -528,9 +635,11 @@ func _advance_newborn_tutorial(action: StringName) -> void:
 	if newborn_tutorial_step == &"feed" and is_food_action and hunger >= NEWBORN_TUTORIAL_FEED_TARGET:
 		newborn_tutorial_fed = true
 		_set_newborn_tutorial_step(&"sleep")
+	elif newborn_tutorial_step == &"clean" and action in [&"limpar", &"limpar_sujeira"]:
+		_complete_newborn_tutorial()
 
 func _complete_newborn_tutorial() -> void:
-	if not newborn_tutorial_active or newborn_tutorial_step != &"sleep" or not newborn_tutorial_fed:
+	if not newborn_tutorial_active or newborn_tutorial_step != &"clean" or not newborn_tutorial_fed:
 		return
 	newborn_tutorial_active = false
 	_set_newborn_tutorial_step(&"complete")
@@ -560,10 +669,33 @@ func _clear_special_need_if_completed(action: StringName) -> void:
 		special_need_changed.emit(&"", &"", false)
 
 func _set_poop_visible(value: bool) -> void:
-	if poop_visible == value:
+	var next_count := maxi(1, poop_count) if value else 0
+	var visibility_changed := poop_visible != value
+	var count_changed := poop_count != next_count
+	poop_count = next_count
+	poop_visible = poop_count > 0
+	if visibility_changed:
+		poop_state_changed.emit(poop_visible)
+	if count_changed:
+		poop_count_changed.emit(poop_count)
+	if poop_visible and newborn_tutorial_active and newborn_tutorial_step == &"sleep":
+		_set_newborn_tutorial_step(&"clean")
+
+func _add_poop() -> void:
+	if poop_count >= 6:
 		return
-	poop_visible = value
-	poop_state_changed.emit(poop_visible)
+	var was_visible := poop_visible
+	poop_count += 1
+	poop_visible = true
+	hygiene -= 8.0
+	mood -= 1.0
+	_clamp_values()
+	if not was_visible:
+		poop_state_changed.emit(true)
+	poop_count_changed.emit(poop_count)
+	_emit_all_state()
+	if newborn_tutorial_active and newborn_tutorial_step == &"sleep":
+		_set_newborn_tutorial_step(&"clean")
 
 func _apply_food(hunger_gain: float, mood_gain: float, health_gain: float, weight_gain: float) -> void:
 	if hunger >= 94.0:
@@ -571,14 +703,13 @@ func _apply_food(hunger_gain: float, mood_gain: float, health_gain: float, weigh
 		mood -= 2.0
 	else:
 		meals_served += 1
-		_meals_since_poop += 1
-		if _meals_since_poop >= 3:
-			_meals_since_poop = 0
-			_set_poop_visible(true)
 		hunger += hunger_gain
 		mood += mood_gain
 		health += health_gain
 		weight += weight_gain
+		_last_meal_day_hour = get_simulated_hour()
+		if hunger >= 90.0 or newborn_tutorial_active:
+			digestion_remaining_seconds = 4.0 if newborn_tutorial_active else digestion_duration_seconds
 
 func _apply_game(mood_gain: float, energy_cost: float, hunger_cost: float) -> void:
 	games_played += 1
@@ -638,14 +769,20 @@ func get_needs_snapshot() -> Dictionary:
 		"discipline": discipline,
 		"obedience": obedience,
 		"audacity": audacity,
+		"is_fainted": is_fainted,
+		"simulated_hour": get_simulated_hour(),
+		"digestion_remaining_seconds": digestion_remaining_seconds,
 		"weight": weight,
 		"is_sick": is_sick,
 		"is_sleeping": is_sleeping,
 		"poop_visible": poop_visible,
+		"poop_count": poop_count,
 		"special_need": special_need,
 		"special_need_wish": special_need_wish,
 		"attention_active": not attention_reason.is_empty(),
 		"attention_reason": attention_reason,
+		"physical_multiplier": get_care_attribute_multiplier(&"forca"),
+		"mental_multiplier": get_care_attribute_multiplier(&"agilidade"),
 		"missed_calls": missed_calls,
 		"care_mistakes": care_mistakes,
 		"discipline_mistakes": discipline_mistakes,
@@ -657,6 +794,7 @@ func get_attention_message() -> String:
 		&"fome": return "O PET ESTÁ COM FOME"
 		&"sono": return "O PET ESTÁ COM SONO"
 		&"humor": return "O PET QUER BRINCAR"
+		&"saude": return "A SAÚDE DO PET PRECISA DE ATENÇÃO"
 		&"higiene": return "O PET PRECISA DE CUIDADOS"
 		&"doenca": return "O PET PRECISA DE REMÉDIO"
 	return ""
@@ -671,6 +809,31 @@ func get_resistance_value() -> float:
 func _get_resistance_factor() -> float:
 	var reduction := clampf(get_resistance_value() / 100.0 * resistance_decay_reduction, 0.0, 0.75)
 	return 1.0 - reduction
+
+## Multiplicador temporário de desempenho. Nunca reduz um atributo efetivo abaixo de 20%.
+func get_care_attribute_multiplier(attribute: StringName) -> float:
+	var condition := 100.0
+	match attribute:
+		&"forca", &"defesa": condition = hunger
+		&"agilidade", &"inteligencia": condition = energy
+		_: return 1.0
+	if condition >= 80.0:
+		return lerpf(1.0, 1.15, (condition - 80.0) / 20.0)
+	if condition >= 50.0:
+		return 1.0
+	return clampf(lerpf(MIN_EFFECTIVE_ATTRIBUTE_RATIO, 1.0, condition / 50.0), MIN_EFFECTIVE_ATTRIBUTE_RATIO, 1.0)
+
+func get_order_accuracy_modifier() -> float:
+	var obedience_modifier := remap(clampf(obedience, 0.0, 100.0), 0.0, 100.0, -0.16, 0.06)
+	var tired_modifier := remap(clampf(energy, 0.0, 50.0), 0.0, 50.0, -0.25, 0.0) if energy < 50.0 else 0.0
+	var audacity_penalty := -remap(clampf(audacity, 50.0, 100.0), 50.0, 100.0, 0.0, 0.10) if audacity > 50.0 else 0.0
+	return obedience_modifier + tired_modifier + audacity_penalty
+
+func get_risk_power_multiplier() -> float:
+	return remap(clampf(audacity, 0.0, 100.0), 0.0, 100.0, 0.95, 1.18)
+
+func get_risk_critical_bonus() -> float:
+	return remap(clampf(audacity, 0.0, 100.0), 0.0, 100.0, 0.0, 0.12)
 
 func _get_critical_count() -> int:
 	var count := 0

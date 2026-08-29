@@ -1,4 +1,6 @@
-# 🌌 AuroraPet Wiki
+# 🌌 AuroraPet Wiki Histórica
+
+> **Aviso:** este arquivo preserva a documentação anterior para consulta e comparação. A referência oficial atual é [`docs/design/WIKI_CANONICA_AURORAPET.md`](docs/design/WIKI_CANONICA_AURORAPET.md).
 
 > Wiki-base oficial do projeto AuroraPet, construída a partir do estado real do repositório e do protótipo Godot.
 

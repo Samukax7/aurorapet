@@ -41,7 +41,7 @@ const TECHNIQUE_DEFINITIONS: Dictionary = {
 	&"corte_bifurcado": {"en_cost": 24, "power": 28, "accuracy": 0.76},
 }
 const ULTIMATE_DEFINITION: Dictionary = {"en_cost": 0, "power": 34, "accuracy": 0.78}
-const DEV_SPECIAL_DEFINITION: Dictionary = {"en_cost": 0, "power": 52, "accuracy": 0.98}
+const DEV_SPECIAL_DEFINITION: Dictionary = {"en_cost": 0, "power": 9999, "accuracy": 1.0}
 const ACTION_LABELS: Dictionary = {
 	&"golpes": "ATAQUE",
 	&"tecnica": "S. ATTACK",
@@ -335,6 +335,9 @@ func _start_battle() -> void:
 	if _pet_stats != null and _pet_stats.is_sleeping:
 		_add_log("PET ESTÁ DORMINDO")
 		return
+	if _pet_stats != null and _pet_stats.is_fainted:
+		_add_log("PET ESTÁ DESMAIADO • CUIDADOS URGENTES")
+		return
 	phase = &"intro"
 	battle_step = &"resolving"
 	battle_over = false
@@ -351,6 +354,10 @@ func _start_battle() -> void:
 	lane_cursor = 1
 	battle_turn = 1
 	battle_logs.clear()
+	if _pet_stats != null and _pet_stats.hunger < 50.0:
+		_add_log("PET HESITA: FOME REDUZ FORÇA E DEFESA")
+	if _pet_stats != null and _pet_stats.energy < 30.0:
+		_add_log("PET SONOLENTO: PRECISÃO E AGILIDADE REDUZIDAS")
 	_last_d20 = 0
 	ultimate_energy_used = 0
 	current_attack_lanes.clear()
@@ -518,33 +525,43 @@ func _resolve_player_action() -> void:
 	_play_stage_animation(&"player", &"attack_charged" if action in TECHNIQUE_ACTIONS or action == DEV_SPECIAL_ACTION or action == &"golpe_forte" else &"attack_basic")
 	var d20 := _roll_d20()
 
-	var accuracy := clampf(float(technique.get("accuracy", skill.get("accuracy", 0.82))) + float(_get_attribute(&"agilidade", 10) - 10) * 0.005, 0.45, 0.98)
-	if d20 <= 2 or (d20 != 20 and _rng.randf() > accuracy):
+	var care_accuracy_modifier := _pet_stats.get_order_accuracy_modifier() if _pet_stats != null else 0.0
+	var mental_accuracy_bonus := float(_get_attribute(&"inteligencia", 10) - 10) * 0.003 if action in TECHNIQUE_ACTIONS else 0.0
+	var accuracy := clampf(float(technique.get("accuracy", skill.get("accuracy", 0.82))) + float(_get_attribute(&"agilidade", 10) - 10) * 0.005 + mental_accuracy_bonus + care_accuracy_modifier, 0.20, 0.98)
+	var dev_instant_kill := development_mode and action == DEV_SPECIAL_ACTION
+	if not dev_instant_kill and (d20 <= 2 or (d20 != 20 and _rng.randf() > accuracy)):
 		ultimate_energy_used = 0
 		_add_log("PET ATACA • %s • FALHOU" % String(ACTION_LABELS.get(action, action)))
 		_update_battle_ui()
 		_queue_enemy_turn()
 		return
 	var power := int(technique.get("power", skill.get("power", 12)))
+	var risk_critical := _pet_stats != null and _rng.randf() < _pet_stats.get_risk_critical_bonus()
+	var is_critical := d20 == 20 or risk_critical
 	var attack_lanes := _get_attack_lanes(action, player_attack_lane)
 	current_attack_lanes = attack_lanes.duplicate()
 	var total_damage := 0
-	for lane in attack_lanes:
-		var lane_bonus := _lane_multiplier(lane, enemy_defense_lane)
-		var lane_power := power
-		if ultimate:
-			var energy_ratio := clampf(float(ultimate_energy_used) / float(maxi(1, player_max_en)), 0.0, 1.0)
-			lane_power = int(float(power) * (1.0 + energy_ratio * ULTIMATE_ENERGY_SCALE))
-		var damage := _calculate_player_hit_damage(lane_power, lane_bonus)
-		if d20 == 20:
-			damage = int(float(damage) * 1.50)
-		total_damage += damage
+	if dev_instant_kill:
+		total_damage = enemy_hp
+		enemy_guarding = false
+		_add_log("INSTANT KILL DEV â€¢ LUTA ENCERRADA EM UM GOLPE")
+	else:
+		for lane in attack_lanes:
+			var lane_bonus := _lane_multiplier(lane, enemy_defense_lane)
+			var lane_power := power
+			if ultimate:
+				var energy_ratio := clampf(float(ultimate_energy_used) / float(maxi(1, player_max_en)), 0.0, 1.0)
+				lane_power = int(float(power) * (1.0 + energy_ratio * ULTIMATE_ENERGY_SCALE))
+			var damage := _calculate_player_hit_damage(lane_power, lane_bonus)
+			if is_critical:
+				damage = int(float(damage) * 1.50)
+			total_damage += damage
 	if enemy_guarding:
 		total_damage = maxi(2, int(float(total_damage) * 0.40))
 		enemy_guarding = false
 		_add_log("ECO EM GUARDA • DANO REDUZIDO")
 	enemy_hp = maxi(0, enemy_hp - total_damage)
-	_play_move_effect(action, d20 == 20, attack_lanes)
+	_play_move_effect(action, is_critical, attack_lanes)
 	if total_damage > 0:
 		_play_stage_animation(&"enemy", &"hurt")
 	if ultimate:
@@ -554,11 +571,11 @@ func _resolve_player_action() -> void:
 		_add_log("PET ATACA • %s • %d IMPACTO(S) • -%d HP" % [String(ACTION_LABELS.get(action, action)), attack_lanes.size(), total_damage])
 	if attack_lanes.size() > 1:
 		_add_log("TRAJETÓRIA MÚLTIPLA • %s" % _lanes_as_text(attack_lanes))
-	if d20 == 20:
-		_add_log("D20: 20 • CRÍTICO")
+	if is_critical:
+		_add_log("%s • CRÍTICO" % ("D20: 20" if d20 == 20 else "OUSADIA"))
 	if action == &"golpe_status":
 		enemy_weakened = true
-		enemy_status_turns = 2 if d20 == 20 else 1
+		enemy_status_turns = 2 if is_critical else 1
 		_add_log("ECO ENFRAQUECIDO")
 	_update_battle_ui()
 	if enemy_hp <= 0:
@@ -587,6 +604,8 @@ func _get_attack_lanes(action: StringName, selected_lane: int) -> Array[int]:
 
 func _calculate_player_hit_damage(power: int, lane_bonus: float) -> int:
 	var multiplier := _faction_multiplier(_player_faction(), enemy_faction)
+	if _pet_stats != null:
+		multiplier *= _pet_stats.get_risk_power_multiplier()
 	return maxi(4, int(float((_get_attribute(&"forca", 10) + (_pet_skills.level if _pet_skills != null else 1)) * power) / float(enemy_defense * 0.7 + 10.0) * multiplier * lane_bonus))
 
 func _lanes_as_text(lanes: Array[int]) -> String:
@@ -1016,13 +1035,16 @@ func _is_action_available(action: StringName) -> bool:
 func _get_attribute(attribute: StringName, fallback: int) -> int:
 	if _pet_skills == null:
 		return fallback
+	var base_value := fallback
 	match attribute:
-		&"forca": return _pet_skills.strength
-		&"defesa": return _pet_skills.defense
-		&"agilidade": return _pet_skills.agility
-		&"inteligencia": return _pet_skills.intelligence
+		&"forca": base_value = _pet_skills.strength
+		&"defesa": base_value = _pet_skills.defense
+		&"agilidade": base_value = _pet_skills.agility
+		&"inteligencia": base_value = _pet_skills.intelligence
 		&"resistencia": return _pet_skills.resistance
-	return fallback
+	if _pet_stats == null:
+		return base_value
+	return maxi(1, roundi(float(base_value) * _pet_stats.get_care_attribute_multiplier(attribute)))
 
 func _get_pet_name() -> String:
 	return _pet_identity.pet_name if _pet_identity != null and not _pet_identity.pet_name.is_empty() else "AURORAPET"

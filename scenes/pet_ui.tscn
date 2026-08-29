@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://qkyveockai3" path="res://assets/UI/submenus/fruta_estelar.png" id="7_fruta"]
 [ext_resource type="Texture2D" uid="uid://b0bnerxapvt33" path="res://assets/UI/submenus/nectar_cosmico.png" id="8_nectar"]
 [ext_resource type="Texture2D" uid="uid://qdtywqmvxefl" path="res://assets/UI/submenus/banquete_nebulosa.png" id="9_banquete"]
+[ext_resource type="Texture2D" path="res://assets/UI/status/coco.png" id="10_coco"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_StatusTrack"]
 content_margin_left = 4.0
@@ -723,28 +724,59 @@ vertical_alignment = 1
 autowrap_mode = 2
 clip_text = true
 
-[node name="PoopMarker" type="Panel" parent="." unique_id=1006983416]
+[node name="PoopMarker" type="GridContainer" parent="." unique_id=1006983416]
 z_index = 8
 layout_mode = 0
-offset_left = 640.0
-offset_top = 446.0
-offset_right = 697.92175
-offset_bottom = 481.09204
+offset_left = 626.0
+offset_top = 416.0
+offset_right = 712.0
+offset_bottom = 482.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBox_NeedIndicator")
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+columns = 3
 
-[node name="Label" type="Label" parent="PoopMarker" unique_id=829203607]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.58, 0.3, 0.13, 1)
-theme_override_font_sizes/font_size = 27
-text = "●"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="Poop1" type="TextureRect" parent="PoopMarker"]
+custom_minimum_size = Vector2(26, 30)
+layout_mode = 2
+texture = ExtResource("10_coco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Poop2" type="TextureRect" parent="PoopMarker"]
+custom_minimum_size = Vector2(26, 30)
+layout_mode = 2
+texture = ExtResource("10_coco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Poop3" type="TextureRect" parent="PoopMarker"]
+custom_minimum_size = Vector2(26, 30)
+layout_mode = 2
+texture = ExtResource("10_coco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Poop4" type="TextureRect" parent="PoopMarker"]
+custom_minimum_size = Vector2(26, 30)
+layout_mode = 2
+texture = ExtResource("10_coco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Poop5" type="TextureRect" parent="PoopMarker"]
+custom_minimum_size = Vector2(26, 30)
+layout_mode = 2
+texture = ExtResource("10_coco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Poop6" type="TextureRect" parent="PoopMarker"]
+custom_minimum_size = Vector2(26, 30)
+layout_mode = 2
+texture = ExtResource("10_coco")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="SpecialNeedIndicator" type="Panel" parent="." unique_id=1022012923]
 visible = false

@@ -21,7 +21,7 @@ signal submenu_visibility_changed(visible: bool, category: StringName)
 @export_range(0, 2, 1) var submenu_selected_index := 0
 
 @export_category("Status")
-@export var status_visible := true
+@export var status_visible := false
 @export_range(0.0, 100.0, 1.0) var hunger := 82.0
 @export_range(0.0, 100.0, 1.0) var energy := 76.0
 @export_range(0.0, 100.0, 1.0) var mood := 68.0
@@ -72,6 +72,7 @@ var _system_message_label: Label
 var _pet_message_bubble: Panel
 var _pet_message_label: Label
 var _poop_marker: Control
+var _poop_count := 0
 var _special_need_indicator: Control
 var _special_need_icon: Label
 var _special_need_wish_icon: Label
@@ -82,6 +83,8 @@ var _system_message_token := 0
 var _pet_message_token := 0
 var _sleeping := false
 var _special_need_active := false
+var _attention_active := false
+var _attention_reason: StringName = &""
 var _glow_materials: Array[ShaderMaterial] = []
 var _glow_tween: Tween
 var _selected_bob_tween: Tween
@@ -90,6 +93,17 @@ var _selected_bob_base_y := 0.0
 var _selection_frame: Panel
 var _pet_skills: PetSkills
 var _world_progression: AuroraPetSave
+var _status_page: Panel
+var _status_page_title: Label
+var _status_page_identity: Label
+var _status_page_body: Label
+var _status_page_stats: Label
+var _status_page_level: Label
+var _status_page_weight: Label
+var _identity_snapshot: Dictionary = {}
+var _needs_snapshot: Dictionary = {}
+var _status_page_bars: Array[ProgressBar] = []
+var _status_page_progress: Label
 
 func _ready() -> void:
 	_cache_menu_nodes()
@@ -98,6 +112,7 @@ func _ready() -> void:
 	_refresh_selection()
 	call_deferred("_update_selection_frame")
 	_refresh_status_bars()
+	_create_status_page()
 	_set_menu_visibility(menu_visible)
 	_set_status_visibility(status_visible)
 	_set_submenu_visibility(submenu_visible)
@@ -166,6 +181,14 @@ func _connect_menu_buttons() -> void:
 func set_progression_source(skills: PetSkills) -> void:
 	_pet_skills = skills
 	refresh_progression_locks()
+	_refresh_status_page()
+
+func set_identity_snapshot(identity: Dictionary) -> void:
+	_identity_snapshot = identity.duplicate(true)
+	if _status_page_identity == null:
+		return
+	_status_page_identity.text = "NOME: %s\nCÓDIGO: %s\nFACÇÃO: %s  •  LINHAGEM: %s  •  ELEMENTO: %s" % [str(identity.get("name", "—")).to_upper(), str(identity.get("access_code", "—")), str(identity.get("faction_label", "—")).to_upper(), str(identity.get("lineage_label", "—")).to_upper(), str(identity.get("element", "—")).to_upper()]
+	_refresh_status_page()
 
 func set_world_progression(world: AuroraPetSave) -> void:
 	_world_progression = world
@@ -305,6 +328,7 @@ func set_status_visibility(value: bool) -> void:
 	status_visibility_changed.emit(value)
 
 func set_needs_summary(snapshot: Dictionary) -> void:
+	_needs_snapshot = snapshot.duplicate(true)
 	if _needs_summary_label == null:
 		return
 	var hygiene_value := roundi(float(snapshot.get("hygiene", 0.0)))
@@ -315,6 +339,7 @@ func set_needs_summary(snapshot: Dictionary) -> void:
 	var illness := "  •  DOENTE" if bool(snapshot.get("is_sick", false)) else ""
 	var sleeping := "  •  DORMINDO" if bool(snapshot.get("is_sleeping", false)) else ""
 	_needs_summary_label.text = "HIGIENE %d%%  •  DISCIPLINA %d%%  •  PESO %d\nOBEDIÊNCIA %d%%  •  OUSADIA %d%%%s%s" % [hygiene_value, discipline_value, weight_value, obedience_value, audacity_value, illness, sleeping]
+	_refresh_status_page()
 
 func set_status(status: StringName, value: float) -> void:
 	var safe_value := clampf(value, 0.0, 100.0)
@@ -327,6 +352,7 @@ func set_status(status: StringName, value: float) -> void:
 			push_warning("Status desconhecido: %s" % status)
 			return
 	_refresh_status_bars()
+	_refresh_status_page()
 
 func set_status_values(new_hunger: float, new_energy: float, new_mood: float, new_health: float) -> void:
 	hunger = clampf(new_hunger, 0.0, 100.0)
@@ -334,6 +360,7 @@ func set_status_values(new_hunger: float, new_energy: float, new_mood: float, ne
 	mood = clampf(new_mood, 0.0, 100.0)
 	health = clampf(new_health, 0.0, 100.0)
 	_refresh_status_bars()
+	_refresh_status_page()
 
 func show_progression_message(message: String) -> void:
 	show_system_message(message)
@@ -390,20 +417,51 @@ func get_special_need_message(need: StringName, wish: StringName) -> String:
 	return "ESTOU QUERENDO ALGO..."
 
 func set_poop_visible(value: bool) -> void:
-	if _poop_marker != null:
-		_poop_marker.visible = value
+	set_poop_count(maxi(1, _poop_count) if value else 0)
+
+func set_poop_count(value: int) -> void:
+	_poop_count = clampi(value, 0, 6)
+	if _poop_marker == null:
+		return
+	_poop_marker.visible = _poop_count > 0
+	for index in _poop_marker.get_child_count():
+		var icon := _poop_marker.get_child(index) as CanvasItem
+		if icon != null:
+			icon.visible = index < _poop_count
 
 func set_special_need(need: StringName, wish: StringName, active: bool) -> void:
 	_special_need_active = active
 	if _special_need_icon != null:
 		_special_need_icon.text = "!"
 	if _special_need_wish_icon != null:
-		_special_need_wish_icon.text = "✦" if wish == &"jogo_da_velha" else "▲"
+		if active:
+			_special_need_wish_icon.text = "✦" if wish == &"jogo_da_velha" else "▲"
+		else:
+			_special_need_wish_icon.text = _attention_short_label(_attention_reason) if _attention_active else ""
 	_refresh_special_need_visibility()
+
+func set_attention_need(reason: StringName, active: bool) -> void:
+	_attention_active = active
+	_attention_reason = reason if active else &""
+	if _special_need_icon != null:
+		_special_need_icon.text = "!"
+	if _special_need_wish_icon != null and not _special_need_active:
+		_special_need_wish_icon.text = _attention_short_label(reason) if active else ""
+	_refresh_special_need_visibility()
+	_refresh_selection()
+
+func _attention_short_label(reason: StringName) -> String:
+	match reason:
+		&"fome": return "FO"
+		&"sono": return "EN"
+		&"humor": return "HU"
+		&"saude", &"doenca": return "SA"
+		&"higiene": return "HI"
+	return "!"
 
 func _refresh_special_need_visibility() -> void:
 	if _special_need_indicator != null:
-		_special_need_indicator.visible = _special_need_active and not submenu_visible
+		_special_need_indicator.visible = (_special_need_active or _attention_active) and not submenu_visible
 
 func set_sleeping(value: bool) -> void:
 	_sleeping = value
@@ -449,6 +507,8 @@ func _refresh_selection() -> void:
 		var label := slot.get_node_or_null(^"Label") as Label
 		if label != null:
 			label.text = String(action).to_upper() if unlocked else String(action).to_upper() + "\nNÍVEL " + str(_pet_skills.get_unlock_level(action) if _pet_skills != null else 1)
+			if _attention_active and action == _attention_menu_category(_attention_reason):
+				label.text += "  !"
 		if _selection_label != null:
 			var selected_action := ACTIONS[selected_index]
 			_selection_label.text = String(selected_action).to_upper() if _is_category_unlocked(selected_action) else _unlock_message(selected_action)
@@ -456,6 +516,13 @@ func _refresh_selection() -> void:
 	_start_selected_bob()
 	_pulse_selected_glow()
 	selection_changed.emit(ACTIONS[selected_index])
+
+func _attention_menu_category(reason: StringName) -> StringName:
+	match reason:
+		&"fome": return &"comer"
+		&"humor": return &"jogar"
+		&"sono", &"saude", &"doenca", &"higiene": return &"cuidar"
+	return &""
 
 func _update_selection_frame() -> void:
 	if _selection_frame == null or _slots.is_empty():
@@ -557,7 +624,198 @@ func _set_menu_visibility(value: bool) -> void:
 func _set_status_visibility(value: bool) -> void:
 	var status_bar := get_node_or_null(^"StatusBar") as Control
 	if status_bar != null:
-		status_bar.visible = value
+		status_bar.visible = false
+	var action_bar := get_node_or_null(^"ActionBar") as Control
+	if action_bar != null:
+		action_bar.visible = false if value else menu_visible
+	var submenu := get_node_or_null(^"SubmenuOverlay") as Control
+	if submenu != null:
+		submenu.visible = false if value else submenu_visible
+	if _special_need_indicator != null:
+		_special_need_indicator.visible = false if value else _special_need_active
+	if _status_page != null:
+		_status_page.visible = value
+	if value:
+		_refresh_status_page()
+
+func _create_status_page() -> void:
+	if _status_page != null:
+		return
+	_status_page = Panel.new()
+	_status_page.name = "StatusPage"
+	_status_page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_status_page.z_index = 20
+	_status_page.mouse_filter = Control.MOUSE_FILTER_STOP
+	_status_page.add_theme_stylebox_override("panel", _make_box(Color("#06142b"), Color("#2dbde5"), 3, 12))
+	add_child(_status_page)
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 18)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 18)
+	margin.add_theme_constant_override("margin_bottom", 10)
+	_status_page.add_child(margin)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 10)
+	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_child(column)
+	_status_page_title = Label.new()
+	_status_page_title.text = "AURIEL — #06L"
+	_status_page_title.add_theme_color_override("font_color", Color("#ffffff"))
+	_status_page_title.add_theme_font_size_override("font_size", 44)
+	column.add_child(_status_page_title)
+	_status_page_identity = Label.new()
+	_status_page_identity.add_theme_color_override("font_color", Color("#b8c9dc"))
+	_status_page_identity.add_theme_font_size_override("font_size", 27)
+	column.add_child(_status_page_identity)
+	var progression_row := HBoxContainer.new()
+	progression_row.add_theme_constant_override("separation", 8)
+	column.add_child(progression_row)
+	var level_card := _make_status_card("NÍVEL", "1", 175.0)
+	_status_page_level = level_card.get_node(^"Content/Value") as Label
+	progression_row.add_child(level_card)
+	_status_page_progress = Label.new()
+	_status_page_progress.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_page_progress.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_status_page_progress.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_status_page_progress.custom_minimum_size = Vector2(0, 96)
+	_status_page_progress.add_theme_color_override("font_color", Color("#071329"))
+	_status_page_progress.add_theme_font_size_override("font_size", 38)
+	_status_page_progress.add_theme_stylebox_override("normal", _make_box(Color("#f4f1df"), Color.WHITE, 2, 4))
+	progression_row.add_child(_status_page_progress)
+	var weight_card := _make_status_card("PESO", "— kg", 210.0, Color("#14254a"))
+	_status_page_weight = weight_card.get_node(^"Content/Value") as Label
+	progression_row.add_child(weight_card)
+	_status_page_stats = Label.new()
+	_status_page_stats.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_page_stats.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_status_page_stats.custom_minimum_size = Vector2(0, 92)
+	_status_page_stats.add_theme_color_override("font_color", Color("#071329"))
+	_status_page_stats.add_theme_font_size_override("font_size", 27)
+	_status_page_stats.add_theme_stylebox_override("normal", _make_box(Color("#f4f1df"), Color.WHITE, 2, 3))
+	column.add_child(_status_page_stats)
+	var bars := GridContainer.new()
+	bars.columns = 2
+	bars.add_theme_constant_override("h_separation", 8)
+	bars.add_theme_constant_override("v_separation", 9)
+	bars.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.add_child(bars)
+	var status_colors: Array[Color] = [Color("#ffd166"), Color("#4dd9ff"), Color("#ff78b7"), Color("#69e68a"), Color("#b8794a"), Color("#ff9f43"), Color("#ff4fc3"), Color("#b47cff")]
+	_status_page_bars.clear()
+	for status_index in 8:
+		var status_name: String = ["FOME", "ENERGIA", "HUMOR", "SAÚDE", "HIGIENE", "DISCIPLINA", "OBEDIÊNCIA", "OUSADIA"][status_index]
+		var row := Control.new()
+		row.custom_minimum_size = Vector2(0, 60)
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		var bar := ProgressBar.new()
+		bar.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		bar.show_percentage = false
+		bar.add_theme_stylebox_override("background", _make_box(Color("#111b31"), Color("#f4f1df"), 2, 3))
+		bar.add_theme_stylebox_override("fill", _make_box(status_colors[status_index], status_colors[status_index], 0, 2))
+		row.add_child(bar)
+		var overlay := HBoxContainer.new()
+		overlay.name = "Overlay"
+		overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 7)
+		overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var label := Label.new()
+		label.text = status_name
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.add_theme_color_override("font_color", Color.WHITE)
+		label.add_theme_color_override("font_shadow_color", Color("#071329"))
+		label.add_theme_constant_override("shadow_offset_x", 2)
+		label.add_theme_constant_override("shadow_offset_y", 2)
+		label.add_theme_font_size_override("font_size", 27)
+		overlay.add_child(label)
+		var value_label := Label.new()
+		value_label.name = "Value"
+		value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		value_label.add_theme_color_override("font_color", Color.WHITE)
+		value_label.add_theme_color_override("font_shadow_color", Color("#071329"))
+		value_label.add_theme_font_size_override("font_size", 27)
+		overlay.add_child(value_label)
+		row.add_child(overlay)
+		bars.add_child(row)
+		_status_page_bars.append(bar)
+	_status_page_body = Label.new()
+	_status_page_body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_page_body.add_theme_color_override("font_color", Color("#ffd166"))
+	_status_page_body.add_theme_font_size_override("font_size", 27)
+	column.add_child(_status_page_body)
+	var hint := Label.new()
+	hint.text = "AMARELO: FECHAR STATUS"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.add_theme_color_override("font_color", Color("#ffffff"))
+	hint.add_theme_font_size_override("font_size", 27)
+	column.add_child(hint)
+	_status_page.visible = status_visible
+
+func _make_box(background: Color, border: Color, width: int, radius: int) -> StyleBoxFlat:
+	var box := StyleBoxFlat.new()
+	box.bg_color = background
+	box.border_color = border
+	box.set_border_width_all(width)
+	box.set_corner_radius_all(radius)
+	return box
+
+func _make_status_card(caption: String, value: String, minimum_width: float, background := Color("#f4f1df")) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(minimum_width, 96)
+	card.add_theme_stylebox_override("panel", _make_box(background, Color.WHITE, 2, 4))
+	var content := VBoxContainer.new()
+	content.name = "Content"
+	content.add_theme_constant_override("separation", 0)
+	card.add_child(content)
+	var text_color := Color("#071329") if background.get_luminance() > 0.5 else Color.WHITE
+	var caption_label := Label.new()
+	caption_label.text = caption
+	caption_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caption_label.add_theme_color_override("font_color", text_color)
+	caption_label.add_theme_font_size_override("font_size", 27)
+	content.add_child(caption_label)
+	var value_label := Label.new()
+	value_label.name = "Value"
+	value_label.text = value
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	value_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	value_label.add_theme_color_override("font_color", text_color)
+	value_label.add_theme_font_size_override("font_size", 38)
+	content.add_child(value_label)
+	return card
+
+func _refresh_status_page() -> void:
+	if _status_page == null:
+		return
+	_status_page_identity.text = "RAÇA: —  |  FACÇÃO: —  |  ELEMENTO: —"
+	if not _identity_snapshot.is_empty():
+		_status_page_title.text = "%s — #%s" % [str(_identity_snapshot.get("name", "AURIEL")).to_upper(), str(_identity_snapshot.get("access_code", "06L")).to_upper()]
+		_status_page_identity.text = "RAÇA: %s  |  FACÇÃO: %s  |  ELEMENTO: %s" % [str(_identity_snapshot.get("lineage_label", "—")).to_upper(), str(_identity_snapshot.get("faction_label", "—")).to_upper(), str(_identity_snapshot.get("element", "—")).to_upper()]
+	if not _needs_snapshot.is_empty():
+		_status_page_body.text = "%s%s" % ["DOENTE   " if bool(_needs_snapshot.get("is_sick", false)) else "", "DORMINDO" if bool(_needs_snapshot.get("is_sleeping", false)) else ""]
+	if _status_page_stats != null and _pet_skills != null:
+		var physical_multiplier := float(_needs_snapshot.get("physical_multiplier", 1.0))
+		var mental_multiplier := float(_needs_snapshot.get("mental_multiplier", 1.0))
+		_status_page_stats.text = "FOR %d%s   DEF %d%s   AGI %d%s   INT %d%s" % [roundi(_pet_skills.strength * physical_multiplier), _modifier_marker(physical_multiplier), roundi(_pet_skills.defense * physical_multiplier), _modifier_marker(physical_multiplier), roundi(_pet_skills.agility * mental_multiplier), _modifier_marker(mental_multiplier), roundi(_pet_skills.intelligence * mental_multiplier), _modifier_marker(mental_multiplier)]
+	var values: Array[float] = [hunger, energy, mood, health, float(_needs_snapshot.get("hygiene", 0.0)), float(_needs_snapshot.get("discipline", 0.0)), float(_needs_snapshot.get("obedience", 0.0)), float(_needs_snapshot.get("audacity", 0.0))]
+	for index in mini(values.size(), _status_page_bars.size()):
+		_status_page_bars[index].value = values[index]
+		var value_label := _status_page_bars[index].get_parent().get_node_or_null(^"Overlay/Value") as Label
+		if value_label != null:
+			value_label.text = "%d%%" % roundi(values[index])
+	if _status_page_progress != null and _pet_skills != null:
+		_status_page_progress.text = "XP  %04d" % _pet_skills.total_xp
+		if _status_page_level != null:
+			_status_page_level.text = str(_pet_skills.level)
+		if _status_page_weight != null:
+			_status_page_weight.text = "%.1f kg" % float(_needs_snapshot.get("weight", 0.0))
+
+func _modifier_marker(multiplier: float) -> String:
+	if multiplier > 1.01:
+		return "↑"
+	if multiplier < 0.99:
+		return "↓"
+	return ""
 
 func _set_submenu_visibility(value: bool) -> void:
 	submenu_visible = value

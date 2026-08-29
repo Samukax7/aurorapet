@@ -33,6 +33,7 @@ var _autosave_elapsed := 0.0
 var development_mode := false
 var exploration_battles_completed := 0
 var eva_encounter_battle_counter := 0
+var eva_encounter_refusals := 0
 var eva_encounter_available := false
 var eva_encounter_seen := false
 var eva_adventure_unlocked := false
@@ -101,7 +102,8 @@ func register_exploration_battle(victory: bool) -> void:
 		world_progression_changed.emit()
 		mark_dirty()
 		return
-	if eva_encounter_battle_counter >= 3 and not eva_encounter_available:
+	var trigger_interval := 1 if eva_encounter_refusals >= 3 else 3 * (eva_encounter_refusals + 1)
+	if eva_encounter_battle_counter >= trigger_interval and not eva_encounter_available:
 		eva_encounter_battle_counter = 0
 		eva_encounter_available = true
 		eva_encounter_ready.emit()
@@ -126,6 +128,9 @@ func mark_eva_encounter_seen() -> void:
 	eva_encounter_seen = true
 	eva_encounter_available = false
 	eva_encounter_battle_counter = 0
+	eva_encounter_refusals += 1
+	if development_mode:
+		_dev_force_eva_encounter = true
 	unlock_exploration_island(&"crystal_forest")
 	world_progression_changed.emit()
 	mark_dirty()
@@ -208,6 +213,9 @@ func load_now() -> bool:
 	_restore_identity(identity_data)
 	_restore_skills(data.get("skills", {}))
 	_restore_stats(data.get("stats", {}))
+	if pet_stats != null:
+		var saved_at := float(data.get("saved_at", Time.get_unix_time_from_system()))
+		pet_stats.apply_offline_elapsed(Time.get_unix_time_from_system() - saved_at)
 	_restore_evolution(data.get("evolution", {}))
 	_restore_randomizer(data.get("appearance", {}))
 	_restore_world(data.get("world", {}))
@@ -353,7 +361,7 @@ func _build_payload() -> Dictionary:
 	elif batalha_exploracao != null:
 		points = batalha_exploracao.get_exploration_points()
 	return {
-		"version": 3,
+		"version": 4,
 		"saved_at": Time.get_unix_time_from_system(),
 		"identity": _serialize_identity(),
 		"stats": _serialize_stats(),
@@ -363,7 +371,8 @@ func _build_payload() -> Dictionary:
 		"world": {
 				"exploration_points": points,
 	"exploration_battles_completed": exploration_battles_completed,
-					"eva_encounter_battle_counter": eva_encounter_battle_counter,
+				"eva_encounter_battle_counter": eva_encounter_battle_counter,
+				"eva_encounter_refusals": eva_encounter_refusals,
 					"eva_encounter_available": eva_encounter_available,
 				"eva_encounter_seen": eva_encounter_seen,
 				"eva_adventure_unlocked": eva_adventure_unlocked,
@@ -435,6 +444,12 @@ func _serialize_stats() -> Dictionary:
 		"special_need": String(pet_stats.special_need),
 		"special_need_wish": String(pet_stats.special_need_wish),
 		"poop_visible": pet_stats.poop_visible,
+		"poop_count": pet_stats.poop_count,
+		"digestion_remaining_seconds": pet_stats.digestion_remaining_seconds,
+		"simulated_day_elapsed_seconds": pet_stats.simulated_day_elapsed_seconds,
+		"last_meal_day_hour": pet_stats._last_meal_day_hour,
+		"severe_neglect_elapsed": pet_stats._severe_neglect_elapsed,
+		"is_fainted": pet_stats.is_fainted,
 		"newborn_tutorial_active": pet_stats.newborn_tutorial_active,
 		"newborn_tutorial_step": String(pet_stats.newborn_tutorial_step),
 		"newborn_tutorial_fed": pet_stats.newborn_tutorial_fed,
@@ -527,6 +542,13 @@ func _restore_stats(raw_data: Variant) -> void:
 	pet_stats.special_need = StringName(String(data.get("special_need", pet_stats.special_need)))
 	pet_stats.special_need_wish = StringName(String(data.get("special_need_wish", pet_stats.special_need_wish)))
 	pet_stats.poop_visible = bool(data.get("poop_visible", pet_stats.poop_visible))
+	pet_stats.poop_count = clampi(int(data.get("poop_count", 1 if pet_stats.poop_visible else 0)), 0, 6)
+	pet_stats.poop_visible = pet_stats.poop_count > 0
+	pet_stats.digestion_remaining_seconds = float(data.get("digestion_remaining_seconds", pet_stats.digestion_remaining_seconds))
+	pet_stats.simulated_day_elapsed_seconds = float(data.get("simulated_day_elapsed_seconds", pet_stats.simulated_day_elapsed_seconds))
+	pet_stats._last_meal_day_hour = float(data.get("last_meal_day_hour", pet_stats._last_meal_day_hour))
+	pet_stats._severe_neglect_elapsed = float(data.get("severe_neglect_elapsed", pet_stats._severe_neglect_elapsed))
+	pet_stats.is_fainted = bool(data.get("is_fainted", pet_stats.is_fainted))
 	pet_stats.newborn_tutorial_active = bool(data.get("newborn_tutorial_active", pet_stats.newborn_tutorial_active))
 	pet_stats.newborn_tutorial_step = StringName(String(data.get("newborn_tutorial_step", pet_stats.newborn_tutorial_step)))
 	pet_stats.newborn_tutorial_fed = bool(data.get("newborn_tutorial_fed", pet_stats.newborn_tutorial_fed))
@@ -543,6 +565,8 @@ func _restore_stats(raw_data: Variant) -> void:
 	pet_stats.sleep_state_changed.emit(pet_stats.is_sleeping)
 	pet_stats.illness_changed.emit(pet_stats.is_sick)
 	pet_stats.poop_state_changed.emit(pet_stats.poop_visible)
+	pet_stats.poop_count_changed.emit(pet_stats.poop_count)
+	pet_stats.faint_state_changed.emit(pet_stats.is_fainted)
 
 func _restore_skills(raw_data: Variant) -> void:
 	if pet_skills == null or typeof(raw_data) != TYPE_DICTIONARY:
@@ -594,7 +618,8 @@ func _restore_world(raw_data: Variant) -> void:
 		return
 	var data: Dictionary = raw_data
 	exploration_battles_completed = maxi(0, int(data.get("exploration_battles_completed", exploration_battles_completed)))
-	eva_encounter_battle_counter = clampi(int(data.get("eva_encounter_battle_counter", exploration_battles_completed % 3)), 0, 2)
+	eva_encounter_battle_counter = clampi(int(data.get("eva_encounter_battle_counter", exploration_battles_completed % 3)), 0, 99)
+	eva_encounter_refusals = maxi(0, int(data.get("eva_encounter_refusals", 0)))
 	eva_encounter_available = bool(data.get("eva_encounter_available", exploration_battles_completed >= 3 and not eva_encounter_seen))
 	eva_encounter_seen = bool(data.get("eva_encounter_seen", false))
 	eva_adventure_unlocked = bool(data.get("eva_adventure_unlocked", false))

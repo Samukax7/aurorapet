@@ -67,11 +67,14 @@ const EVA_IDLE_FRAME_COUNT := 48
 const EVA_SPRITE_SCALE := 1.8
 # Posição do centro da célula do atlas; o desenho da EVA ocupa a área
 # direita da célula, por isso este valor deixa o sprite visualmente no canto esquerdo.
-const EVA_LEFT_CORNER_X := 40.0
-const CONTROLS_EVA_Y := 342.0
+const EVA_LEFT_CORNER_X := 70.0
+const CONTROLS_EVA_Y := 475.0
 const EGG_EVA_Y := 352.0
-const STATUS_EVA_POSITION := Vector2(1015.0, 520.0)
+const STATUS_EVA_POSITION := Vector2(780.0, 520.0)
 const STATUS_EVA_EXIT_X := 1242.905
+const STATUS_TRANSITION_EXIT_X := -120.0
+const STATUS_TRANSITION_FRAME_COUNT := 32
+const EGG_SELECTION_ICON_MAX_WIDTH := 64
 
 @onready var background: ColorRect = $Background
 @onready var user_logo_image: TextureRect = $UserLogoImage
@@ -145,6 +148,7 @@ func _process(delta: float) -> void:
 			# A apresentação percorre voo → giro → acomodação uma única vez;
 			# depois repete somente o bloco final de idle (208–255).
 			presenter_sprite.flip_h = false
+			presenter_sprite.z_index = 8
 			if frame_tick < EVA_PRESENTATION_FRAME_COUNT:
 				presenter_sprite.frame = EVA_TRAVEL_FRAME_START + frame_tick
 			else:
@@ -152,16 +156,20 @@ func _process(delta: float) -> void:
 			presenter_sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
 			presenter_sprite.position.x = lerpf(917.095, EVA_LEFT_CORNER_X, transition_progress)
 		&"controls":
-			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, EVA_LEFT_CORNER_X, false)
+			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, 180.0, false)
+			guide_sprite.z_index = 8
 			guide_sprite.position.y = CONTROLS_EVA_Y
 		&"egg_select":
-			_animate_eva_to_idle(presenter_sprite, frame_tick, 953.296, EVA_LEFT_CORNER_X, false)
+			_animate_eva_to_idle(presenter_sprite, frame_tick, 953.296, 120.0, false)
+			presenter_sprite.z_index = 8
 		&"egg":
-			_animate_eva_to_idle(guide_sprite, frame_tick, 953.296, EVA_LEFT_CORNER_X, false)
+			_animate_eva_to_idle(guide_sprite, frame_tick, 190.0, 720.0, false)
+			guide_sprite.z_index = 8
 			guide_sprite.position.y = EGG_EVA_Y
 		&"status":
 			# A ficha também usa a entrada uma vez e, na saída, apenas o trecho
 			# de voo final; nenhum frame do idle é misturado nessa transição.
+			status_sprite.z_index = 8
 			status_sprite.flip_h = true
 			status_sprite.position.y = STATUS_EVA_POSITION.y
 			if frame_tick < EVA_PRESENTATION_FRAME_COUNT:
@@ -169,12 +177,23 @@ func _process(delta: float) -> void:
 				status_sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
 				status_sprite.position.x = STATUS_EVA_POSITION.x
 			else:
-				var exit_tick := frame_tick - EVA_PRESENTATION_FRAME_COUNT
-				status_sprite.frame = EVA_EXIT_FRAME_START + posmod(exit_tick, EVA_EXIT_FRAME_COUNT)
+				var idle_tick := frame_tick - EVA_PRESENTATION_FRAME_COUNT
+				status_sprite.frame = _idle_frame(idle_tick)
 				status_sprite.scale = Vector2.ONE * EVA_SPRITE_SCALE
-				status_sprite.position.x = lerpf(STATUS_EVA_POSITION.x, STATUS_EVA_EXIT_X, clampf(float(exit_tick) / float(EVA_EXIT_FRAME_COUNT), 0.0, 1.0))
+				status_sprite.position.x = STATUS_EVA_POSITION.x
+		&"status_exit":
+			var transition_tick := mini(frame_tick, STATUS_TRANSITION_FRAME_COUNT - 1)
+			status_sprite.visible = true
+			status_sprite.flip_h = true
+			status_sprite.frame = EVA_EXIT_FRAME_START + transition_tick
+			status_sprite.position.x = lerpf(STATUS_EVA_POSITION.x, STATUS_TRANSITION_EXIT_X, float(transition_tick) / float(STATUS_TRANSITION_FRAME_COUNT - 1))
+			status_sprite.position.y = STATUS_EVA_POSITION.y
+			if frame_tick >= STATUS_TRANSITION_FRAME_COUNT:
+				_finish_flow()
 
 func _idle_frame(elapsed_frames: int) -> int:
+	# Idle completo em loop; a orientação definitiva será ajustada com a atlas
+	# direcional quando ela estiver disponível.
 	return EVA_IDLE_FRAME_START + posmod(elapsed_frames, EVA_IDLE_FRAME_COUNT)
 
 func _animate_eva_to_idle(sprite: Sprite2D, frame_tick: int, start_x: float, end_x: float, face_left: bool) -> void:
@@ -215,6 +234,7 @@ func _connect_buttons() -> void:
 	for index in menu_buttons.size():
 		menu_buttons[index].pressed.connect(_on_menu_button_pressed.bind(index))
 	for index in egg_selection_buttons.size():
+		egg_selection_buttons[index].add_theme_constant_override("icon_max_width", EGG_SELECTION_ICON_MAX_WIDTH)
 		egg_selection_buttons[index].pressed.connect(_on_egg_selection_button_pressed.bind(index))
 	story_back.pressed.connect(_on_story_back_pressed)
 	story_next.pressed.connect(_on_story_next_pressed)
@@ -623,7 +643,6 @@ func _shake_egg() -> void:
 func _show_pet_status() -> void:
 	# A faixa de apresentação termina ao abrir a ficha; o ConsoleController
 	# assume o lobby somente depois da confirmação/encerramento do fluxo.
-	_stop_intro_eva_loop()
 	state = &"status"
 	intro_anim_time = 0.0
 	background.color = Color("#FFFFFF")
@@ -801,7 +820,13 @@ func _on_egg_button_pressed() -> void:
 	_hatch_step()
 
 func _on_status_exit_pressed() -> void:
-	_finish_flow()
+	if state != &"status":
+		return
+	# Bloqueia novos comandos enquanto a ficha sai da tela e o Lobby carrega.
+	state = &"status_exit"
+	intro_anim_time = 0.0
+	status_panel.visible = false
+	status_sprite.visible = true
 
 
 func _on_controls_back_pressed() -> void:

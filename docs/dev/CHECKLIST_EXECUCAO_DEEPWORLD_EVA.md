@@ -103,7 +103,7 @@ As prioridades abaixo representam dependências. Cada bloco deve ser tratado com
 
 ### P0 — Decisões canônicas
 
-- [x] Confirmar as seis formas oficiais da EVA: `Bebê`, `Criança`, `Adolescente`, `Adulta`, `Anciã` e `Deusa Cósmica`.
+- [x] Confirmar sete estados totais da EVA: `Ovo` + seis formas pós-eclosão — `Bebê`, `Criança`, `Adolescente`, `Adulta`, `Anciã Cósmica` e `Deusa Cósmica`.
 - [x] Definir a ilha oficial de Gorgon Glitch: Cidade dos Dados.
 - [x] Adotar placeholders territoriais para os Guardiões até o design definitivo: `Guardião da Cidade dos Dados`, `Guardião da Floresta de Cristal`, `Guardião das Ruínas Cristalinas` e `Guardião do Núcleo Vulcânico`.
 - [x] Definir a relação entre o Guardião real e Gorgon Glitch: Gorgon é seu Eco corrompido.
@@ -126,26 +126,34 @@ As prioridades abaixo representam dependências. Cada bloco deve ser tratado com
 
 ### P1 — Arquitetura, dados e compatibilidade
 
+- [ ] Auditar as ligações entre `EvaJourneyManager`, `MapaCampanhaEva`, `EvaVisualNovel`, `ConsoleController`, `BatalhaDeExploracao` e `AuroraPetSave`.
+- [ ] Registrar sinais, chamadas, dados compartilhados e responsabilidades de cada script.
 - [ ] Unificar os dados de fases, encontros, Bosses e capítulos da EVA em uma fonte única.
+- [ ] Definir o modelo do mapa vertical: uma base neutra, quinze ilhas menores e seis ilhas maiores.
+- [ ] Criar dados para cada ilha menor, incluindo tipo de encontro, memória, posição e desbloqueio.
+- [ ] Criar dados para cada ilha maior e associar os seis Bosses na ordem canônica.
 - [ ] Criar estrutura persistente por ilha para estado, hostilidade, encontros, eventos e Boss.
 - [ ] Corrigir o desbloqueio automático de ilhas por vitória comum.
-- [ ] Corrigir scripts, cenas e índices que ainda presumem sete formas da EVA.
+- [ ] Corrigir scripts, cenas e índices que confundem sete estados totais com sete formas evolutivas da EVA.
 - [ ] Separar EVA narrativa, EVA de desenvolvimento e EVA pet especial.
 - [ ] Criar migração para saves com a progressão antiga da campanha.
-- [ ] Criar migração para saves com sete índices de forma da EVA.
+- [ ] Criar migração para saves com sete formas evolutivas antigas, convertendo-as para Ovo + seis formas oficiais sem perda de progresso.
 - [ ] Criar migração para saves anteriores aos estados territoriais.
 - [ ] Garantir valores padrão seguros para saves novos e antigos.
 - [ ] Criar testes de ida e volta do save após as migrações.
+- [ ] Criar comando ou script local de validação headless com Godot 4.7.1.
+- [ ] Validar parsing, referências de cenas, scripts ausentes, recursos e erros críticos em modo headless.
   - Critério do bloco: dados possuem uma fonte de verdade e saves existentes carregam sem perda de progresso.
 
 ### P2 — Correções da campanha atual
 
-- [ ] Adicionar `eva_ch6_01`, `eva_ch6_02` e `eva_ch6_03` ao mapa da campanha.
+- [ ] Reestruturar o mapa vertical para conter 1 base neutra, 15 ilhas menores e 6 ilhas maiores.
+- [ ] Adicionar `eva_ch6_01`, `eva_ch6_02` e `eva_ch6_03` como parte das quinze ilhas menores.
 - [ ] Fazer os três encontros desbloquearem em sequência e persistirem no save.
 - [ ] Ocultar a identidade do Eco Absoluto até a revelação final.
 - [ ] Usar um nome neutro para o último nó antes do confronto.
 - [ ] Corrigir progressão, repetição e retorno de todos os nós da campanha.
-- [ ] Padronizar os nomes das seis formas na interface e documentação.
+- [ ] Padronizar os nomes dos sete estados na interface e documentação, distinguindo Ovo de forma evolutiva.
 - [ ] Atualizar documentos que declaram como ausentes sistemas já implementados.
   - Critério do bloco: campanha atual navegável do primeiro nó ao último, sem revelar antecipadamente o twist final.
 

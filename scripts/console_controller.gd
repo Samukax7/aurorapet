@@ -25,6 +25,10 @@ extends Sprite2D
 @onready var eva_journey_manager: EvaJourneyManager = $ScreenContent/EvaJourneyManager
 @onready var confirm_audio: AudioStreamPlayer = get_node_or_null(^"ConfirmAudio") as AudioStreamPlayer
 @onready var lobby_music: AudioStreamPlayer = get_node_or_null(^"LobbyMusic") as AudioStreamPlayer
+@onready var exploration_music: AudioStreamPlayer = $ScreenContent/MapaExploracao/MapMusic
+@onready var eva_map_music: AudioStreamPlayer = $ScreenContent/MapaCampanhaEva/MapMusic
+@onready var eva_campaign_music: AudioStreamPlayer = $ScreenContent/EvaVisualNovel/CampaignMusic
+@onready var eva_dialogue_music: AudioStreamPlayer = $ScreenContent/EvaVisualNovel/DialogueMusic
 @onready var dpad_audio: AudioStreamPlayer = get_node_or_null(^"DPadAudio") as AudioStreamPlayer
 @onready var positive_audio: AudioStreamPlayer = get_node_or_null(^"PositiveAudio") as AudioStreamPlayer
 @onready var refusal_audio: AudioStreamPlayer = get_node_or_null(^"RefusalAudio") as AudioStreamPlayer
@@ -36,6 +40,7 @@ var quarto_entry_pending := false
 var current_eva_stage_id: StringName = &""
 var eva_novel_pending_stage_id: StringName = &""
 var eva_exploration_encounter_active := false
+var _last_poop_count := 0
 
 func _ready() -> void:
 	_connect_console_buttons()
@@ -58,6 +63,8 @@ func _ready() -> void:
 	if pet_ui != null:
 		pet_ui.set_progression_source(pet_skills)
 		pet_ui.set_world_progression(aurora_pet_save)
+		if pet_identity != null:
+			pet_ui.set_identity_snapshot(pet_identity.get_identity_snapshot())
 		pet_ui.action_requested.connect(_on_action_requested)
 		if not pet_ui.menu_visibility_changed.is_connected(_on_menu_visibility_changed):
 			pet_ui.menu_visibility_changed.connect(_on_menu_visibility_changed)
@@ -77,15 +84,24 @@ func _ready() -> void:
 		pet_stats.action_info.connect(_on_action_info)
 		pet_stats.behavior_event.connect(_on_behavior_event)
 		pet_stats.poop_state_changed.connect(_on_poop_state_changed)
+		pet_stats.poop_count_changed.connect(_on_poop_count_changed)
 		pet_stats.special_need_changed.connect(_on_special_need_changed)
+		pet_stats.faint_state_changed.connect(_on_faint_state_changed)
 
 		pet_stats.sleep_state_changed.connect(_on_sleep_state_changed)
 		pet_stats.newborn_tutorial_step_changed.connect(_on_newborn_tutorial_step_changed)
 		pet_stats.newborn_tutorial_completed.connect(_on_newborn_tutorial_completed)
 		_on_stats_changed(pet_stats.hunger, pet_stats.energy, pet_stats.mood, pet_stats.health)
 		_on_needs_changed(pet_stats.get_needs_snapshot())
+		if pet_ui != null:
+			pet_ui.set_attention_need(pet_stats.attention_reason, not pet_stats.attention_reason.is_empty())
 		_on_poop_state_changed(pet_stats.poop_visible)
+		_last_poop_count = pet_stats.poop_count
+		if pet_ui != null:
+			pet_ui.set_poop_count(pet_stats.poop_count)
 		_on_sleep_state_changed(pet_stats.is_sleeping)
+		if pet_stats.is_fainted:
+			_on_faint_state_changed(true)
 	if pet_skills != null:
 		pet_skills.skill_unlocked.connect(_on_skill_unlocked)
 		pet_skills.level_up.connect(_on_level_up)
@@ -135,13 +151,43 @@ func _ready() -> void:
 		call_deferred("_show_identity_intro")
 
 func _process(_delta: float) -> void:
-	if lobby_music == null:
-		return
-	if _is_lobby_active():
-		if not lobby_music.playing:
-			lobby_music.play()
-	elif lobby_music.playing:
-		lobby_music.stop()
+	_sync_music_tracks()
+
+func _sync_music_tracks() -> void:
+	var novel_active := eva_visual_novel != null and eva_visual_novel.visible
+	var eva_map_active := mapa_campanha_eva != null and mapa_campanha_eva.visible and not novel_active
+	var exploration_map_active := mapa_exploracao != null and mapa_exploracao.visible and not novel_active and not eva_map_active
+	var lobby_active := _is_lobby_active() and not novel_active and not eva_map_active and not exploration_map_active
+	if lobby_music != null:
+		if lobby_active:
+			if not lobby_music.playing:
+				lobby_music.play()
+		else:
+			lobby_music.stop()
+	if exploration_music != null:
+		if exploration_map_active:
+			if not exploration_music.playing:
+				exploration_music.play()
+		else:
+			exploration_music.stop()
+	if eva_map_music != null:
+		if eva_map_active:
+			if not eva_map_music.playing:
+				eva_map_music.play()
+		else:
+			eva_map_music.stop()
+	if eva_campaign_music != null:
+		if novel_active and eva_visual_novel.presentation_mode != eva_visual_novel.MODE_EXPLORATION_ENCOUNTER:
+			if not eva_campaign_music.playing:
+				eva_campaign_music.play()
+		else:
+			eva_campaign_music.stop()
+	if eva_dialogue_music != null:
+		if novel_active and eva_visual_novel.presentation_mode == eva_visual_novel.MODE_EXPLORATION_ENCOUNTER:
+			if not eva_dialogue_music.playing:
+				eva_dialogue_music.play()
+		else:
+			eva_dialogue_music.stop()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down"):
@@ -1120,6 +1166,9 @@ func _on_exploration_area_closed() -> void:
 	var battle_mode := batalha_exploracao.get_mode_context() if batalha_exploracao != null else &"training"
 	match battle_mode:
 		&"exploration":
+			if aurora_pet_save != null and aurora_pet_save.consume_eva_encounter_trigger():
+				_open_exploration_eva_encounter()
+				return
 			_open_exploration_map()
 		&"eva":
 			_open_eva_campaign_map_after_battle()
@@ -1244,10 +1293,10 @@ func _on_needs_changed(snapshot: Dictionary) -> void:
 func _on_attention_changed(active: bool, reason: StringName) -> void:
 	if pet_ui == null:
 		return
+	pet_ui.set_attention_need(reason, active)
 	if active and pet_stats != null:
+		_play_refusal_sound()
 		pet_ui.show_system_message(pet_stats.get_attention_message())
-	elif not active:
-		pet_ui.show_system_message("NECESSIDADES ESTÁVEIS")
 
 func _on_illness_changed(is_sick: bool) -> void:
 	if pet_ui == null:
@@ -1296,12 +1345,17 @@ func _on_behavior_event(_event_id: StringName, system_message: String, pet_messa
 		pet_ui.show_pet_message(pet_message)
 
 func _on_poop_state_changed(visible: bool) -> void:
-	if visible:
-		_play_poop_sound()
 	if pet_ui != null:
 		pet_ui.set_poop_visible(visible)
-		if visible:
-			pet_ui.show_system_message("O PET FEZ COCÔ • LIMPE A SUJEIRA")
+
+func _on_poop_count_changed(count: int) -> void:
+	if count > _last_poop_count:
+		_play_poop_sound()
+		if pet_ui != null:
+			pet_ui.show_system_message("O PET FEZ COCÔ • %d/6 ACUMULADOS" % count)
+	_last_poop_count = count
+	if pet_ui != null:
+		pet_ui.set_poop_count(count)
 
 func _on_menu_visibility_changed(visible: bool) -> void:
 	_play_open_options_sound()
@@ -1316,7 +1370,14 @@ func _on_special_need_changed(need: StringName, wish: StringName, active: bool) 
 	if pet_ui != null:
 		pet_ui.set_special_need(need, wish, active)
 		if active:
+			_play_open_options_sound()
 			pet_ui.show_pet_message(pet_ui.get_special_need_message(need, wish))
+
+func _on_faint_state_changed(fainted: bool) -> void:
+	if pet_randomizer != null:
+		pet_randomizer.set_sleeping_visual(fainted or (pet_stats != null and pet_stats.is_sleeping))
+	if pet_ui != null:
+		pet_ui.show_system_message("O PET DESMAIOU • ALIMENTE, DESCANSE E CUIDE DA SAÚDE" if fainted else "O PET SE RECUPEROU")
 
 func _on_sleep_state_changed(sleeping: bool) -> void:
 	if pet_randomizer != null:

@@ -92,11 +92,16 @@ var _palette_randomizer := RandomNumberGenerator.new()
 var _reaction_tween: Tween
 var _reaction_origin := Vector2.ZERO
 var _reaction_scale := Vector2.ONE
+var _sleep_eye_tween: Tween
+var _sleep_eye_scale := Vector2.ONE
 @onready var cosmetic_overlay: Sprite2D = get_node_or_null(^"CosmeticOverlay") as Sprite2D
+@onready var eyes_sprite: Sprite2D = get_node_or_null(^"Olhos") as Sprite2D
 
 func _ready() -> void:
 	_reaction_origin = position
 	_reaction_scale = scale
+	if eyes_sprite != null:
+		_sleep_eye_scale = eyes_sprite.scale
 	if Engine.is_editor_hint():
 		if randomize_in_editor:
 			call_deferred("randomize_pet")
@@ -184,6 +189,13 @@ func play_reaction(action: StringName, reaction_id: StringName = &"") -> void:
 	reaction_started.emit(action, selected_reaction)
 
 func set_sleeping_visual(value: bool) -> void:
+	if _sleep_eye_tween != null:
+		_sleep_eye_tween.kill()
+	if eyes_sprite != null:
+		# Durante o sono, achata somente a altura: a largura permanece normal.
+		var target_scale := _sleep_eye_scale * Vector2(1.0, 0.18) if value else _sleep_eye_scale
+		_sleep_eye_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		_sleep_eye_tween.tween_property(eyes_sprite, "scale", target_scale, 0.22)
 	if value:
 		self_modulate = Color(0.72, 0.78, 1.0, 1.0)
 	else:

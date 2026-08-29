@@ -4,6 +4,17 @@
 **Atualizado em:** 28 de agosto de 2026
 **Função:** orientar narrativa, mapas, Guardiões, Bosses, progressão territorial e conteúdo de pós-game
 
+## Organização das decisões
+
+O projeto continuará evoluindo. Este documento representa o cânone vigente, mas pode ser revisado por uma nova decisão explícita.
+
+- **Cânone atual:** regras narrativas e de design válidas neste momento.
+- **Implementação real:** comportamento confirmado nas cenas e scripts locais.
+- **Histórico:** ideias anteriores preservadas como referência, sem obrigação de permanecerem no jogo.
+- **Pendente:** proposta ainda não aprovada ou que depende de validação na Godot.
+
+Quando uma ideia antiga conflitar com este documento, ela deve ser tratada como histórico até ser reavaliada.
+
 ## Regra de verdade
 
 Este documento é a referência canônica para a relação entre o mapa de Exploração e o mapa vertical da Jornada da EVA. Quando documentos anteriores entrarem em conflito com esta base, este documento deve prevalecer depois da validação da decisão correspondente.
@@ -97,9 +108,15 @@ A EVA utilizada no modo `DEV` é uma ferramenta de depuração para testar siste
 
 No pós-game, a EVA poderá ser disponibilizada como pet especial. Essa versão jogável representa a mesma personagem narrativa em outro contexto de gameplay.
 
-## Progressão das formas e cristais
+## Progressão dos estados da EVA
 
-EVA inicia a campanha como Bebê. Cada cristal restaura parte de suas memórias e conduz sua maturação até o retorno à condição de Deusa Cósmica.
+O ciclo completo da EVA possui sete estados: um estado de Ovo e seis formas após a eclosão. Assim, o projeto mantém sete estados totais sem exigir sete evoluções depois do nascimento.
+
+```text
+Ovo → Bebê → Criança → Adolescente → Adulta → Anciã Cósmica → Deusa Cósmica
+```
+
+O Ovo é um estado de origem e preparação, não uma forma evolutiva da Jornada. EVA inicia a campanha narrativa como Bebê. Cada cristal restaura parte de suas memórias e conduz sua maturação até o retorno à condição de Deusa Cósmica.
 
 | Confronto | Forma usada na batalha | Resultado narrativo |
 |---|---|---|
@@ -111,6 +128,8 @@ EVA inicia a campanha como Bebê. Cada cristal restaura parte de suas memórias 
 | Eco Absoluto | Anciã Cósmica | Absorve a Cópia-Eco, recupera sua totalidade e evolui para Deusa Cósmica |
 
 Essa progressão não deve depender da EVA do modo `DEV`. O desbloqueio acontece pela Jornada e precisa ser persistido no save narrativo.
+
+O estado de Ovo pertence ao fluxo de nascimento e eclosão. Ele não deve ser contado como forma adulta, Boss, estágio de batalha ou substituto da Deusa Cósmica.
 
 ## Facções oficiais
 
