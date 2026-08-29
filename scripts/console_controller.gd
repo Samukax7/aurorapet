@@ -899,6 +899,8 @@ func _close_quarto() -> void:
 func set_mobile_presentation(active_mobile: bool) -> void:
 	if opening_flow != null and opening_flow.has_method("set_mobile_presentation"):
 		opening_flow.call("set_mobile_presentation", active_mobile)
+	if quarto_cosmico != null and quarto_cosmico.has_method("set_mobile_presentation"):
+		quarto_cosmico.call("set_mobile_presentation", active_mobile)
 
 func mobile_toggle_status() -> void:
 	if pet_ui == null or not _is_lobby_active():

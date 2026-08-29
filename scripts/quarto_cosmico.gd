@@ -23,6 +23,7 @@ var player_level := 1
 var player_xp := 0
 var player_total_xp := 0
 var exit_confirmation_pending := false
+var mobile_presentation := false
 var _background_visibility: Dictionary = {}
 
 @onready var standard_background: Sprite2D = $FundoPadrao
@@ -35,6 +36,9 @@ var _background_visibility: Dictionary = {}
 @onready var shop: LojaCosmica = $LojaCosmica
 @onready var wardrobe: GuardaRoupasCosmico = $GuardaRoupasCosmico
 @onready var selection_frame: Panel = $Room/AreaCard/SelectionFrame
+@onready var store_button: TextureButton = $Room/AreaCard/StoreIcon
+@onready var wardrobe_button: TextureButton = $Room/AreaCard/WardrobeIcon
+@onready var hint_label: Label = $Room/Hint
 
 func _ready() -> void:
 	visible = false
@@ -45,8 +49,26 @@ func _ready() -> void:
 	if wardrobe != null:
 		wardrobe.wardrobe_closed.connect(_on_wardrobe_closed)
 		wardrobe.cosmetic_equipped.connect(_on_cosmetic_equipped)
+	store_button.pressed.connect(_on_room_option_pressed.bind(0))
+	wardrobe_button.pressed.connect(_on_room_option_pressed.bind(1))
 	_update_points()
 	_update_selection_frame()
+
+func set_mobile_presentation(active_mobile: bool) -> void:
+	mobile_presentation = active_mobile
+	if not is_node_ready():
+		return
+	hint_label.text = ("TOQUE EM UMA ÁREA PARA ENTRAR   •   ←: VOLTAR" if mobile_presentation
+		else "D-PAD: NAVEGAR   •   VERDE: CONFIRMAR   •   ROSA: CANCELAR   •   AMARELO: VOLTAR")
+	_update_selection_message()
+
+func _on_room_option_pressed(index: int) -> void:
+	if not visible or not room.visible or exit_confirmation_pending:
+		return
+	selected_index = clampi(index, 0, 1)
+	_update_selection_message()
+	if mobile_presentation:
+		confirm()
 
 func configure_progression(level: int, xp: int, total_xp: int) -> void:
 	player_level = maxi(level, 1)
@@ -238,7 +260,7 @@ func _on_purchase_requested(item_id: StringName, price: int) -> void:
 func _update_selection_message() -> void:
 	var options := ["LOJA CÓSMICA", "GUARDA-ROUPAS"]
 	status_label.text = options[selected_index]
-	result_label.text = "PRESSIONE VERDE PARA CONFIRMAR"
+	result_label.text = "TOQUE PARA ENTRAR" if mobile_presentation else "PRESSIONE VERDE PARA CONFIRMAR"
 	_update_selection_frame()
 
 func _update_selection_frame() -> void:
