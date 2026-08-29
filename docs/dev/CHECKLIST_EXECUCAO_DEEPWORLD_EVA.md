@@ -353,6 +353,45 @@ Data de início:
 Data de conclusão:
 
 Arquivos alterados:
+-
+
+Testes locais:
+-
+
+Validação local:
+-
+
+Commit/sincronia:
+-
+
+Teste após sincronia:
+-
+
+Validação final:
+-
+
+Evidências:
+-
+
+Pendências descobertas:
+-
+
+Próxima tarefa:
+-
+```
+
+## Registro ativo
+
+### Execução 001 — P0 Decisões canônicas
+
+```text
+Tarefa: Consolidar as decisões canônicas que desbloqueiam arquitetura, vertical slice e produção de assets
+Status: [x] concluída
+Responsável: N.O.V.A. + responsável pelo projeto
+Data de início: 28/08/2026
+Data de conclusão: 28/08/2026
+
+Arquivos alterados:
 - docs/design/CANONE_DEEPWORLD_EVA.md
 - docs/dev/CHECKLIST_EXECUCAO_DEEPWORLD_EVA.md
 
@@ -366,13 +405,16 @@ Validação local:
 - Ordem dos seis Bosses e progressão das seis formas estão registradas.
 
 Commit/sincronia:
-- Pendente.
+- Commit canônico: 79606eb (`docs: define Deepworld and EVA canonical roadmap`).
+- Branch `main` sincronizada com `origin/main`.
 
 Teste após sincronia:
--
+- Commit remoto confirmado após `git push origin main`.
+- Documentos versionados sem incluir `.github/agents/`.
 
 Validação final:
--
+- P0 concluído: todos os itens canônicos do bloco estão marcados.
+- Próxima unidade liberada: P1 — Arquitetura, dados e compatibilidade.
 
 Evidências:
 - docs/design/CANONE_DEEPWORLD_EVA.md
@@ -381,45 +423,6 @@ Evidências:
 Pendências descobertas:
 - Nomes e designs definitivos dos Guardiões foram conscientemente adiados; placeholders territoriais aprovados.
 - Tecnologia do serviço online de PvP será escolhida no P11.
-
-Próxima tarefa:
--
-```
-
-## Registro ativo
-
-### Execução 001 — P0 Decisões canônicas
-
-```text
-Tarefa: Consolidar as decisões canônicas que desbloqueiam arquitetura, vertical slice e produção de assets
-Status: [~] em andamento
-Responsável: N.O.V.A. + responsável pelo projeto
-Data de início: 28/08/2026
-Data de conclusão:
-
-Arquivos alterados:
--
-
-Testes locais:
--
-
-Validação local:
--
-
-Commit/sincronia:
--
-
-Teste após sincronia:
--
-
-Validação final:
--
-
-Evidências:
--
-
-Pendências descobertas:
--
 
 Próxima tarefa:
 - P1 — Arquitetura, dados e compatibilidade
