@@ -937,6 +937,16 @@ func mobile_navigate(direction: Vector2i) -> void:
 
 func get_mobile_ui_state() -> Dictionary:
 	var lobby_active := _is_lobby_active()
+	var opening_active := opening_flow != null and opening_flow.active
+	var opening_state: StringName = opening_flow.state if opening_active else &""
+	var opening_can_confirm := opening_active and opening_state in [
+		&"user_logo", &"logo", &"menu", &"story", &"controls",
+		&"egg_select", &"access_code", &"egg", &"status",
+	]
+	var opening_can_navigate := opening_active and opening_state in [&"menu", &"egg_select"]
+	var opening_can_go_back := opening_active and opening_state in [
+		&"story", &"controls", &"egg_select", &"access_code", &"egg",
+	]
 	var status_open := pet_ui != null and pet_ui.status_visible
 	var submenu_open := pet_ui != null and pet_ui.submenu_visible
 	var room_open := quarto_cosmico != null and quarto_cosmico.visible
@@ -953,9 +963,9 @@ func get_mobile_ui_state() -> Dictionary:
 		"room_open": room_open,
 		"show_status": lobby_active,
 		"show_room": lobby_active and not status_open,
-		"show_back": status_open or submenu_open or room_open or not lobby_active,
-		"show_confirm": contextual_navigation,
-		"allow_swipe_navigation": contextual_navigation,
+		"show_back": opening_can_go_back or status_open or submenu_open or room_open or (not lobby_active and not opening_active),
+		"show_confirm": opening_can_confirm or contextual_navigation,
+		"allow_swipe_navigation": opening_can_navigate or contextual_navigation,
 	}
 
 func _on_quarto_exit_confirmed() -> void:
